@@ -6,4 +6,9 @@
 **jinja2**: 3.1.2  
 **Flask** : 2.2.3  
 **Werkzeug**: 2.2.3  
-**Bootstrap**: 5.2.3
+**Bootstrap**: 5.2.3  
+**Flask-WTF**: 1.1.1  
+**Flask-Migrate**: 4.0.4  
+**Flask-SQLAlchemy**: 3.0.3  
+**SQLAlchemy**: 2.0.7  
+**PyMySQL**: 1.0.3
