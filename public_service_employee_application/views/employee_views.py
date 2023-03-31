@@ -10,4 +10,4 @@ bp = Blueprint('employee', __name__, url_prefix='/employee')
 # 직원으로 로그인이 되었나 확인하는 부분
 @login_required_employee
 def index():
-    return render_template('base.html')
+    return render_template('user/employee_main.html')
