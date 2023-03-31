@@ -11,4 +11,5 @@
 **Flask-Migrate**: 4.0.4  
 **Flask-SQLAlchemy**: 3.0.3  
 **SQLAlchemy**: 2.0.7  
-**PyMySQL**: 1.0.3
+**PyMySQL**: 1.0.3  
+**email-validator**: 1.3.1

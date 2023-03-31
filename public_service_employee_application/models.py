@@ -70,7 +70,7 @@ class Wellfare_point(db.Model):
     # 식별용 id
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 부여된 사용자의 id(외래키)
-    user_id = Column(Integer, ForeignKey('User.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=False)
     # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
     user = db.relationship('User', backref=db.backref('wellfare_point_set'))
     # 분기
@@ -179,7 +179,7 @@ class Medical_checkup_request(db.Model):
 # 급여 명세서에 대한 모델
 class Pay_statement(db.Model):
     __tablename__ = 'tb_pay_statement'
-    __table_arge__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     # 식별용id
     id = Column(Integer, primary_key=True)

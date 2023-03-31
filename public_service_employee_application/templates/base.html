@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kor">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <!--Requered meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <title>50사단 공무직 어플</title>
 </head>
 <body>
-$END$
+{% include "navbar.html" %}
+<!--기본 템플릿에 삽입할 내용 Start -->
+{% block content %}
+{% endblock %}
+<!-- 기본 템플릿에 삽입할 내용 End -->
+<!-- jQuery JS -->
+<script src="{{ url_for('static', filename='jquery-3.6.4.min.js') }}"></script>
+<!-- Bootstrap JS -->
+<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<!-- 자바스크립트 Start -->
+{% block script %}
+{% endblock %}
+<!-- 자바스크립트 End -->
 </body>
 </html>
