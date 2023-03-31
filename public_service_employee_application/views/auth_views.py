@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template, session, url_for, flash
+import functools
+from flask import Blueprint, request, render_template, session, url_for, flash, g
 from werkzeug.utils import redirect
 
 from public_service_employee_application.forms import UserLoginForm
@@ -46,3 +47,36 @@ def login():
             return redirect(url_for('main.index'))
         flash(error)
     return render_template('auth/login.html', form=form)
+
+# 요청이 처리되기 전에 실행되는 어노테이션으로 로그인 된 정보가 존재한다면 로그인 된 사용자의 정보를 g.user에 담고 없으면 None을 저장한다.
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = User.query.get(userid=user_id)
+
+# 관리자인지 확인하는 래퍼 메소드
+# 로그인 되어있지 않다면 로그인 화면으로 리디렉션 되고, 관리자가 아니라면 적절한 화면으로 리디렉션 된다.
+def login_required_admin(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('main.index'))
+        elif g.user.role != 'ADMIN':
+            return redirect(url_for('main.index'))
+        return view(**kwargs)
+    return wrapped_view
+
+# 직원인지 확인하는 래퍼 메소드
+# 로그인 되어있지 않다면 로그인 화면으로 리디렉션 되고, 직원이 아니라면 적절한 화면으로 리디렉션 된다.
+def login_required_employee(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('main.index'))
+        elif g.user.role != 'EMPLAYEE':
+            return redirect(url_for('main.index'))
+        return view(**kwargs)
+    return wrapped_view
