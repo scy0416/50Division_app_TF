@@ -47,7 +47,13 @@ def login():
             session['isAdmin'] = False
             return redirect(url_for('main.index'))
         flash(error)
-    return render_template('auth/login.html', form=form)
+    #return render_template('auth/login.html', form=form)
+
+# 로그아웃을 처리하는 부분
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('main.index'))
 
 # 요청이 처리되기 전에 실행되는 어노테이션으로 로그인 된 정보가 존재한다면 로그인 된 사용자의 정보를 g.user에 담고 없으면 None을 저장한다.
 @bp.before_app_request

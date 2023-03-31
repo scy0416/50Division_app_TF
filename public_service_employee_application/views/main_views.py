@@ -5,6 +5,7 @@ from werkzeug.utils import redirect
 bp = Blueprint('main', __name__, url_prefix='/')
 
 # 웹 페이지에 최초로 진입하는 부분
+# TODO 이 부분에서 다른 부분으로 리디렉션 시키는 것을 지향하기 위해 나중에는 각각 적절한 곳으로 리디렉션 할 수 있도록 바꾸도록 한다.
 @bp.route('/', methods=('GET', ))
 def index():
     # GET메소드인 경우, 어드민인 경우
