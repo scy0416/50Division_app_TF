@@ -5,6 +5,7 @@ from werkzeug.utils import redirect
 from public_service_employee_application.forms import UserLoginForm
 from public_service_employee_application.models import User
 
+# 블루프린트 객체 생성
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # 로그인 화면에 대한 요청으로 GET메소드는 로그인 화면 요청, POST메소드는 로그인 처리 요청이다.
@@ -55,7 +56,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = User.query.get(userid=user_id)
+        g.user = User.query.get(user_id)
 
 # 관리자인지 확인하는 래퍼 메소드
 # 로그인 되어있지 않다면 로그인 화면으로 리디렉션 되고, 관리자가 아니라면 적절한 화면으로 리디렉션 된다.
@@ -76,7 +77,7 @@ def login_required_employee(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('main.index'))
-        elif g.user.role != 'EMPLAYEE':
+        elif g.user.role != 'USER':
             return redirect(url_for('main.index'))
         return view(**kwargs)
     return wrapped_view
