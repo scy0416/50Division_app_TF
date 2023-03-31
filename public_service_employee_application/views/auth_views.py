@@ -47,7 +47,7 @@ def login():
             session['isAdmin'] = False
             return redirect(url_for('main.index'))
         flash(error)
-    #return render_template('auth/login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 # 로그아웃을 처리하는 부분
 @bp.route('/logout')
