@@ -25,7 +25,7 @@ def create_app():
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
     app.register_blueprint(employee_views.bp)
-    #app.register_blueprint(admin_views)
+    app.register_blueprint(admin_views.bp)
 
     # 필터
 
