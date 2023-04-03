@@ -203,7 +203,7 @@ class Pay_statement(db.Model):
 
     # 식별용id
     id = Column(Integer, primary_key=True)
-    # 분기
-    quarter = Column(String(128), nullable=True)
+    # 년월
+    year_month = Column(String(128), nullable=True)
     # 파일 주소
     file_address = Column(String(128), nullable=True)
