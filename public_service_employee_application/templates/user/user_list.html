@@ -7,7 +7,7 @@
     <div>
       <dialog id="addAdmin">
         <h3>관리자 추가</h3>
-        <form action="{{ url_for('admin.append') }}" method="post" class="post-form" id="adminForm">
+        <form method="post" class="post-form" id="adminForm">
           {{ adminForm.csrf_token }}
           {% include "adminForm_errors.html" %}
           <div class="form-group">
@@ -22,7 +22,7 @@
             <label for="password2">비밀번호 확인</label>
             <input type="password" class="form-control" name="password2" id="password2" value="{{ adminForm.password2.data or '' }}">
           </div>
-          <button onclick="closeAddAdmin" class="btn btn-primary">취소</button>
+          <button type="button" onclick="closeAddAdmin()" class="btn btn-primary" id="closeAddAdmin_button">취소</button>
           <button type="submit" class="btn btn-primary">생성하기</button>
         </form>
       </dialog>
@@ -108,8 +108,12 @@
     dialog.showModal();
   }
   function closeAddAdmin(){
+    event.preventDefault();
     var dialog = document.getElementById("addAdmin");
     dialog.close();
   }
+  {% if g.addAdmin_error %}
+  showAddAdmin()
+  {% endif %}
 </script>
 {% endblock %}

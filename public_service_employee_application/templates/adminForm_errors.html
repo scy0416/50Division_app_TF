@@ -1,7 +1,7 @@
 <!-- 필드 오류 -->
 {% for field, errors in adminForm.errors.items() %}
 <div class="alert alert-danger" role="alert">
-  <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
+  <strong>{{ adminForm[field].label }}</strong>: {{ ', '.join(errors) }}
 </div>
 {% endfor %}
 <!-- flash 오류 -->
