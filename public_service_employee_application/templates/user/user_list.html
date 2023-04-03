@@ -7,7 +7,7 @@
     <div>
       <dialog id="addAdmin">
         <h3>관리자 추가</h3>
-        <form action="{{ url_for('admin.append') }}" method="post" class="post-form">
+        <form action="{{ url_for('admin.append') }}" method="post" class="post-form" id="adminForm">
           {{ adminForm.csrf_token }}
           {% include "adminForm_errors.html" %}
           <div class="form-group">

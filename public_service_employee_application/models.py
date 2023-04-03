@@ -9,9 +9,9 @@ class User(db.Model):
     # 이미 존재하는 테이블에 대한 모델 생성
     __table_args__ = {'extend_existing': True}
 
-    # 유저 실별용id
+    # 사용자 실별용id
     id = Column(Integer, primary_key=True, autoincrement=True)
-    # 로그인용id
+    # 로그인id
     userid = Column(String(128), nullable=True)
     # 이름
     name = Column(String(128), nullable=True)
@@ -32,13 +32,13 @@ class User(db.Model):
     # 휴가
     vacation = Column(Integer, nullable=True)
     # 건강검진
-    medical_checkup = Column(CHAR(50), nullable=False, default='N')
+    medical_checkup = Column(CHAR(50), nullable=True, default='N')
     # 성희롱 예방 교육
-    sexual_harassment_prevent = Column(CHAR(50), nullable=False, default='N')
+    sexual_harassment_prevent = Column(CHAR(50), nullable=True, default='N')
     # 장애인식 개선 교육
-    disability_awareness_improvement = Column(CHAR(50), nullable=False, default='N')
+    disability_awareness_improvement = Column(CHAR(50), nullable=True, default='N')
     # 직장 내 괴롭힘 예방 교육
-    workplace_harassment_prevent = Column(CHAR(50), nullable=False, default='N')
+    workplace_harassment_prevent = Column(CHAR(50), nullable=True, default='N')
     # 비고
     bigo = Column(String(128), nullable=True)
     # 사용자구분(USER/ADMIN)
@@ -54,12 +54,18 @@ class Join_request(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 신청자id
     userid = Column(String(128), nullable=True)
-    # 신청 비밀번호(암호화 되있어야 한다.)
+    # 신청 비밀번호
     password = Column(String(128), nullable=True)
     # 신청자 이름
     name = Column(String(128), nullable=True)
     # 신청자 생년월일
     birth_date = Column(DateTime, nullable=True)
+    # 상태(ALLOWED/REJECTED/WAITING)
+    state = Column(String(10), nullable=True)
+    # 신청일시
+    request_date = Column(DateTime, nullable=True)
+    # 처리일시
+    proc_date = Column(DateTime, nullable=True)
 
 
 # 복지 포인트에 대한 모델
@@ -69,7 +75,7 @@ class Wellfare_point(db.Model):
 
     # 식별용 id
     id = Column(Integer, primary_key=True, autoincrement=True)
-    # 부여된 사용자의 id(외래키)
+    # 부여된 사용자의 식별용id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=False)
     # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
     user = db.relationship('User', backref=db.backref('wellfare_point_set'))
@@ -109,8 +115,12 @@ class Comment(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 작성자id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
-    # 외래키가 참조하는 모델로 'comment_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('comment_set'))
+    # 외래키가 참조하는 모델로 'comment_set_user'으로 역참조가 가능
+    user = db.relationship('User', backref=db.backref('comment_set_user'))
+    # 게시글id(외래키)
+    post_id = Column(Integer, ForeignKey('tb_post.id', ondelete='CASCADE'), nullable=True)
+    # 외래키가 참조하는 모델로 'comment_set_post'으로 역참조가 가능
+    post = db.relationship('Post', backref=db.backref('comment_set_post'))
     # 제목
     subject = Column(String(128), nullable=True)
     # 내용
@@ -128,7 +138,7 @@ class HR_change_request(db.Model):
 
     # 식별용id
     id = Column(Integer, primary_key=True, autoincrement=True)
-    # 신청자id(외래키)
+    # 신청자 식별용id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'hr_change_request_set'으로 역참조가 가능
     user = db.relationship('User', backref=db.backref('hr_change_request_set'))
@@ -138,6 +148,12 @@ class HR_change_request(db.Model):
     change_to = Column(DateTime, nullable=True)
     # 요청 타입(HIRE/RETIREMENT)
     type = Column(String(128), nullable=True)
+    # 상태(ALLOWED/REJECTED/WAITING)
+    state = Column(String(10), nullable=True)
+    # 신청일시
+    request_date = Column(DateTime, nullable=True)
+    # 처리일시
+    proc_date = Column(DateTime, nullable=True)
 
 
 # 휴가 신청에 대한 모델
@@ -159,6 +175,10 @@ class Vacation_request(db.Model):
     reason = Column(Text, nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
     state = Column(String(128), nullable=True)
+    # 신청일시
+    request_date = Column(DateTime, nullable=True)
+    # 처리일시
+    proc_date = Column(DateTime, nullable=True)
 
 
 # 건강 검진 확인 신청에 대한 모델
