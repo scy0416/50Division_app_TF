@@ -41,6 +41,10 @@ class User(db.Model):
     workplace_harassment_prevent = Column(CHAR(50), nullable=True, default='N')
     # 사진이 저장된 주소
     img_addr = Column(String(128), nullable=True)
+    # 주소
+    address = Column(String(128), nullable=True)
+    # 휴대폰 번호
+    phone_num = Column(String(128), nullable=True)
     # 비고
     bigo = Column(String(128), nullable=True)
     # 사용자구분(USER/ADMIN)
