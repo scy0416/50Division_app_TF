@@ -1,5 +1,5 @@
 from public_service_employee_application import db
-from sqlalchemy import Column, Integer, CHAR, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, String, DateTime, Text, ForeignKey, Date
 
 
 # 유저테이블에 대한 모델
@@ -22,11 +22,11 @@ class User(db.Model):
     # 직책
     position = Column(String(128), nullable=True)
     # 생년월일
-    birth_date = Column(DateTime(), nullable=True)
+    birth_date = Column(Date(), nullable=True)
     # 채용일
-    hire_date = Column(DateTime(), nullable=True)
+    hire_date = Column(Date(), nullable=True)
     # 퇴직일
-    retirement_date = Column(DateTime(), nullable=True)
+    retirement_date = Column(Date(), nullable=True)
     # 고용형태(PUBLIC_SERVICE/FIXED_TERM/SHORT_TERM)
     employment_type = Column(String(128), nullable=True)
     # 휴가
@@ -59,7 +59,7 @@ class Join_request(db.Model):
     # 신청자 이름
     name = Column(String(128), nullable=True)
     # 신청자 생년월일
-    birth_date = Column(DateTime, nullable=True)
+    birth_date = Column(Date, nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
     state = Column(String(10), nullable=True)
     # 신청일시
@@ -145,7 +145,7 @@ class HR_change_request(db.Model):
     # 사유
     reason = Column(String(128), nullable=True)
     # 바꾸기를 원하는 날짜
-    change_to = Column(DateTime, nullable=True)
+    change_to = Column(Date, nullable=True)
     # 요청 타입(HIRE/RETIREMENT)
     type = Column(String(128), nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
@@ -168,9 +168,9 @@ class Vacation_request(db.Model):
     # 외래키가 참조하는 모델로 'vacation_request_set'으로 역참조가 가능
     user = db.relationship('User', backref=db.backref('vacation_request_set'))
     # 휴가 시작일
-    from_date = Column(DateTime, nullable=True)
+    from_date = Column(Date, nullable=True)
     # 휴가 끝일
-    to_date = Column(DateTime, nullable=True)
+    to_date = Column(Date, nullable=True)
     # 사유
     reason = Column(Text, nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
