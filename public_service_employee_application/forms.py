@@ -79,3 +79,14 @@ class UserDetail(FlaskForm):
                                   validators=[DataRequired()])
     # 비고
     bigo = StringField('비고')
+
+# 유저를 더 자세하게 검색하고자 할 때 사용하는 폼
+class searchUser(FlaskForm):
+    # 이름
+    name = StringField('이름')
+    # 부대명
+    unit_name = StringField('부대명')
+    # 직책
+    position = StringField('직책')
+    # 생년월일
+    birth_date = DateField('생년월일')
