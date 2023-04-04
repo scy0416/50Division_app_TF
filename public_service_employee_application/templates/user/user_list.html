@@ -91,7 +91,7 @@
     <tr class="text-center">
       <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}</td>
       <td class="text-left">
-        <a href="#">{{ user.name }}</a>
+        <a href="{{ url_for('admin.detail', user_id=user.id) }}">{{ user.name }}</a>
       </td>
       <td>{{ user.unit_name }}</td>
       <td>{{ user.position }}</td>
@@ -145,7 +145,6 @@
     </li>
     {% endif %}
   </ul>
-  <a href="#" class="btn btn-primary">버튼</a>
 </div>
 {% endblock %}
 {% block script %}
