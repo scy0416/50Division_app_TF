@@ -39,6 +39,8 @@ class User(db.Model):
     disability_awareness_improvement = Column(CHAR(50), nullable=True, default='N')
     # 직장 내 괴롭힘 예방 교육
     workplace_harassment_prevent = Column(CHAR(50), nullable=True, default='N')
+    # 사진이 저장된 주소
+    img_addr = Column(String(128), nullable=True)
     # 비고
     bigo = Column(String(128), nullable=True)
     # 사용자구분(USER/ADMIN)

@@ -40,7 +40,7 @@ def login():
             return redirect(url_for('main.index'))
         # 로그인한 유저가 일반유저인 경우
         # 입력한 id가 유저의 id와 같고, 비밀번호가 그냥 같은 경우
-        # TODO 이 부분도 비밀번호를 암호화하여 가져올 수 있어야 한다.
+        # 암호화는 자바스크립트에서 하도록 바꾸기로 한다.
         elif form.password.data == user.password and user.role == 'USER':
             session.clear()
             session['user_id'] = user.id
@@ -52,26 +52,37 @@ def login():
 # 로그아웃을 처리하는 부분
 @bp.route('/logout')
 def logout():
+    # 로그인 되어있던 정보를 리셋시킨다.
     session.clear()
     return redirect(url_for('main.index'))
 
 # 요청이 처리되기 전에 실행되는 어노테이션으로 로그인 된 정보가 존재한다면 로그인 된 사용자의 정보를 g.user에 담고 없으면 None을 저장한다.
 @bp.before_app_request
 def load_logged_in_user():
+    # 세션에 로그인된 유저의 식별용id를 가져온다.
     user_id = session.get('user_id')
+    # 로그인 되어있지 않다면
     if user_id is None:
+        # g객체의 user에는 아무것도 담기지 않는다.
         g.user = None
+    # 로그인 되어있다면
     else:
+        # g객체의 user에 유저 정보를 담는다.
         g.user = User.query.get(user_id)
 
 # 관리자인지 확인하는 래퍼 메소드
 # 로그인 되어있지 않다면 로그인 화면으로 리디렉션 되고, 관리자가 아니라면 적절한 화면으로 리디렉션 된다.
+# TODO 무지성 리디렉션을 정리해야 한다.
 def login_required_admin(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        # g객체에 유저의 정보가 없다면
         if g.user is None:
+            # 메인화면으로 리디렉션 시킨다.
             return redirect(url_for('main.index'))
+        # 관리자가 아니라면
         elif g.user.role != 'ADMIN':
+            # 메인화면으로 리디렉션 시킨다.
             return redirect(url_for('main.index'))
         return view(**kwargs)
     return wrapped_view
@@ -81,9 +92,13 @@ def login_required_admin(view):
 def login_required_employee(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        # g객체에 유저의 정보가 없다면
         if g.user is None:
+            # 메인화면으로 리디렉션 시킨다.
             return redirect(url_for('main.index'))
+        # 공무직원이 아니라면
         elif g.user.role != 'USER':
+            # 메인화면으로 리디렉션 시킨다.
             return redirect(url_for('main.index'))
         return view(**kwargs)
     return wrapped_view

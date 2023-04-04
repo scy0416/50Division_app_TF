@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-3">
   <div class="d-flex justify-content-end">
-    <a href="#" class="btn btn-primary" style="margin: 1px;">사용자 추가</a>
+    <button onclick="showAddEmployee()" class="btn btn-primary" style="margin: 1px;">사용자 추가</button>
     <button onclick="showAddAdmin()" class="btn btn-primary" style="margin: 1px;">관리자 추가</button>
     <div>
       <dialog id="addAdmin">
@@ -10,19 +10,66 @@
         <form method="post" class="post-form" id="adminForm">
           {{ adminForm.csrf_token }}
           {% include "adminForm_errors.html" %}
+          <input type="hidden" name="form_id" value="addAdmin">
           <div class="form-group">
             <label for="id">id</label>
-            <input type="text" class="form-control" name="id" id="id" value="{{ adminForm.id.data or '' }}">
+            <input type="text" class="form-control" name="id" id="id" value="{% if g.addAdmin_error %}{{ adminForm.id.data or '' }}{% endif %}">
           </div>
           <div class="form-group">
             <label for="password1">비밀번호</label>
-            <input type="password" class="form-control" name="password1" id="password1" value="{{ adminForm.password1.data or '' }}">
+            <input type="password" class="form-control" name="password1" id="password1" value="{% if g.addAdmin_error %}{{ adminForm.password1.data or '' }}{% endif %}">
           </div>
           <div class="form-group">
             <label for="password2">비밀번호 확인</label>
-            <input type="password" class="form-control" name="password2" id="password2" value="{{ adminForm.password2.data or '' }}">
+            <input type="password" class="form-control" name="password2" id="password2" value="{% if g.addAdmin_error %}{{ adminForm.password2.data or '' }}{% endif %}">
           </div>
           <button type="button" onclick="closeAddAdmin()" class="btn btn-primary" id="closeAddAdmin_button">취소</button>
+          <button type="submit" class="btn btn-primary">생성하기</button>
+        </form>
+      </dialog>
+      <dialog id="addEmployee">
+        <h3>공무직원 추가</h3>
+        <form method="post" class="post-form" id="employeeForm">
+          {{ employeeForm.csrf_token }}
+          {% include "employeeForm_errors.html" %}
+          <input type="hidden" name="form_id" value="addEmployee">
+          <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" class="form-control" name="name" id="name" value="{% if g.addEmployee_error %}{{ employeeForm.name.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="unit_name">부대명</label>
+            <input type="text" class="form-control" name="unit_name" id="unit_name" value="{% if g.addEmployee_error %}{{ employeeForm.unit_name.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="position">직책</label>
+            <input type="text" class="form-control" name="position" id="position" value="{% if g.addEmployee_error %}{{ employeeForm.position.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="birth_date">생년월일</label>
+            <input type="date" name="birth_date" id="birth_date" value="{% if g.addEmployee_error %}{{ employeeForm.birth_date.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="hire_date">채용일</label>
+            <input type="date" name="hire_date" id="hire_date" value="{% if g.addEmployee_error %}{{ employeeForm.hire_date.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="retirement_date">퇴직일</label>
+            <input type="date" name="retirement_date" id="retirement_date" value="{% if g.addEmployee_error %}{{ employeeForm.retirement_date.data or '' }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="employment_type">고용형태</label>
+            <select name="employment_type" id="employment_type">
+              {% for value, label in employeeForm.employment_type.choices %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bigo">비고</label>
+            <input type="text" class="form-control" name="bigo" id="bigo" value="{% if g.addEmployee_error %}{{ employeeForm.bigo.data or '' }}{% endif %}">
+          </div>
+          <button type="button" onclick="closeAddEmployee()" class="btn btn-primary" id="closeAddEmployee_button">취소</button>
           <button type="submit" class="btn btn-primary">생성하기</button>
         </form>
       </dialog>
@@ -112,8 +159,20 @@
     var dialog = document.getElementById("addAdmin");
     dialog.close();
   }
+  function showAddEmployee(){
+    var dialog = document.getElementById("addEmployee");
+    dialog.showModal();
+  }
+  function closeAddEmployee(){
+    event.preventDefault();
+    var dialog = document.getElementById("addEmployee");
+    dialog.close();
+  }
   {% if g.addAdmin_error %}
   showAddAdmin()
+  {% endif %}
+  {% if g.addEmployee_error %}
+  showAddEmployee()
   {% endif %}
 </script>
 {% endblock %}
