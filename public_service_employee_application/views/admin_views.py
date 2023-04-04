@@ -4,7 +4,7 @@ from werkzeug.utils import redirect
 from public_service_employee_application import db
 from public_service_employee_application.views.auth_views import login_required_admin
 from public_service_employee_application.models import User
-from public_service_employee_application.forms import AddAdmin, AddEmployee
+from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail
 
 # 블루프린트 객체 생성
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -95,3 +95,37 @@ def pr_information():
     user_list = user_list.paginate(page=page, per_page=10)
 
     return render_template('user/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm)
+
+# 유저의 상세한 정보를 볼 때 사용하는 라우트
+@bp.route('/pr/detail/<int:user_id>', methods=('GET', 'DELETE', 'POST'))
+@login_required_admin
+def detail(user_id):
+    form = UserDetail()
+    user = User.query.get_or_404(user_id)
+
+    if request.method == "DELETE" and g.user.role != 'ADMIN':
+        flash('삭제 권한이 없습니다.')
+        return redirect(url_for('admin.detail', user_id=user.id))
+    elif request.method == "DELETE" and g.user.role == 'ADMIN':
+        user = User.query.get_or_404(user_id)
+        db.session.delete(user)
+        db.session.commit()
+        return redirect(url_for('admin.pr_information'))
+
+    if request.method == 'POST':
+        g.modifyError = True
+    if request.method == 'POST' and form.validate_on_submit():
+        user.name = form.name.data
+        user.birth_date = form.birth_date.data
+        user.phone_num = form.phone_num.data
+        user.address = form.address.data
+        user.unit_name = form.unit_name.data
+        user.position = form.position.data
+        user.hire_date = form.hire_date.data
+        user.retirement_date = form.retirement_date.data
+        user.employment_type = form.employment_type.data
+        user.bigo = form.bigo.data
+        db.session.commit()
+        g.modifyError = False
+
+    return render_template('user/user_detail_for_admin.html', user=user, form=form)
