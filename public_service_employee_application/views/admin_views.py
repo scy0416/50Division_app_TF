@@ -154,4 +154,28 @@ def detail(user_id):
 @bp.route('/edu/', methods=('GET', ))
 @login_required_admin
 def edu():
-    pass
+    # 상세검색을 위한 폼
+    searchForm = searchUser()
+
+    # 검색 및 페이징 처리
+    # 입력 파라미터
+    page = request.args.get('page', type=int, default=1)  # 페이지
+    name = request.args.get('Name', type=str, default=None)  # 이름
+    unit_name = request.args.get('UnitName', type=str, default=None)  # 부대명
+    position = request.args.get('Position', type=str, default=None)  # 직책
+    birth_date = request.args.get('BirthDate', type=str, default=None)  # 생년월일
+
+    # 검색 처리 과정
+    user_list = User.query.filter_by(role='USER')
+    if name != None and name != '':  # 값이 존재하는 경우에 실행하는 조건
+        user_list = user_list.filter_by(name=name)
+    if unit_name != None and unit_name != '':
+        user_list = user_list.filter_by(unit_name=unit_name)
+    if position != None and position != '':
+        user_list = user_list.filter_by(position=position)
+    if birth_date != None and birth_date != '':
+        user_list = user_list.filter_by(birth_date=birth_date)
+    # 페이징 처리
+    user_list = user_list.paginate(page=page, per_page=10)
+
+    return render_template('user/edu_list.html', form=searchForm)
