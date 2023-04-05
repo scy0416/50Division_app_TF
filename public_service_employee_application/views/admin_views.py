@@ -16,7 +16,7 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 @login_required_admin
 def index():
     #return render_template('base.html')
-    return render_template('user/admin_main.html')
+    return render_template('admin/admin_main.html')
 
 # 인사정보 관리창
 @bp.route('/pr/', methods=('GET', 'POST'))
@@ -118,7 +118,7 @@ def pr_information():
     # 페이징 처리
     user_list = user_list.paginate(page=page, per_page=10)
 
-    return render_template('user/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm, searchForm=searchForm)
+    return render_template('admin/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm, searchForm=searchForm)
 
 # 유저의 상세한 정보를 볼 때 사용하는 라우트
 @bp.route('/pr/detail/<int:user_id>', methods=('GET', 'DELETE', 'POST'))
@@ -152,7 +152,7 @@ def detail(user_id):
         db.session.commit()
         g.modifyError = False
 
-    return render_template('user/user_detail_for_admin.html', user=user, form=form)
+    return render_template('user/user_detail.html', user=user, form=form)
 
 # 의무 교육 관리창
 @bp.route('/edu/', methods=('GET', 'PATCH'))
@@ -215,7 +215,7 @@ def edu():
     # 페이징 처리
     user_list = user_list.paginate(page=page, per_page=10)
 
-    return render_template('user/edu_list.html', user_list=user_list, form=searchForm)
+    return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
 
 # 공지사항 관리창
 @bp.route('/notice/', methods=('GET', ))
