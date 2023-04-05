@@ -27,7 +27,7 @@ class AddAdmin(FlaskForm):
 # 공무직원 추가를 위한 입력 폼 클래스
 class AddEmployee(FlaskForm):
     # 이름
-    name = StringField('이름', validators=[
+    user_name = StringField('이름', validators=[
         DataRequired(), Length(min=3, max=50)
     ])
     # 부대명
@@ -35,7 +35,7 @@ class AddEmployee(FlaskForm):
         DataRequired(), Length(min=3, max=50)
     ])
     # 직책
-    position = StringField('직책', validators=[
+    user_position = StringField('직책', validators=[
         DataRequired(), Length(min=3, max=50)
     ])
     # 생년월일

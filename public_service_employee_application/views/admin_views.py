@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, url_for, flash, g
 from werkzeug.utils import redirect
+from datetime import date
 
 from public_service_employee_application import db
 from public_service_employee_application.views.auth_views import login_required_admin
 from public_service_employee_application.models import User
-from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail
+from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser
 
 # 블루프린트 객체 생성
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -21,10 +22,13 @@ def index():
 @bp.route('/pr/', methods=('GET', 'POST'))
 @login_required_admin
 def pr_information():
+
     # 어드민 추가할 때 사용할 폼 추가
     adminForm = AddAdmin()
     # 공무직원 추가할 때 사용할 폼 추가
     employeeForm = AddEmployee()
+    # 검색할 때 사용할 폼 추가
+    searchForm = searchUser()
 
     # post메소드로 요청이 왔다면
     if request.method == 'POST':
@@ -65,9 +69,9 @@ def pr_information():
     # sce를 사용해서 한쪽 폼이 작동할 때 동작하지 않게 처리함
     if request.method == 'POST' and request.form.get('form_id') == 'addEmployee' and employeeForm.validate_on_submit():
         user = User(
-            name=employeeForm.name.data,
+            name=employeeForm.user_name.data,
             unit_name=employeeForm.unit_name.data,
-            position=employeeForm.position.data,
+            position=employeeForm.user_position.data,
             birth_date=employeeForm.birth_date.data,
             hire_date=employeeForm.hire_date.data,
             retirement_date=employeeForm.retirement_date.data,
@@ -89,12 +93,28 @@ def pr_information():
         # 다시 인사정보 화면으로 리디렉션
         redirect(url_for('admin.pr_information'))
 
-    # 페이진 처리
+    # 검색 및 페이징 처리
+    # 입력 파라미터
     page = request.args.get('page', type=int, default=1) # 페이지
+    name = request.args.get('Name', type=str, default=None) # 이름
+    unit_name = request.args.get('UnitName', type=str, default=None) # 부대명
+    position = request.args.get('Position', type=str, default=None) # 직책
+    birth_date = request.args.get('BirthDate', type=str, default=None) # 생년월일
+
+    # 검색 처리 과정
     user_list = User.query.filter_by(role='USER')
+    if name != None and name != '': # 값이 존재하는 경우에 실행하는 조건
+        user_list = user_list.filter_by(name=name)
+    if unit_name != None and unit_name != '':
+        user_list = user_list.filter_by(unit_name=unit_name)
+    if position != None and position != '':
+        user_list = user_list.filter_by(position=position)
+    if birth_date != None and birth_date != '':
+        user_list = user_list.filter_by(birth_date=birth_date)
+    # 페이징 처리
     user_list = user_list.paginate(page=page, per_page=10)
 
-    return render_template('user/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm)
+    return render_template('user/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm, searchForm=searchForm)
 
 # 유저의 상세한 정보를 볼 때 사용하는 라우트
 @bp.route('/pr/detail/<int:user_id>', methods=('GET', 'DELETE', 'POST'))

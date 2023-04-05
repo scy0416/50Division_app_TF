@@ -2,6 +2,7 @@
 {% block content %}
 <div class="container my-3">
   <div class="d-flex justify-content-end">
+    <button onclick="showSearchEmployee()" class="btn btn-primary" style="margin: 1px;">상세 검색</button>
     <button onclick="showAddEmployee()" class="btn btn-primary" style="margin: 1px;">사용자 추가</button>
     <button onclick="showAddAdmin()" class="btn btn-primary" style="margin: 1px;">관리자 추가</button>
     <div>
@@ -27,6 +28,8 @@
           <button type="submit" class="btn btn-primary">생성하기</button>
         </form>
       </dialog>
+    </div>
+    <div>
       <dialog id="addEmployee">
         <h3>공무직원 추가</h3>
         <form method="post" class="post-form" id="employeeForm">
@@ -34,16 +37,16 @@
           {% include "employeeForm_errors.html" %}
           <input type="hidden" name="form_id" value="addEmployee">
           <div class="form-group">
-            <label for="name">이름</label>
-            <input type="text" class="form-control" name="name" id="name" value="{% if g.addEmployee_error %}{{ employeeForm.name.data or '' }}{% endif %}">
+            <label for="user_name">이름</label>
+            <input type="text" class="form-control" name="user_name" id="user_name" value="{% if g.addEmployee_error %}{{ employeeForm.user_name.data or '' }}{% endif %}">
           </div>
           <div class="form-group">
             <label for="unit_name">부대명</label>
             <input type="text" class="form-control" name="unit_name" id="unit_name" value="{% if g.addEmployee_error %}{{ employeeForm.unit_name.data or '' }}{% endif %}">
           </div>
           <div class="form-group">
-            <label for="position">직책</label>
-            <input type="text" class="form-control" name="position" id="position" value="{% if g.addEmployee_error %}{{ employeeForm.position.data or '' }}{% endif %}">
+            <label for="user_position">직책</label>
+            <input type="text" class="form-control" name="user_position" id="user_position" value="{% if g.addEmployee_error %}{{ employeeForm.user_position.data or '' }}{% endif %}">
           </div>
           <div class="form-group">
             <label for="birth_date">생년월일</label>
@@ -74,6 +77,32 @@
         </form>
       </dialog>
     </div>
+    <div>
+      <dialog id="searchEmployee">
+        <h3>상세 검색</h3>
+        <form method="get" class="get-form" id="searchForm">
+          <div class="form-group">
+            <label for="Name">이름</label>
+            <input type="text" class="form-control" name="Name" id="Name" value="">
+          </div>
+          <div class="form-group">
+            <label for="UnitName">부대명</label>
+            <input type="text" class="form-control" name="UnitName" id="UnitName" value="">
+          </div>
+          <div class="form-group">
+            <label for="Position">직책</label>
+            <input type="text" class="form-control" name="Position" id="Position" value="">
+          </div>
+          <div class="form-group">
+            <label for="BirthDate">생년월일</label>
+            <input type="date" class="form-control" name="BirthDate" id="BirthDate" value="">
+          </div>
+          <input type="hidden" id="page" name="page" value="{{ page }}">
+          <button type="button" onclick="closeSearchEmployee()" class="btn btn-primary">취소</button>
+          <button type="button" class="btn btn-primary" id="btn_search">검색</button>
+        </form>
+      </dialog>
+    </div>
   </div>
   <table class="table">
     <thead>
@@ -86,7 +115,7 @@
     </tr>
     </thead>
     <tbody>
-    {% if user_list %}
+    {% if user_list.items %}
     {% for user in user_list.items %}
     <tr class="text-center">
       <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}</td>
@@ -100,7 +129,7 @@
     {% endfor %}
     {% else %}
     <tr>
-      <td colspan="5">질문이 없습니다.</td>
+      <td colspan="5">사용자가 없습니다.</td>
     </tr>
     {% endif %}
     </tbody>
@@ -110,7 +139,7 @@
     <!-- 이전 페이지 -->
     {% if user_list.has_prev %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ user_list.prev_num }}">이전</a>
+      <a class="page-link" data-page="{{ user_list.prev_num }}" href="#">이전</a>
     </li>
     {% else %}
     <li class="page-item disabled">
@@ -121,7 +150,7 @@
     {% if page_num %}
     {% if page_num != user_list.page %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+      <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
     </li>
     {% else %}
     <li class="page-item active" aria-current="page">
@@ -137,7 +166,7 @@
     <!-- 다음 페이지 -->
     {% if user_list.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ user_list.next_num }}">다음</a>
+      <a class="page-link" data-page="{{ user_list.next_num }}" href="#">다음</a>
     </li>
     {% else %}
     <li class="page-item disabled">
@@ -167,11 +196,30 @@
     var dialog = document.getElementById("addEmployee");
     dialog.close();
   }
+  function showSearchEmployee(){
+    var dialog = document.getElementById("searchEmployee");
+    dialog.showModal();
+  }
+  function closeSearchEmployee(){
+    event.preventDefault();
+    var dialog = document.getElementById("searchEmployee");
+    dialog.close();
+  }
   {% if g.addAdmin_error %}
   showAddAdmin()
   {% endif %}
   {% if g.addEmployee_error %}
   showAddEmployee()
   {% endif %}
+  $(document).ready(function(){
+    $(".page-link").on('click', function(){
+      $("#page").val($(this).data("page"));
+      $("#searchForm").submit();
+    });
+    $("#btn_search").on('click', function(){
+      $("#page").val(1);
+      $("#searchForm").submit();
+    });
+  });
 </script>
 {% endblock %}
