@@ -83,19 +83,19 @@
         <form method="get" class="get-form" id="searchForm">
           <div class="form-group">
             <label for="Name">이름</label>
-            <input type="text" class="form-control" name="Name" id="Name" value="">
+            <input type="text" class="form-control" name="Name" id="Name" value="{{ searchForm.name.data or '' }}">
           </div>
           <div class="form-group">
             <label for="UnitName">부대명</label>
-            <input type="text" class="form-control" name="UnitName" id="UnitName" value="">
+            <input type="text" class="form-control" name="UnitName" id="UnitName" value="{{ searchForm.unit_name.data or '' }}">
           </div>
           <div class="form-group">
             <label for="Position">직책</label>
-            <input type="text" class="form-control" name="Position" id="Position" value="">
+            <input type="text" class="form-control" name="Position" id="Position" value="{{ searchForm.position.data or '' }}">
           </div>
           <div class="form-group">
             <label for="BirthDate">생년월일</label>
-            <input type="date" class="form-control" name="BirthDate" id="BirthDate" value="">
+            <input type="date" class="form-control" name="BirthDate" id="BirthDate" value="{{ searchForm.birth_date.data or '' }}">
           </div>
           <input type="hidden" id="page" name="page" value="{{ page }}">
           <button type="button" onclick="closeSearchEmployee()" class="btn btn-primary">취소</button>

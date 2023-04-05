@@ -28,7 +28,6 @@ def login():
             error = "존재하지 않는 사용자입니다."
         # 로그인한 유저가 관리자인 경우
         # 이 부분 역시 정적으로 확인할 것이 아니라 데이터베이스로부터 값을 가져와서 확인해야 한다.
-        # TODO 이 부분을 데이터베이스에서 가져온 값으로 처리하도록 만들기(관리자 계정을 만든 이후)
         elif form.password.data == user.password and user.role == 'ADMIN':
             # 세션 초기화
             session.clear()
