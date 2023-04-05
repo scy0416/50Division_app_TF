@@ -149,3 +149,9 @@ def detail(user_id):
         g.modifyError = False
 
     return render_template('user/user_detail_for_admin.html', user=user, form=form)
+
+# 의무 교육 관리창
+@bp.route('/edu/', methods=('GET', ))
+@login_required_admin
+def edu():
+    pass
