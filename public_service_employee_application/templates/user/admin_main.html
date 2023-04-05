@@ -3,7 +3,7 @@
 <div class="container">
   <div class="row row-cols-2 row-cols-md-7 g-3">
     <div class="col-md-4">
-      <button class="btn btn-primary w-100">공지사항 관리</button>
+      <a href="{{ url_for('admin.notice') }}" class="btn btn-primary w-100">공지사항 관리</a>
     </div>
     <div class="col-md-4">
       <a href="{{ url_for('admin.pr_information') }}" class="btn btn-primary w-100">인사정보 관리</a>

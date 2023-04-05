@@ -216,3 +216,9 @@ def edu():
     user_list = user_list.paginate(page=page, per_page=10)
 
     return render_template('user/edu_list.html', user_list=user_list, form=searchForm)
+
+# 공지사항 관리창
+@bp.route('/notice/', methods=('GET', ))
+@login_required_admin
+def notice():
+    pass
