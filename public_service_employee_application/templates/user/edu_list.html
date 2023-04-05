@@ -27,15 +27,30 @@
         <tr class="text-center">
             <th rowspan="3" style="border-right-width:thin;" class="align-middle">교육명</th>
             <td colspan="2" class="text-start">성희롱 예방 교육</td>
-            <td>{{ user.sexual_harassment_prevent }}</td>
+            <td>
+                <select data-id="{{ user.id }}" data-type="sexual_harassment_prevent" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
+                    <option value="N" {% if user.sexual_harassment_prevent=='N' %}selected{% endif %}>N</option>
+                    <option value="Y" {% if user.sexual_harassment_prevent=='Y' %}selected{% endif %}>Y</option>
+                </select>
+            </td>
         </tr>
         <tr class="text-center">
             <td colspan="2" class="text-start">장애인식 개선 교육</td>
-            <td>{{ user.disability_awareness_improvement }}</td>
+            <td>
+                <select data-id="{{ user.id }}" data-type="disability_awareness_improvement" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
+                    <option value="N" {% if user.disability_awareness_improvement=='N' %}selected{% endif %}>N</option>
+                    <option value="Y" {% if user.disability_awareness_improvement=='Y' %}selected{% endif %}>Y</option>
+                </select>
+            </td>
         </tr>
         <tr class="text-center">
             <td colspan="2" class="text-start">직장 내 괴롭힘 예방 교육</td>
-            <td>{{ user.workplace_harassment_prevent }}</td>
+            <td>
+                <select data-id="{{ user.id }}" data-type="workplace_harassment_prevent" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
+                    <option value="N" {% if user.workplace_harassment_prevent=='N' %}selected{% endif %}>N</option>
+                    <option value="Y" {% if user.workplace_harassment_prevent=='Y' %}selected{% endif %}>Y</option>
+                </select>
+            </td>
         </tr>
         {% endfor %}
         {% else %}
@@ -54,7 +69,7 @@
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="tre" href="#">이전</a>
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
         </li>
         {% endif %}
         {% for page_num in user_list.iter_pages() %}
@@ -133,5 +148,31 @@
             $("#searchForm").submit();
         });
     });
+    async function getPatch(url, element){
+        try{
+            const data = {
+                id: element.dataset.id,
+                type: element.dataset.type,
+                value: element.value
+            };
+            const response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if(!response.ok){
+                throw new Error('Error: ${response.statusText}');
+            }
+
+            const responseData = await response.json();
+            console.log('Data sent successfully:', responseData);
+        } catch(error){
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.')
+        }
+    }
 </script>
 {% endblock %}

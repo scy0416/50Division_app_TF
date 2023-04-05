@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, url_for, flash, g
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify
 from werkzeug.utils import redirect
 from datetime import date
 
@@ -160,6 +160,35 @@ def detail(user_id):
 def edu():
     # 상세검색을 위한 폼
     searchForm = searchUser()
+
+    # patch메소드로 호출되었을 경우
+    if request.method == 'PATCH':
+        # 전달된 데이터를 추출하는 과정
+        data = request.get_json()
+        # 유저의 식별용 id추출
+        user_id = data.get('id')
+        # 요청의 타입을 추출
+        request_type = data.get('type')
+        # 바뀔 값을 추출
+        value = data.get('value')
+        
+        # 값을 바꿀 유저를 추출
+        user = User.query.get_or_404(user_id)
+        # 성희롱 예방 교육 인 경우
+        if request_type == 'sexual_harassment_prevent':
+            user.sexual_harassment_prevent = value
+        # 장애 인식 개선 교육인 경우
+        elif request_type == 'disability_awareness_improvement':
+            user.disability_awareness_improvement = value
+        # 직장 내 괴롭힘 예방 교육인 경우
+        elif request_type == 'workplace_harassment_prevent':
+            user.workplace_harassment_prevent = value
+        
+        # 바꾼 결과를 저장
+        db.session.commit()
+        
+        # 결과를 반환
+        return jsonify({'status':'success'})
 
     # 검색 및 페이징 처리
     # 입력 파라미터
