@@ -127,8 +127,6 @@ class Comment(db.Model):
     post_id = Column(Integer, ForeignKey('tb_post.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'comment_set_post'으로 역참조가 가능
     post = db.relationship('Post', backref=db.backref('comment_set_post'))
-    # 제목
-    subject = Column(String(128), nullable=True)
     # 내용
     content = Column(String(128), nullable=True)
     # 생성 시간
