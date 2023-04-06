@@ -5,6 +5,8 @@
     <div class="item d-flex justify-content-end">
       <button onclick="editMode()" class="btn btn-primary" id="editBtn" {% if post.user_id!=session.get('user_id') %}disabled{% endif %}>글 수정</button>
       <button onclick="saveMode()" data-url="'{{ url_for('admin.notice_detail', post_id=post.id) }}'" class="btn btn-primary" id="saveBtn" style="display:none;">글 저장</button>
+      <button onclick="deleteCheck('{{ url_for('admin.notice_detail', post_id=post.id) }}')" clas="btn btn-primary" id="delBtn"
+              {% if post.user_id!=session.get('user_id') %}disabled{% endif %}>삭제</button>
     </div>
     <div class="">제목</div>
     <input type="text" id="subject" readonly value="{{ post.subject }}">
@@ -50,6 +52,34 @@
       console.error('Error:', error);
       alert('오류가 발생했습니다.');
     }
+  }
+  function deleteCheck(url){
+    if(confirm("정말로 삭제하시겠습니까?")){
+      delNotice(url);
+    }
+  }
+  async function delNotice(url){
+    fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if(!response.ok){
+        throw new Error('네트워크 응답이 올바르지 않습니다.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('성공적으로 삭제되었습니다.:', data);
+    })
+    .then(()=>{
+      location.href="{{ url_for('admin.notice') }}";
+    })
+    .catch(error => {
+      console.error('삭제 중 에러가 발생했습니다.:', error);
+    })
   }
 </script>
 {% endblock %}

@@ -256,9 +256,20 @@ def notice():
     return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
 
 # 공지사항 상세창
-@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH'))
+@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH', 'DELETE'))
 @login_required_admin
 def notice_detail(post_id):
+    # delete로 요청이 전달된 경우
+    if request.method == 'DELETE':
+        notice = Post.query.get_or_404(post_id)
+        if notice.user_id != session.get('user_id'):
+            return jsonify({"error": f"An error occurred while deleting the resource"}), 500
+        else:
+            db.session.delete(notice)
+            db.session.commit()
+            return jsonify({"result": f"Resource has been deleted."}), 200
+
+
     # patch로 요청이 전달된 경우
     if request.method == 'PATCH':
         # 데이터 추출
