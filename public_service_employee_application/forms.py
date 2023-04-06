@@ -94,6 +94,6 @@ class searchUser(FlaskForm):
 # 글 작성을 위한 폼
 class writeForm(FlaskForm):
     # 제목
-    subject = StringField('제목')
+    subject = StringField('제목', validators=[DataRequired()])
     # 내용
-    content = StringField('내용')
+    content = StringField('내용', validators=[DataRequired(), Length(1, 300)])
