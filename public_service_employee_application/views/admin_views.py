@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, url_for, flash, g, jsonify
 from werkzeug.utils import redirect
 from datetime import date
+from sqlalchemy import and_
 
 from public_service_employee_application import db
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User
+from public_service_employee_application.models import User, Post, User
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser
 
 # 블루프린트 객체 생성
@@ -221,4 +222,14 @@ def edu():
 @bp.route('/notice/', methods=('GET', ))
 @login_required_admin
 def notice():
-    pass
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 검색 처리 과정
+    # 실질적인 검색
+    notice_list = db.session.query(Post).join(User).filter(and_(User.role == 'ADMIN', Post.subject.contains(q)))
+    notice_list = notice_list.paginate(page=page, per_page=10)
+
+    # 템플릿 출력
+    return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page)
