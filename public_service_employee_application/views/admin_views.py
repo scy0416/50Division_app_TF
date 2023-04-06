@@ -256,8 +256,29 @@ def notice():
     return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
 
 # 공지사항 상세창
-@bp.route('/notice/<int:post_id>', methods=('GET',))
+@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH'))
 @login_required_admin
-def post_detail():
+def notice_detail(post_id):
+    # patch로 요청이 전달된 경우
+    if request.method == 'PATCH':
+        # 데이터 추출
+        data = request.get_json()
+        # 바꿀 제목 추출
+        subject = data.get('subject')
+        # 바꿀 내용 추출
+        content = data.get('content')
+        # 바꿔질 글 추출
+        post = Post.query.get_or_404(post_id)
+        # 값 편집
+        post.subject = subject
+        post.content = content
+        # 데이터베이스에 적용
+        db.session.commit()
+
+        # 결과를 반환
+        return jsonify({'status': 'success'})
+
+    # 확인하려는 공지사항 확인
+    post = Post.query.get_or_404(post_id)
     # 템플릿 출력
-    return render_template('admin/notice_detail.html')
+    return render_template('admin/notice_detail.html', post=post)

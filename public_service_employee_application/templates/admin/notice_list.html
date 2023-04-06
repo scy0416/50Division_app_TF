@@ -24,7 +24,7 @@
     <tr class="text-center">
       <td>{{ notice_list.total - ((notice_list.page-1) * notice_list.per_page) - loop.index0 }}</td>
       <td class="text-left">
-        <a href="#">{{ notice.subject }}</a>
+        <a href="{{ url_for('admin.notice_detail', post_id=notice.id) }}">{{ notice.subject }}</a>
         {% if notice.comment_set|length > 0 %}
         <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
         {% endif %}
