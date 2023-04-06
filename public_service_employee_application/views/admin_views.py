@@ -1,12 +1,13 @@
-from flask import Blueprint, render_template, request, url_for, flash, g, jsonify
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session
 from werkzeug.utils import redirect
 from datetime import date
 from sqlalchemy import and_
+from datetime import datetime
 
 from public_service_employee_application import db
 from public_service_employee_application.views.auth_views import login_required_admin
 from public_service_employee_application.models import User, Post, User
-from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser
+from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm
 
 # 블루프린트 객체 생성
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -61,7 +62,7 @@ def pr_information():
             g.addAdmin_error = False
             g.addEmployee_error = False
             # 다시 인사정보 화면으로 리디렉션
-            redirect(url_for('admin.pr_information'))
+            return redirect(url_for('admin.pr_information'))
         else:
             # 유저가 이미 존재하는 경우
             flash('이미 존재하는 관리자입니다.')
@@ -92,7 +93,7 @@ def pr_information():
         g.addEmployee_error = False
         g.addAdmin_error = False
         # 다시 인사정보 화면으로 리디렉션
-        redirect(url_for('admin.pr_information'))
+        return redirect(url_for('admin.pr_information'))
 
     # 검색 및 페이징 처리
     # 입력 파라미터
@@ -219,17 +220,44 @@ def edu():
     return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
 
 # 공지사항 관리창
-@bp.route('/notice/', methods=('GET', ))
+@bp.route('/notice/', methods=('GET', 'POST'))
 @login_required_admin
 def notice():
+    # 입력 폼 생성
+    form = writeForm()
+
+    if request.method == 'POST':
+        g.form_error = True
+    # 공지사항 등록
+    if request.method == 'POST' and form.validate_on_submit():
+        notice = Post(
+            user_id=session.get('user_id'),
+            subject=form.subject.data,
+            content=form.content.data,
+            create_date=datetime.now()
+        )
+        db.session.add(notice)
+        db.session.commit()
+        g.form_error = False
+        form.subject.data = None
+        form.content.data = None
+        return redirect(url_for('admin.notice'))
+
     # 검색 및 페이징 처리
     q = request.args.get('q', type=str, default='')
     page = request.args.get('page', type=int, default=1)
 
     # 검색 처리 과정
     # 실질적인 검색
-    notice_list = db.session.query(Post).join(User).filter(and_(User.role == 'ADMIN', Post.subject.contains(q)))
+    notice_list = db.session.query(Post).join(User).filter(and_(User.role == 'ADMIN', Post.subject.contains(q))).order_by(Post.create_date.desc())
     notice_list = notice_list.paginate(page=page, per_page=10)
 
     # 템플릿 출력
-    return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page)
+    return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
+
+# 공지사항 상세창
+@bp.route('/notice/<int:post_id>', methods=('GET',))
+@login_required_admin
+def post_detail():
+    # 템플릿 출력
+    return render_template('admin/notice_detail.html')
