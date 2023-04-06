@@ -90,3 +90,10 @@ class searchUser(FlaskForm):
     position = StringField('직책')
     # 생년월일
     birth_date = DateField('생년월일')
+
+# 글 작성을 위한 폼
+class writeForm(FlaskForm):
+    # 제목
+    subject = StringField('제목')
+    # 내용
+    content = StringField('내용')
