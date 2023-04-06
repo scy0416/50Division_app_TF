@@ -29,7 +29,7 @@ def create_app():
 
     # 필터
     from filter import formal_datetime
-    app.jinja_env.filters['datetime'] = formal_datetime()
+    app.jinja_env.filters['datetime'] = formal_datetime
 
     return app
 
