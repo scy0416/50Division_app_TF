@@ -13,9 +13,10 @@
   <table class="table">
     <thead>
     <tr class="text-center thead-dark">
-      <th style="width:10%;">번호</th>
-      <th style="width:50%;">제목</th>
-      <th style="width:40%;">작성일시</th>
+      <th style="width:15%;">번호</th>
+      <th style="width:35%;">제목</th>
+      <th style="width:25%;">작성자</th>
+      <th style="width:25%;">작성일시</th>
     </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
         <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
         {% endif %}
       </td>
+      <td>{{ notice.user.userid }}</td>
       <td>{{ notice.create_date|datetime }}</td>
     </tr>
     {% endfor %}
