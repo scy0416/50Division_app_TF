@@ -90,3 +90,8 @@ class searchUser(FlaskForm):
     position = StringField('직책')
     # 생년월일
     birth_date = DateField('생년월일')
+
+# 단일 검색을 위한 폼
+class searchSubject(FlaskForm):
+    # 검색어
+    q = StringField('검색어')
