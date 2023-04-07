@@ -1,13 +1,13 @@
-from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response
 from werkzeug.utils import redirect
 from datetime import date
 from sqlalchemy import and_
 from datetime import datetime
 
-from public_service_employee_application import db
+from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User
-from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm
+from public_service_employee_application.models import User, Post, User, Comment
+from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 # 블루프린트 객체 생성
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -120,7 +120,12 @@ def pr_information():
     # 페이징 처리
     user_list = user_list.paginate(page=page, per_page=10)
 
-    return render_template('admin/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm, searchForm=searchForm)
+    response = make_response(render_template('admin/user_list.html', user_list=user_list, adminForm=adminForm, employeeForm=employeeForm, searchForm=searchForm))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+
+    return response
 
 # 유저의 상세한 정보를 볼 때 사용하는 라우트
 @bp.route('/pr/detail/<int:user_id>', methods=('GET', 'DELETE', 'POST'))
@@ -131,12 +136,13 @@ def detail(user_id):
 
     if request.method == "DELETE" and g.user.role != 'ADMIN':
         flash('삭제 권한이 없습니다.')
-        return redirect(url_for('admin.detail', user_id=user.id))
+        return redirect(url_for('admin.pr_information', user_id=user.id))
     elif request.method == "DELETE" and g.user.role == 'ADMIN':
-        user = User.query.get_or_404(user_id)
+        #user = User.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        return redirect(url_for('admin.pr_information'))
+        #return redirect(url_for('admin.detail', user_id=user.id))
+        return jsonify({'status': 'success'})
 
     if request.method == 'POST':
         g.modifyError = True
@@ -154,7 +160,7 @@ def detail(user_id):
         db.session.commit()
         g.modifyError = False
 
-    return render_template('user/user_detail.html', user=user, form=form)
+    return render_template('admin/user_detail_for_admin.html', user=user, form=form)
 
 # 의무 교육 관리창
 @bp.route('/edu/', methods=('GET', 'PATCH'))
@@ -256,9 +262,13 @@ def notice():
     return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
 
 # 공지사항 상세창
-@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH', 'DELETE'))
+@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH', 'DELETE', 'POST'))
 @login_required_admin
 def notice_detail(post_id):
+    # 폼 생성
+    form = writeForm()
+    cForm = contentForm()
+
     # delete로 요청이 전달된 경우
     if request.method == 'DELETE':
         notice = Post.query.get_or_404(post_id)
@@ -289,7 +299,36 @@ def notice_detail(post_id):
         # 결과를 반환
         return jsonify({'status': 'success'})
 
+    # post로 요청이 온 경우
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            comment = Comment(
+                user_id=session.get('user_id'),
+                post_id=post_id,
+                content=form.content.data,
+                create_date=datetime.now()
+            )
+            db.session.add(comment)
+            db.session.commit()
+            return redirect(url_for('admin.notice_detail', post_id=post_id))
+
     # 확인하려는 공지사항 확인
     post = Post.query.get_or_404(post_id)
     # 템플릿 출력
-    return render_template('admin/notice_detail.html', post=post)
+    return render_template('admin/notice_detail.html', post=post, form=form, cForm=cForm)
+
+# 댓글에 대한 엔드포인트(편집, 삭제)
+@bp.route('/comment/<int:comment_id>', methods=('POST', ))
+@login_required_admin
+def comment(comment_id):
+    ccomment = Comment.query.get_or_404(comment_id)
+    if request.method == 'POST' and request.form.get('form_id') == 'modify':
+        ccomment.content = request.form.get('content')
+        ccomment.modify_date = datetime.now()
+        db.session.commit()
+        return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
+    if request.method == 'POST' and request.form.get('form_id') == 'delete':
+        db.session.delete(ccomment)
+        db.session.commit()
+        #return redirect(url_for('admin.notice'))
+        return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
