@@ -3,11 +3,15 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
+from flask_wtf.csrf import CSRFProtect
+
 import config
 
 # 데이터베이스 생성
 db = SQLAlchemy()
 migrate = Migrate()
+
+csrf = None
 
 def create_app():
     # Flask앱 생성
@@ -19,6 +23,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     import models
+
+    csrf = CSRFProtect(app)
 
     # 블루프린트
     from views import main_views, auth_views, employee_views, admin_views
