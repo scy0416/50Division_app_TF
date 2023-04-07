@@ -97,3 +97,6 @@ class writeForm(FlaskForm):
     subject = StringField('제목', validators=[DataRequired()])
     # 내용
     content = StringField('내용', validators=[DataRequired(), Length(1, 300)])
+
+class contentForm(FlaskForm):
+    content = StringField('내용', validators=[DataRequired()])
