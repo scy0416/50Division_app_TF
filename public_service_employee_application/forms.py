@@ -115,7 +115,3 @@ class joinForm(FlaskForm):
     name = StringField('이름', validators=[DataRequired(), Length(2, 10)])
     # 생년월일
     birth_date = DateField('생년월일', validators=[DataRequired()])
-    # 부대명(선택)
-    unit_name = StringField('부대명')
-    # 직책(선택)
-    position = StringField('직책')

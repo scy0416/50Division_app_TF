@@ -1,9 +1,11 @@
 import functools
 from flask import Blueprint, request, render_template, session, url_for, flash, g
 from werkzeug.utils import redirect
+from datetime import datetime
 
-from public_service_employee_application.forms import UserLoginForm
-from public_service_employee_application.models import User
+from public_service_employee_application.forms import UserLoginForm, joinForm
+from public_service_employee_application.models import User, Join_request
+from public_service_employee_application import db
 
 # 블루프린트 객체 생성
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -13,6 +15,9 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     # 유처 로그인 폼을 생성
     form = UserLoginForm()
+    # 가입 신청 폼 생성
+    join_form = joinForm()
+
     # 로그인 화면을 요구하는 경우
     if request.method == 'GET':
         # auth/login.html을 출력
@@ -54,6 +59,25 @@ def logout():
     # 로그인 되어있던 정보를 리셋시킨다.
     session.clear()
     return redirect(url_for('main.index'))
+
+@bp.route('/join/', methods=('GET', 'POST',))
+def join():
+    form = joinForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        join_request = Join_request(
+            userid=form.userid.data,
+            password=form.password1.data,
+            name=form.name.data,
+            birth_date=form.birth_date.data,
+            state='WAITING',
+            request_date=datetime.now()
+        )
+        db.session.add(join_request)
+        db.session.commit()
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/join.html', form=form)
 
 # 요청이 처리되기 전에 실행되는 어노테이션으로 로그인 된 정보가 존재한다면 로그인 된 사용자의 정보를 g.user에 담고 없으면 None을 저장한다.
 @bp.before_app_request
