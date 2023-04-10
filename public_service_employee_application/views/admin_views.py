@@ -318,22 +318,38 @@ def notice_detail(post_id):
     return render_template('admin/notice_detail.html', post=post, form=form, cForm=cForm)
 
 # 댓글에 대한 엔드포인트(편집, 삭제)
+@bp.route('/comment/', defaults={'comment_id':None}, methods=('POST', ))
 @bp.route('/comment/<int:comment_id>', methods=('POST', ))
 @login_required_admin
 def comment(comment_id):
+    if request.method == 'POST' and request.form.get('form_id') == 'post':
+        c = Comment(
+            user_id=session.get('user_id'),
+            post_id=request.form.get('post_id'),
+            content=request.form.get('content'),
+            create_date=datetime.now()
+        )
+        db.session.add(c)
+        db.session.commit()
+        return redirect(url_for('admin.grievance_detail', post_id=c.post_id))
     ccomment = Comment.query.get_or_404(comment_id)
+    writer_role = ccomment.post.user.role
     if request.method == 'POST' and request.form.get('form_id') == 'modify':
         ccomment.content = request.form.get('content')
         ccomment.modify_date = datetime.now()
         db.session.commit()
+        if writer_role == 'USER':
+            return redirect(url_for('admin.grievance_detail', post_id=ccomment.post_id))
         return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
     if request.method == 'POST' and request.form.get('form_id') == 'delete':
         db.session.delete(ccomment)
         db.session.commit()
         #return redirect(url_for('admin.notice'))
+        if writer_role == 'USER':
+            return redirect(url_for('admin.grievance_detail', post_id=ccomment.post_id))
         return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
 
-@bp.route('/comment/', methods=('GET', ))
+@bp.route('/grievance/', methods=('GET', ))
 @login_required_admin
 def grievance_list():
     # 검색 및 페이진 처리
@@ -347,3 +363,12 @@ def grievance_list():
 
     # 템플릿 출력
     return render_template('admin/grievance_list.html', grievance_list=grievance, q=q, page=page)
+
+# 고충 글 상세 창
+@bp.route('/grievance/<int:post_id>', methods=('GET', ))
+@login_required_admin
+def grievance_detail(post_id):
+    # 확인하려는 글
+    post = Post.query.get_or_404(post_id)
+    # 템플릿 출력
+    return render_template('admin/grievance_detail.html', post=post)
