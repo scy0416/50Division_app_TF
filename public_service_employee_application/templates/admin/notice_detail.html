@@ -30,7 +30,7 @@
             <textarea readonly style="resize:none" name="content" id="comment_{{ comment.id }}">{{ comment.content }}</textarea>
             <button type="button" onclick="modify($(this))" class="btn btn-primary" data-comment_id="{{ comment.id }}" id="modify_{{ comment.id }}">수정</button>
             <button class="btn btn-primary" onclick="save($(this))" style="display:none" data-comment_id="{{ comment.id }}" id="save_{{ comment.id }}">저장</button>
-            <span>- {{ comment.user.username }}, {{ comment.create_date|datetime }}{% if comment.modify_date %}(수정됨){% endif %}</span>
+            <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}{% if comment.modify_date %}(수정됨){% endif %}</span>
           </form>
         </div>
         <div>
@@ -43,7 +43,7 @@
       </div>
       {% else %}
       <textarea readonly style="resize:none">{{ comment.content }}</textarea>
-      <span>- {{ comment.user.username }}, {{ comment.create_date|datetime }}</span>
+      <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}</span>
       {% endif %}
     </div>
     {% endfor %}
