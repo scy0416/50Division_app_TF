@@ -3,7 +3,7 @@
 <div class="container">
   <div class="row row-cols-2 row-cols-md-3 g-3">
     <div class="col-md-4">
-      <a href="#" class="btn btn-primary w-100">
+      <a href="{{ url_for('admin.join_list') }}" class="btn btn-primary w-100">
         가입 신청
         {% if join_request|length > 0 %}
         <span class="text-danger small ml-2">{{ join_request|length }}</span>

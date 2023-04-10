@@ -377,7 +377,7 @@ def grievance_detail(post_id):
 
 @bp.route('/request/', methods=('GET', ))
 @login_required_admin
-def request():
+def request_main():
     join_request = Join_request.query.filter_by(state='WAITING').all()
     hr_change_request = HR_change_request.query.filter_by(state='WAITING').all()
     vacation_request = Vacation_request.query.filter_by(state='WAITING').all()
@@ -387,4 +387,13 @@ def request():
 @bp.route('/request/join/', methods=('GET', ))
 @login_required_admin
 def join_list():
-    
+    # 검색 및 페이진 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 검색 처리 과정
+    # 실직적인 검색
+    join = Join_request.query.filter(Join_request.name.contains(q))
+    join = join.paginate(page=page, per_page=10)
+
+    return render_template('admin/join_request_list.html', q=q, page=page, join_request_list=join)
