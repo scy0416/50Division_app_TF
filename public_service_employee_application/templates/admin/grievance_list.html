@@ -15,7 +15,7 @@
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
-            <th>지책</th>
+            <th>직책</th>
             <th>부대명</th>
             <th>작성일시</th>
         </tr>
@@ -26,9 +26,9 @@
         <tr class="text-center">
             <td>{{ grievance_list.total - ((grievance_list.page-1) * grievance_list.per_page) - loop.index0 }}</td>
             <td class="text-left">
-                <a href="#">{{ grievance.subject }}</a>
+                <a href="{{ url_for('admin.grievance_detail', post_id=grievance.id) }}">{{ grievance.subject }}</a>
                 {% if grievance.comment_set|length > 0 %}
-                <span class="text-danger small ml-2">{{ grievance.comment_set|langth }}</span>
+                <span class="text-danger small ml-2">{{ grievance.comment_set|length }}</span>
                 {% endif %}
             </td>
             <td>{{ grievance.user.name }}</td>
