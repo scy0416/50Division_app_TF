@@ -332,3 +332,18 @@ def comment(comment_id):
         db.session.commit()
         #return redirect(url_for('admin.notice'))
         return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
+
+@bp.route('/comment/', methods=('GET', ))
+@login_required_admin
+def grievance_list():
+    # 검색 및 페이진 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 검색 처리 과정
+    # 실직적인 검색
+    grievance = db.session.query(Post).join(User).filter(and_(User.role == 'USER', Post.subject.contains(q))).order_by(Post.create_date.desc())
+    grievance = grievance.paginate(page=page, per_page=10)
+
+    # 템플릿 출력
+    return render_template('admin/grievance_list.html', grievance_list=grievance, q=q, page=page)
