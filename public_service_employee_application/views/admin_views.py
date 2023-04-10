@@ -6,7 +6,7 @@ from datetime import datetime
 
 from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User, Comment
+from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -17,8 +17,10 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 # 관리자로 로그인이 되었나 확인하는 부분
 @login_required_admin
 def index():
-    #return render_template('base.html')
-    return render_template('admin/admin_main.html')
+    hr_change_request = HR_change_request.query.filter_by(state='WAITING').all()
+    join_request = Join_request.query.filter_by(state='WAITING').all()
+    vacation_request = Vacation_request.query.filter_by(state='WAITING').all()
+    return render_template('admin/admin_main.html', hr_change_request=hr_change_request, join_request=join_request, vacation_request=vacation_request)
 
 # 인사정보 관리창
 @bp.route('/pr/', methods=('GET', 'POST'))

@@ -9,7 +9,12 @@
       <a href="{{ url_for('admin.pr_information') }}" class="btn btn-primary w-100">인사정보 관리</a>
     </div>
     <div class="col-md-4">
-      <button class="btn btn-primary w-100">신청 관리</button>
+      <a href="#" class="btn btn-primary w-100">
+        신청 관리
+        {% if (hr_change_request|length > 0) or (join_request > 0) or (vacation_request > 0) %}
+        <span class="text-danger small ml-2">{{ hr_change_request|length + join_request|length + vacation_request|length }}</span>
+        {% endif %}
+      </a>
     </div>
     <div class="col-md-4">
       <button class="btn btn-primary w-100">복지 포인트 관리</button>
