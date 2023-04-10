@@ -374,3 +374,17 @@ def grievance_detail(post_id):
     post = Post.query.get_or_404(post_id)
     # 템플릿 출력
     return render_template('admin/grievance_detail.html', post=post)
+
+@bp.route('/request/', methods=('GET', ))
+@login_required_admin
+def request():
+    join_request = Join_request.query.filter_by(state='WAITING').all()
+    hr_change_request = HR_change_request.query.filter_by(state='WAITING').all()
+    vacation_request = Vacation_request.query.filter_by(state='WAITING').all()
+    return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request)
+
+# 가입 신청 관리 부분
+@bp.route('/request/join/', methods=('GET', ))
+@login_required_admin
+def join_list():
+    
