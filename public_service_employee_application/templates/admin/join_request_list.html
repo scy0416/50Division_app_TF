@@ -24,7 +24,11 @@
     {% for join_request in join_request_list.items %}
     <tr class="text-center">
       <td>{{ join_request_list.total - ((join_request_list.page-1) * join_request_list.per_page) - loop.index0 }}</td>
-      <td><a href="#">{{ join_request.name }}</a></td>
+      {% if join_request.state == 'WAITING' %}
+      <td><a href="{{ url_for('admin.join_detail', request_id=join_request.id) }}">{{ join_request.name }}</a></td>
+      {% else %}
+      <td>{{ join_request.name }}</td>
+      {% endif %}
       <td>{{ join_request.birth_date }}</td>
       <td>{{ join_request.request_date|datetime }}</td>
       {% if join_request.state == 'WAITING' %}

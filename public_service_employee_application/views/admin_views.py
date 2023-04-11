@@ -397,3 +397,41 @@ def join_list():
     join = join.paginate(page=page, per_page=10)
 
     return render_template('admin/join_request_list.html', q=q, page=page, join_request_list=join)
+
+# 가입 신청 상세 창 부분
+@bp.route('/request/join/<int:request_id>', methods=('GET', 'POST'))
+@ login_required_admin
+def join_detail(request_id):
+    # 처리할 가입 신청 데이터
+    join_request = Join_request.query.get_or_404(request_id)
+
+    # post로 요청이 온 경우
+    if request.method == 'POST':
+        # 등록을 하는 경우
+        if request.form.get('form_id') == 'regist':
+            user_id = request.form.get('user_id')
+            user = User.query.get_or_404(user_id)
+            user.userid = join_request.userid
+            user.password = join_request.password
+
+            join_request.state = 'ALLOWED'
+            join_request.proc_date = datetime.now()
+            db.session.commit()
+            return redirect(url_for('admin.join_list'))
+        # 거부하는 경우
+        if request.form.get('form_id') == 'reject':
+            join_request.state = 'REJECTED'
+            join_request.proc_date = datetime.now()
+            db.session.commit()
+            return redirect(url_for('admin.join_list'))
+
+    # 검색 처리
+    name = request.args.get('name', type=str, default=join_request.name)
+    birth_date = request.args.get('birth_date', type=str, default=join_request.birth_date)
+
+    result_list = User.query.filter(User.name.contains(name))
+    result_list = result_list.filter_by(birth_date=birth_date)
+    result_list = result_list.filter(User.userid==None)
+    result_list = result_list.filter(User.password==None).all()
+
+    return render_template('admin/join_request_detail.html', join_request=join_request, result_list=result_list, name=name, birth_date=birth_date)
