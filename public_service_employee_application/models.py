@@ -82,11 +82,13 @@ class Wellfare_point(db.Model):
     # 식별용 id
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 부여된 사용자의 식별용id(외래키)
-    user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
     user = db.relationship('User', backref=db.backref('wellfare_point_set'))
-    # 분기
-    quarter = Column(String(128), nullable=True)
+    # 분기 식별id
+    quarter_id = Column(Integer, ForeignKey('tb_quarter.id', ondelete='CASCADE'), nullable=True)
+    # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
+    quarter = db.relationship('Quarter', backref=db.backref('wellfare_point_set'))
     # 지급된 포인트
     point = Column(Integer, nullable=True)
 
@@ -211,3 +213,13 @@ class Pay_statement(db.Model):
     year_month = Column(String(128), nullable=True)
     # 파일 주소
     file_address = Column(String(128), nullable=True)
+
+# 분기에 대한 모델
+class Quarter(db.Model):
+    __tablename__ = 'tb_quarter'
+    __table_args__ = {'extend_existing': True}
+
+    # 식별용id
+    id = Column(Integer, primary_key=True)
+    # 분기 칼럼
+    quarter = Column(String(128), nullable=True)
