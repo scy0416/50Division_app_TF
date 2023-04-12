@@ -198,7 +198,7 @@ def edu():
         db.session.commit()
         
         # 결과를 반환
-        return jsonify({'status':'success'})
+        return jsonify({'status':'success'}), 200
 
     # 검색 및 페이징 처리
     # 입력 파라미터
@@ -435,3 +435,36 @@ def join_detail(request_id):
     result_list = result_list.filter(User.password==None).all()
 
     return render_template('admin/join_request_detail.html', join_request=join_request, result_list=result_list, name=name, birth_date=birth_date)
+
+@bp.route('/request/hr_information/', methods=('GET', ))
+@login_required_admin
+def hr_information_list():
+    # 검색 및 페이진 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    request_list = HR_change_request.query.join(User).filter(User.name.contains(q))
+    request_list = request_list.paginate(page=page, per_page=10)
+
+    return render_template('admin/hr_information_change_request_list.html', q=q, page=page, request_list=request_list)
+
+@bp.route('/request/hr_information/<int:request_id>', methods=('GET', 'POST'))
+@login_required_admin
+def hr_information_detail(request_id):
+    hr_request = HR_change_request.query.get_or_404(request_id)
+
+    if request.method == 'POST':
+        state = request.form.get('form_id')
+        if state == 'OK':
+            if hr_request.type == 'HIRE':
+                hr_request.user.hire_date = hr_request.change_to
+            elif hr_request.type == 'RETIREMENT':
+                hr_request.user.retirement_date = hr_request.change_to
+            hr_request.state = 'ALLOWED'
+        elif state == 'DENY':
+            hr_request.state = 'REJECTED'
+        hr_request.proc_date = datetime.now()
+        db.session.commit()
+        return redirect(url_for('admin.hr_information_list'))
+
+    return render_template('admin/hr_information_change_request_detail.html', request=hr_request)
