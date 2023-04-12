@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+  <ul>
+    <li>
+      <h4>신청자 정보</h4>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>이름</th>
+          <th>생년월일</th>
+          <th>부대명</th>
+          <th>직책</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{ request.user.name }}</td>
+          <td>{{ request.user.birth_date }}</td>
+          <td>{{ request.user.unit_name }}</td>
+          <td>{{ request.user.position }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </li>
+    <li>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>시작일</th>
+          <th>끝일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{ request.from_date }}</td>
+          <td>{{ request.to_date }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </li>
+    <li>
+      <h4>사유</h4>
+      <div class="container">
+        {{ request.reason }}
+      </div>
+    </li>
+  </ul>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="form_id" value="OK">
+    <button class="btn btn-primary">승인</button>
+  </form>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="form_id" value="DENY">
+    <button class="btn btn-primary">거절</button>
+  </form>
+</div>
+{% endblock %}

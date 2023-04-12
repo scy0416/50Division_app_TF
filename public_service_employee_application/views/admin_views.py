@@ -484,3 +484,34 @@ def hr_information_detail(request_id):
         return redirect(url_for('admin.hr_information_list'))
 
     return render_template('admin/hr_information_change_request_detail.html', request=hr_request)
+
+# 휴가 신청 리스트 출력 페이지
+@bp.route('/request/vacation/', methods=('GET', ))
+@login_required_admin
+def vacation_list():
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 휴가 관련 신청 중에서 유저의 이름에 q가 포함되어 있는걸 필터링
+    request_list = Vacation_request.query.join(User).filter(User.name.contains(q))
+    request_list = request_list.paginate(page=page, per_page=10)
+
+    return render_template('admin/vacation_request_list.html', q=q, page=page, request_list=request_list)
+
+# 휴가 신청 상세 페이지 출력
+@bp.route('/request/vacation/<int:request_id>', methods=('GET', 'POST'))
+@login_required_admin
+def vacation_detail(request_id):
+    # 신청 데이터 추출
+    vacation_request = Vacation_request.query.get_or_404(request_id)
+
+    if request.method == 'POST':
+        if request.form.get('form_id') == 'OK':
+            vacation_request.state = 'ALLOWED'
+        elif request.form.get('form_id') == 'DENY':
+            vacation_request.state = 'REJECTED'
+        vacation_request.proc_date = datetime.now()
+        db.session.commit()
+        return redirect(url_for('admin.vacation_list'))
+    return render_template('admin/vacation_request_detail.html', request=vacation_request)

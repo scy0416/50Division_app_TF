@@ -19,7 +19,7 @@
       </a>
     </div>
     <div class="col-md-4">
-      <a href="#" class="btn btn-primary w-100">
+      <a href="{{ url_for('admin.vacation_list') }}" class="btn btn-primary w-100">
         휴가 신청
         {% if vacation_request|length > 0 %}
         <span class="text-danger small ml-2">{{ vacation_request|length }}</span>
