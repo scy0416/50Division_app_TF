@@ -506,13 +506,20 @@ def vacation_detail(request_id):
     # 신청 데이터 추출
     vacation_request = Vacation_request.query.get_or_404(request_id)
 
+    # post로 요청이 온다면
     if request.method == 'POST':
+        # 승인된 경우
         if request.form.get('form_id') == 'OK':
+            # 상태를 승인됨으로 바꾼다.
             vacation_request.state = 'ALLOWED'
+        # 거부된 경우
         elif request.form.get('form_id') == 'DENY':
+            # 상태를 거부됨으로 바꾼다.
             vacation_request.state = 'REJECTED'
+        # 휴가 신청의 처리된 날짜를 현재로 한다.
         vacation_request.proc_date = datetime.now()
         db.session.commit()
+        # 휴가 신청 목록으로 리아디렉션 시킨다.
         return redirect(url_for('admin.vacation_list'))
     return render_template('admin/vacation_request_detail.html', request=vacation_request)
 
@@ -520,25 +527,35 @@ def vacation_detail(request_id):
 @bp.route('/welfare', methods=('GET',))
 @login_required_admin
 def welfare():
+    # 사용자 목록, 분기, 검색어, 페이지들을 None으로 초기화
     user_list = None
     quarter = None
     q = None
     page = None
+    # 분기id를 받아온다
     quarter_id = request.args.get('quarter_id', type=str, default='')
+    # 분기id가 존재하는 경우
     if quarter_id != '':
         # 검색 및 페이징 처리
         q = request.args.get('q', type=str, default='')
         page = request.args.get('page', type=int, default=1)
-
+        
+        # 분기 데이터를 받아온다
         quarter = Quarter.query.get_or_404(quarter_id)
+        # 현재 복지 포인트에 대한 서브쿼리를 만든다.
         welfare_point = Wellfare_point.query.filter(Wellfare_point.quarter_id == quarter_id).subquery()
+        # 공무직원이고, 이름에 검색어를 포함하는 경우에 대한 필터링을 서브쿼리로 만듦
         user_list = User.query.filter(User.role == 'USER', User.name.contains(q)).subquery()
+        # 만들었던 서브쿼리끼리 아우터 조인을 실시한 결과를 서브쿼리화
         user_list = db.session.query(user_list, welfare_point).join(welfare_point,
                                                                      user_list.c.id == welfare_point.c.user_id,
                                                                      isouter=True).subquery()
+        # 서브쿼리로 만들었던 것 다시 아우터 조인
         user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
+        # 페이지네이션
         user_list = user_list.paginate(page=page, per_page=10)
-
+    
+    # 모든 분기 추출
     quarter_list = Quarter.query.all()
 
     return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list, q=q, page=page, quarter_id=quarter_id)
@@ -547,6 +564,7 @@ def welfare():
 @bp.route('/quarter', methods=('POST', ))
 @login_required_admin
 def make_quarter():
+    # 분기 이름 추출 후 그 이름으로 분기 데이터 새엇ㅇ
     quarter = Quarter(
         quarter=request.form.get('quarter_name')
     )
@@ -558,7 +576,9 @@ def make_quarter():
 @bp.route('/quarter/<int:quarter_id>/edit', methods=('POST', ))
 @login_required_admin
 def edit_quarter(quarter_id):
+    # 편집할 분기를 가져옴
     quarter = Quarter.query.get_or_404(quarter_id)
+    # 분기의 이름을 편집
     quarter.quarter = request.form.get('new_name')
     db.session.commit()
     return redirect(url_for('admin.welfare'))
@@ -567,7 +587,9 @@ def edit_quarter(quarter_id):
 @bp.route('/quarter/<int:quarter_id>/delete', methods=('POST', ))
 @login_required_admin
 def delete_quarter(quarter_id):
+    # 삭제할 분기를 가져옴
     quarter = Quarter.query.get_or_404(quarter_id)
+    # 분기 삭제
     db.session.delete(quarter)
     db.session.commit()
     return redirect(url_for('admin.welfare'))
