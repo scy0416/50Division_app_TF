@@ -6,7 +6,7 @@ from datetime import datetime
 
 from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter
+from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter, Wellfare_point
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -520,14 +520,28 @@ def vacation_detail(request_id):
 @bp.route('/welfare', methods=('GET',))
 @login_required_admin
 def welfare():
+    user_list = None
     quarter = None
+    q = None
+    page = None
     quarter_id = request.args.get('quarter_id', type=str, default='')
     if quarter_id != '':
+        # 검색 및 페이징 처리
+        q = request.args.get('q', type=str, default='')
+        page = request.args.get('page', type=int, default=1)
+
         quarter = Quarter.query.get_or_404(quarter_id)
+        welfare_point = Wellfare_point.query.filter(Wellfare_point.quarter_id == quarter_id).subquery()
+        user_list = User.query.filter(User.role == 'USER', User.name.contains(q)).subquery()
+        user_list = db.session.query(user_list, welfare_point).join(welfare_point,
+                                                                     user_list.c.id == welfare_point.c.user_id,
+                                                                     isouter=True).subquery()
+        user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
+        user_list = user_list.paginate(page=page, per_page=10)
 
     quarter_list = Quarter.query.all()
 
-    return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list)
+    return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list, q=q, page=page, quarter_id=quarter_id)
 
 # 복지 포인트용 분기를 생성하는 라우팅
 @bp.route('/quarter', methods=('POST', ))
