@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center">복지 포인트 관리</h2>
+    <div class="container">
+        <button class="btn btn-primary" onclick="open_make_quarter()">분기 추가</button>
+        <button class="btn btn-primary" onclick="open_edit_quarter()">분기 편집</button>
+        {% if quarter %}
+        <form method="post" action="{{ url_for('admin.delete_quarter', quarter_id=quarter.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-primary">분기 삭제</button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr class="text-center">
+                <th>이름</th>
+                <th>생년월일</th>
+                <th>
+                    <form method="get" id="quarter_select">
+                        <select name="quarter_id" onchange="change_quarter(this)">
+                            <option value="">분기를 선택하세요.</option>
+                            {% if quarter_list %}
+                            {% for qt in quarter_list %}
+                            <option value="{{ qt.id }}" {% if quarter.quarter==qt.quarter %}selected{% endif %}>{{ qt.quarter }}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </form>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <dialog id="make_quarter">
+        <form method="post" action="{{ url_for('admin.make_quarter') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="quarter_name">분기명</label>
+            <input type="text" id="quarter_name" name="quarter_name">
+            <button type="button" class="btn btn-primary" onclick="close_make_quarter()">취소</button>
+            <button class=" btn btn-primary">생성</button>
+        </form>
+    </dialog>
+    {% if quarter %}
+    <dialog id="edit_quarter">
+        <form method="post" action="{{ url_for('admin.edit_quarter', quarter_id=quarter.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="new_name">바뀔 이름</label>
+            <input type="text" id="new_name" name="new_name" value="{{ quarter.quarter }}">
+            <button type="button" class="btn btn-primary" onclick="close_edit_quarter()">취소</button>
+            <button class="btn btn-primary">변경</button>
+        </form>
+    </dialog>
+    {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    function change_quarter(element){
+        console.log("실행");
+        if(element.value != ''){
+            $("#quarter_select").submit();
+        }
+    }
+    function open_make_quarter(){
+        document.getElementById("make_quarter").showModal()
+    }
+    function close_make_quarter(){
+        document.getElementById("make_quarter").close()
+    }
+    function open_edit_quarter(){
+        document.getElementById("edit_quarter").showModal()
+    }
+    function close_edit_quarter(){
+        document.getElementById("edit_quarter").close()
+    }
+</script>
+{% endblock %}

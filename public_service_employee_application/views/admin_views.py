@@ -6,7 +6,7 @@ from datetime import datetime
 
 from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request
+from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -515,3 +515,45 @@ def vacation_detail(request_id):
         db.session.commit()
         return redirect(url_for('admin.vacation_list'))
     return render_template('admin/vacation_request_detail.html', request=vacation_request)
+
+# 복지 포인트 관리 페이지
+@bp.route('/welfare', methods=('GET',))
+@login_required_admin
+def welfare():
+    quarter = None
+    quarter_id = request.args.get('quarter_id', type=str, default='')
+    if quarter_id != '':
+        quarter = Quarter.query.get_or_404(quarter_id)
+
+    quarter_list = Quarter.query.all()
+
+    return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list)
+
+# 복지 포인트용 분기를 생성하는 라우팅
+@bp.route('/quarter', methods=('POST', ))
+@login_required_admin
+def make_quarter():
+    quarter = Quarter(
+        quarter=request.form.get('quarter_name')
+    )
+    db.session.add(quarter)
+    db.session.commit()
+    return redirect(url_for('admin.welfare'))
+
+# 복지 포인트용 분기를 편집하는 라우팅
+@bp.route('/quarter/<int:quarter_id>/edit', methods=('POST', ))
+@login_required_admin
+def edit_quarter(quarter_id):
+    quarter = Quarter.query.get_or_404(quarter_id)
+    quarter.quarter = request.form.get('new_name')
+    db.session.commit()
+    return redirect(url_for('admin.welfare'))
+
+# 복지 포인트용 분기를 삭제하는 라우팅
+@bp.route('/quarter/<int:quarter_id>/delete', methods=('POST', ))
+@login_required_admin
+def delete_quarter(quarter_id):
+    quarter = Quarter.query.get_or_404(quarter_id)
+    db.session.delete(quarter)
+    db.session.commit()
+    return redirect(url_for('admin.welfare'))
