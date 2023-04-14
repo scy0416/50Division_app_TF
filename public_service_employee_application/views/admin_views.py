@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response, Response
+from sqlalchemy import desc
 from werkzeug.utils import redirect
 from datetime import date
 from sqlalchemy import and_
@@ -524,15 +525,65 @@ def vacation_detail(request_id):
     return render_template('admin/vacation_request_detail.html', request=vacation_request)
 
 # 복지 포인트 관리 페이지
-@bp.route('/welfare', methods=('GET',))
+@bp.route('/welfare', methods=('GET', ))
 @login_required_admin
 def welfare():
+    # 검색 중이던 결과로 들어갈 것인지에 대한 여부
+    # 참이라면 검색 중이었던 것으로 세션에 저장된 정보대로 검색을 실시해야 한다.
+    isSearching = request.args.get('isSearching', type=str, default='false')
+
+    # 검색 중이어서 중간 결과로 들어가야 하는 경우
+    if isSearching == 'true':
+        q = session.pop('q', '')
+        page = session.pop('page', 1)
+        quarter_id = session.pop('quarter_id', Quarter.query.order_by(desc(Quarter.quarter)).first().quarter)
+    # 중간으로 돌아가야 하는 것이 아닌 경우
+    elif isSearching == 'false':
+        q = request.args.get('q', type=str, default='')
+        page = request.args.get('page', type=int, default=1)
+        quarter_id = request.args.get('quarter_id', type=int, default=Quarter.query.order_by(desc(Quarter.quarter)).first().id)
+    '''
+    # 검색어, 페이지, 분기id를 불러옴
+    q = request.args.get('q', type=str, default=session.pop('q', ''))
+    page = request.args.get('page', type=int, default=session.pop('page', 1))
+    quarter_id = request.args.get('quarter_id', type=int,
+                                  default=session.pop('quarter_id', Quarter.query.order_by(desc(Quarter.quarter)).first().quarter))
+    '''
+    # 추출한 검색 데이터들을 세션에 저장
+    session['q'] = q
+    session['page'] = page
+    session['quarter_id'] = quarter_id
+    # 검색 처리
+    quarter = Quarter.query.get_or_404(quarter_id)
+    # 현재 복지 포인트에 대한 서브쿼리를 만든다.
+    welfare_point = Wellfare_point.query.filter(Wellfare_point.quarter_id == quarter_id).subquery()
+    # 공무직원이고, 이름에 검색어를 포함하는 경우에 대한 필터링을 서브쿼리로 만듦
+    user_list = User.query.filter(User.role == 'USER', User.name.contains(q)).subquery()
+    # 만들었던 서브쿼리끼리 아우터 조인을 실시한 결과를 서브쿼리화
+    user_list = db.session.query(user_list, welfare_point, welfare_point.c.id.label('welfare_point_id')).join(
+        welfare_point,
+        user_list.c.id == welfare_point.c.user_id,
+        isouter=True).subquery()
+    # 서브쿼리로 만들었던 것 다시 아우터 조인
+    user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
+    # 페이지네이션
+    user_list = user_list.paginate(page=page, per_page=10)
+
+    # 모든 분기 추출
+    quarter_list = Quarter.query.all()
+
+    return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list,
+                           q=q, page=page, quarter_id=quarter_id)
+    '''
     # 사용자 목록, 분기, 검색어, 페이지들을 None으로 초기화
     user_list = None
     quarter = None
-    q = None
+    q = ''
+    #q = session.pop('q', '')
     page = None
+    #page = session.pop('page', None)
     # 분기id를 받아온다
+    #quarter_id = session.pop('quarter_id', '')
     quarter_id = request.args.get('quarter_id', type=str, default='')
     # 분기id가 존재하는 경우
     if quarter_id != '':
@@ -547,7 +598,7 @@ def welfare():
         # 공무직원이고, 이름에 검색어를 포함하는 경우에 대한 필터링을 서브쿼리로 만듦
         user_list = User.query.filter(User.role == 'USER', User.name.contains(q)).subquery()
         # 만들었던 서브쿼리끼리 아우터 조인을 실시한 결과를 서브쿼리화
-        user_list = db.session.query(user_list, welfare_point).join(welfare_point,
+        user_list = db.session.query(user_list, welfare_point, welfare_point.c.id.label('welfare_point_id')).join(welfare_point,
                                                                      user_list.c.id == welfare_point.c.user_id,
                                                                      isouter=True).subquery()
         # 서브쿼리로 만들었던 것 다시 아우터 조인
@@ -558,7 +609,64 @@ def welfare():
     # 모든 분기 추출
     quarter_list = Quarter.query.all()
 
+    session['q'] = q
+    session['page'] = page
+    session['quarter_id'] = quarter_id
+    #session['quarter'] = quarter
+
+    if request.method == 'POST':
+        #print("실행")
+        #quarter = Quarter.query.get_or_404(session.get('quarter_id'))
+        user_id = request.form.get('user_id')
+        quarter_id = request.form.get('quarter_id')
+        point = request.form.get('point')
+
+        welfare_point = Wellfare_point(
+            user_id=user_id,
+            quarter_id=quarter_id,
+            point=point
+        )
+        db.session.add(welfare_point)
+        db.session.commit()
+        #return render_template('admin/welfare_point.html', quarter=quarter,quarter_list=quarter_list, q=session.pop('q', ''),quarter_id=session.pop('quarter_id', ''), user_list=user_list)
+        return Response(status=302)
+
     return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list, q=q, page=page, quarter_id=quarter_id)
+    #return render_template('admin/welfare_point.html', quarter=session.pop('quarter', None), quarter_list=quarter_list, q=session.pop('q', ''), quarter_id=session.pop('quarter_id', ''), user_list=user_list)
+    '''
+
+# 복지 포인트 데이터를 생성하는 라우팅
+@bp.route('/welfare/', methods=('POST', ))
+@login_required_admin
+def create_welfare():
+    user_id = request.form.get('user_id')
+    quarter_id = request.form.get('quarter_id')
+    point = request.form.get('point')
+
+    welfare_point = Wellfare_point(
+        user_id=user_id,
+        quarter_id=quarter_id,
+        point=point
+    )
+    db.session.add(welfare_point)
+    db.session.commit()
+
+    #return Response(status=302)
+    return redirect(url_for('admin.welfare', isSearching='true'))
+    #return Response('', status=204)
+
+# 복지 포인트 데이터를 편집하는 라우팅
+@bp.route('/welfare/<int:welfare_point_id>', methods=('POST', ))
+@login_required_admin
+def edit_welfare(welfare_point_id):
+    # 편집할 복지 포인트를 받아옴
+    welfare_point = Wellfare_point.query.get_or_404(welfare_point_id)
+    # 복지 포인트 편집
+    welfare_point.point = request.form.get('point')
+    db.session.commit()
+
+    # 본문이 없는 결과를 반환(화면의 새로고침을 방지)
+    return Response('', status=204)
 
 # 복지 포인트용 분기를 생성하는 라우팅
 @bp.route('/quarter', methods=('POST', ))

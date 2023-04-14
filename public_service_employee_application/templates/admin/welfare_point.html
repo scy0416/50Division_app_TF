@@ -30,7 +30,7 @@
                     <form method="get" id="quarter_select">
                         <input type="hidden" name="q" value="{{ q }}">
                         <select name="quarter_id" onchange="change_quarter(this)">
-                            <option value="">분기를 선택하세요.</option>
+                            <!-- <option value="">분기를 선택하세요.</option> -->
                             {% if quarter_list %}
                             {% for qt in quarter_list %}
                             <option value="{{ qt.id }}" {% if quarter.quarter==qt.quarter %}selected{% endif %}>{{ qt.quarter }}</option>
@@ -48,7 +48,27 @@
                 <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page)- loop.index0 }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.birth_date }}</td>
-                <td>{{ user.point }}</td>
+                {% if user.point %}
+                <td>
+                    <form method="post" action="{{ url_for('admin.edit_welfare', welfare_point_id=user.welfare_point_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="text" name="point" value="{{ user.point }}" readonly id="point_{{ user.welfare_point_id }}">
+                        <button type="button" onclick="edit_mode($(this))" class="btn btn-primary" data-welfare_id="{{ user.welfare_point_id }}" id="edit_{{ user.welfare_point_id }}">편집</button>
+                        <button class="btn btn-primary" onclick="save_mode($(this))" style="display:none" id="save_{{ user.welfare_point_id }}" data-welfare_id="{{ user.welfare_point_id }}">저장</button>
+                    </form>
+                </td>
+                {% else %}
+                <td>
+                    <form method="post" action="{{ url_for('admin.create_welfare') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <input type="hidden" name="quarter_id" value="{{ quarter.id }}">
+                        <input type="text" name="point" value="정보가 없습니다." readonly id="user_{{ user.id }}">
+                        <button type="button" onclick="create_mode($(this))" class="btn btn-primary" data-user_id="{{ user.id }}" id="create_start_{{ user_id }}">생성</button>
+                        <button class="btn btn-primary" data-user_id="{{ user.id }}" id="create_done_{{ user.id }}" style="display:none">저장</button>
+                    </form>
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
             {% else %}
@@ -152,5 +172,21 @@
             $("#searchForm").submit();
         });
     });
+    function edit_mode(element){
+        $("#point_"+element.data('welfare_id')).removeAttr('readonly');
+        element.css('display','none');
+        $("#save_"+element.data('welfare_id')).css('display', 'block');
+    }
+    function save_mode(element){
+        $("#point_"+element.data('welfare_id')).attr('readonly');
+        $("#edit_"+element.data('welfare_id')).css('display', 'block');
+        element.css('display', 'none');
+    }
+    function create_mode(element){
+        $("#user_"+element.data('user_id')).removeAttr('readonly');
+        $("#user_"+element.data('user_id')).val('');
+        element.css('display', 'none');
+        $("#create_done_"+element.data('user_id')).css('display', 'block');
+    }
 </script>
 {% endblock %}
