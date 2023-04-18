@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <form id="searchForm" method="get">
+        <input type="text" id="q" name="q" value="{{ q or '' }}">
+        <input type="hidden" id="page" name="page" value="{{ page or '' }}">
+        <button class="btn btn-primary">검색</button>
+    </form>
+    <table class="table">
+        <thead>
+        <tr class="text-center thead-dark">
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if notice_list.items %}
+        {% for notice in notice_list.items %}
+        <tr class="text-center">
+            <td>{{ notice_list.total - ((notice_list.page-1) * notice_list.per_page) - loop.index0 }}</td>
+            <td class="text-left">
+                <a href="{{ url_for('employee.notice_detail', post_id=notice.id) }}">{{ notice.subject }}</a>
+                {% if notice.comment_set|length > 0 %}
+                <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
+                {% endif %}
+            </td>
+            <td>{{ notice.user.userid }}</td>
+            <td>{{ notice.create_date|datetime }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">공지사항이 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <!-- 페이징 처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전 페이지 -->
+        {% if notice_list.has_prev %}
+        <li class="page-items">
+            <a class="page-link" data-page="{{ notice_list.prev_num }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        {% for page_num in notice_list.iter_pages() %}
+        {% if page_num %}
+        {% if page_num != notice_list.page %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <li class="disabled">
+            <a class="page-link" href="#">...</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        <!-- 다음 페이지 -->
+        {% if notice_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ notice_list.next_num }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".page-link").on('click', function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+        $("#btn_search").on('click', function(){
+            $("#q").val($(".q").val());
+            $("#page").val(1);
+            $("#searchForm").submit();
+        });
+    });
+</script>
+{% endblock %}
