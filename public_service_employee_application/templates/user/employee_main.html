@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-  <div class="row row-cols-2 row-cols-md-7 g-3">
+  <div class="row row-cols-2 row-cols-md-8 g-3">
     <div class="col-md-4">
       <a class="btn btn-primary w-100" href="{{ url_for('employee.notice') }}">공지사항</a>
     </div>
@@ -22,6 +22,12 @@
     </div>
     <div class="col-md-4">
       <button class="btn btn-primary w-100">고충 글 작성</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">건강검진 등록</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">출근부</button>
     </div>
   </div>
 </div>
