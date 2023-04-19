@@ -81,7 +81,9 @@ def delete_comment(comment_id):
     return redirect(url_for('employee.notice_detail', post_id=post_id))
 
 # 인사정보 조회
-@bp.route('/pr/', methods=('GET', ))
+@bp.route('/pr/<int:user_id>', methods=('GET', ))
 @login_required_employee
-def pr_information():
-    ...
+def pr_information(user_id):
+    user = User.query.get_or_404(user_id)
+
+    return render_template('user/user_detail.html', user=user)

@@ -6,7 +6,7 @@
       <a class="btn btn-primary w-100" href="{{ url_for('employee.notice') }}">공지사항</a>
     </div>
     <div class="col-md-4">
-      <button class="btn btn-primary w-100">인사정보 조회</button>
+      <a class="btn btn-primary w-100" href="{{ url_for('employee.pr_information', user_id=g.user.id) }}">인사정보 조회</a>
     </div>
     <div class="col-md-4">
       <button class="btn btn-primary w-100">휴가 신청</button>

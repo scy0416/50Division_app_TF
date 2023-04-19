@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <td rowspan="3" style="width:150px;height:150px;text-align:center:margin=10px" class="align-middle">
+                <img src="{{ user.img_addr or url_for('static', filename='basic image.png') }}" alt="" style="display:inline-block;max-width: 100%;height:auto;">
+            </td>
+            <th class="text-center">성명</th>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">생년월일</th>
+            <td>{{ user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">연락처</th>
+            <td>{{ user.phone_num }}</td>
+        </tr>
+        </thead>
+    </table>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="text-center">주소</th>
+            <td>{% if user.address %}{{ user.address }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th class="text-center">부대</th>
+            <td>{{ user.unit_name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">채용일</th>
+            <td>{{ user.hire_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">퇴직일</th>
+            <td>{{ user.hire_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">고용형태</th>
+            <td>{{ user.employment_type }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">비고</th>
+            <td>{% if user.bigo %}{{ user.bigo }}{% endif %}</td>
+        </tr>
+        </thead>
+    </table>
+</div>
+{% endblock %}
