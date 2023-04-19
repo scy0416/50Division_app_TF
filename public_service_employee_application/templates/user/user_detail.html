@@ -16,7 +16,11 @@
         </tr>
         <tr>
             <th class="text-center">연락처</th>
-            <td>{{ user.phone_num }}</td>
+            <td>
+                <input type="text" data-edit="phone_num" style="border:none;background:transparent" value="{{ user.phone_num or '' }}" readonly>
+                <button class="btn btn-primary">편집</button>
+                <button class="btn btn-primary modify" style="display:none">저장</button>
+            </td>
         </tr>
         </thead>
     </table>
@@ -24,7 +28,11 @@
         <thead>
         <tr>
             <th class="text-center">주소</th>
-            <td>{% if user.address %}{{ user.address }}{% endif %}</td>
+            <td>
+                <input type="text" data-edit="address" style="border:none;background:transparent" value="{{ user.address or '' }}" readonly>
+                <button class="btn btn-primary">편집</button>
+                <button class="btn btn-secondary modify" style="display:none">저장</button>
+            </td>
         </tr>
         <tr>
             <th class="text-center">부대</th>
@@ -32,11 +40,25 @@
         </tr>
         <tr>
             <th class="text-center">채용일</th>
-            <td>{{ user.hire_date }}</td>
+            <td>
+                <div>{{ user.hire_date }}</div>
+                <button class="btn btn-primary">변경 신청</button>
+                <button class="btn btn-secondary require" data-type="hire_date" style="display:none">신청</button>
+                <button class="btn btn-secondary cancel" style="display:none">취소</button>
+                <input type="date" value="{{ user.hire_date }}" style="display:none">
+                <textarea rows="5" style="display:none">사유를 작성하세요.</textarea>
+            </td>
         </tr>
         <tr>
             <th class="text-center">퇴직일</th>
-            <td>{{ user.hire_date }}</td>
+            <td>
+                <div>{{ user.retirement_date }}</div>
+                <button class="btn btn-primary">변경 신청</button>
+                <button class="btn btn-secondary require" data-type="retirement_date" style="display:none">신청</button>
+                <button class="btn btn-secondary cancel" style="display:none">취소</button>
+                <input type="date" value="{{ user.retirement_date }}" style="display:none">
+                <textarea rows="5" style="display:none">사유를 작성하세요.</textarea>
+            </td>
         </tr>
         <tr>
             <th class="text-center">고용형태</th>
@@ -49,4 +71,41 @@
         </thead>
     </table>
 </div>
+<form method="post" action="{{ url_for('employee.edit_pr_information', user_id=user.id) }}" id="edit">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="phone_num" id="phone_num" value="{{ user.phone_num or '' }}">
+    <input type="hidden" name="address" id="address" value="{{ user.address or '' }}">
+</form>
+<form method="post" action="{{ url_for('employee.require_edit_pr', user_id=user.id) }}" id="require">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="change_to" value="">
+    <input type="hidden" name="reason" value="">
+    <input type="hidden" name="type" value="">
+</form>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(function(){
+        $(".btn-primary").on("click", function(){
+            $(this).siblings("input").removeAttr("readonly");
+            $(this).prevAll().css("display", "block");
+            $(this).nextAll().css("display", "block");
+            $(this).css("display", "none");
+        });
+        $(".modify").on("click", function(){
+            $("#"+$(this).siblings("input").data("edit")).val($(this).siblings("input").val());
+            $("#edit").submit();
+        });
+        $(".cancel").on("click", function(){
+            $(this).siblings("div").next().css("display", "block");
+            $(this).siblings("div").next().nextAll().css("display", "none");
+        });
+        $(".require").on("click", function(){
+            $("#require input[name='change_to']").val($(this).siblings("input").val());
+            $("#require input[name='reason']").val($(this).siblings("textarea").val());
+            $("#require input[name='type']").val($(this).data("type"));
+            $("#require").submit();
+        });
+    });
+</script>
 {% endblock %}

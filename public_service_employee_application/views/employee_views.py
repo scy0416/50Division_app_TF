@@ -4,7 +4,7 @@ from datetime import datetime
 
 from public_service_employee_application.views.auth_views import login_required_employee
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment
+from public_service_employee_application.models import Post, User, Comment, HR_change_request
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -87,3 +87,40 @@ def pr_information(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('user/user_detail.html', user=user)
+
+# 인사정보 변경
+@bp.route('pr/<int:user_id>/edit', methods=('POST', ))
+@login_required_employee
+def edit_pr_information(user_id):
+    user = User.query.get_or_404(user_id)
+
+    phone_num = request.form.get("phone_num")
+    address = request.form.get("address")
+
+    user.phone_num = phone_num
+    user.address = address
+
+    db.session.commit()
+    return redirect(url_for('employee.pr_information', user_id=user_id))
+
+# 인사정보 변경 신청
+@bp.route('pr/<int:user_id>/hr_edit', methods=('POST', ))
+@login_required_employee
+def require_edit_pr(user_id):
+    type = None
+    if request.form.get('type') == 'hire_date':
+        type = 'HIRE'
+    elif request.form.get('type') == 'retirement_date':
+        type = 'RETIREMENT'
+    hr_change_request = HR_change_request(
+        user_id=user_id,
+        reason=request.form.get('reason'),
+        change_to=request.form.get('change_to'),
+        type=type,
+        state="WAITING",
+        request_date=datetime.now()
+    )
+    db.session.add(hr_change_request)
+    db.session.commit()
+
+    return redirect(url_for('employee.pr_information', user_id=user_id))
