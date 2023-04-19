@@ -30,13 +30,13 @@
         <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
         {% endif %}
       </td>
-      <td>{{ notice.user.userid }}</td>
+      <td>{{ notice.user.name }}({{ notice.user.position }})</td>
       <td>{{ notice.create_date|datetime }}</td>
     </tr>
     {% endfor %}
     {% else %}
     <tr>
-      <td colspan="3">공지사항이 없습니다.</td>
+      <td colspan="4">공지사항이 없습니다.</td>
     </tr>
     {% endif %}
     </tbody>

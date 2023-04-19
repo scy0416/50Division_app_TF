@@ -6,7 +6,7 @@ from datetime import datetime
 
 from public_service_employee_application import db
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User
+from public_service_employee_application.models import Post, User
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm
 
 # 블루프린트 객체 생성
@@ -154,7 +154,7 @@ def detail(user_id):
         db.session.commit()
         g.modifyError = False
 
-    return render_template('user/user_detail.html', user=user, form=form)
+    return render_template('admin/user_detail_for_admin.html', user=user, form=form)
 
 # 의무 교육 관리창
 @bp.route('/edu/', methods=('GET', 'PATCH'))

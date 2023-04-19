@@ -1,28 +1,56 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<div class="container">
-  <div class="row row-cols-2 row-cols-md-7 g-3">
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">공지사항</button>
+<div class="card" style="width: 95%; margin:0 auto; margin-bottom:50px; margin-top:10px">
+    <div class="card-header">공지사항</div>
+    <ul class="list-group list-group-flush" style="text-align: center;">
+        <li class="list-group-item">최근 공지사항1</li>
+        <li class="list-group-item">최근 공지사항2</li>
+        <li class="list-group-item">최근 공지사항3</li>
+        <li class="list-group-item">최근 공지사항4</li>
+    </ul>
+    <div class="card-footer text-end" style="height:40px">
+        <a class="btn btn-btn-outline btn-sm" href="{{ url_for('employee.notice') }}" role="button">더보기</a>
     </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">인사정보 조회</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">휴가 신청</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">복지 포인트 조회</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">의무 교육 현황</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">급여명세서 조회</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100">고충 글 작성</button>
-    </div>
-  </div>
 </div>
+
+<table class="table" style="margin-bottom:0px">
+    <thead>
+    <tr class="text-center thead-dark">
+        <th style="width:20%;">휴가신청</th>
+        <th style="width:20%;">인사정보</th>
+        <th style="width:20%;">의무교육</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="text-center">
+        <td><a href="#"><img src="{{ url_for('static', filename='vacation image.png') }}" alt=""
+                             style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+        <td><a href="{{ url_for('employee.user_detail', user_id=g.user.id)}}"><img
+                src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
+                style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+        <td><a href="#"><img src="{{ url_for('static', filename='education image.png') }}" alt=""
+                             style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+    </tr>
+    </tbody>
+</table>
+<table class="table">
+    <thead>
+    <tr class="text-center thead-dark">
+        <th style="width:20%;">급여명세서</th>
+        <th style="width:20%;">고충 글</th>
+        <th style="width:20%;">복지포인트</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="text-center">
+        <td><a href="#"><img src="{{ url_for('static', filename='payslip image.png') }}" alt=""
+                             style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+        <td><a href="#"><img src="{{ url_for('static', filename='contract image.png') }}" alt=""
+                             style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+        <td><a href="#"><img src="{{ url_for('static', filename='point image.png') }}" alt=""
+                             style="display:inline-block;max-width: 30%;height:auto;"></a></td>
+
+    </tr>
+    </tbody>
+</table>
 {% endblock %}

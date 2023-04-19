@@ -18,6 +18,7 @@ def create_app():
     # 데이터베이스 초기화
     db.init_app(app)
     migrate.init_app(app, db)
+
     import models
 
     # 블루프린트
