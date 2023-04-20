@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <div>
+        <h4>휴가 신청 현황</h4>
+        <table class="table">
+            <thead>
+            <tr class="text-center thead-dark">
+                <th>번호</th>
+                <th>시작일</th>
+                <th>끝일</th>
+                <th>사유</th>
+                <th>신청일시</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if vacation_request_list.items %}
+            {% for vacation_request in vacation_request_list.items %}
+            <tr class="text-center">
+                <td>{{ vacation_request_list.total - ((vacation_request_list.page-1) * vacation_request_list.per_page) - loop.index0 }}</td>
+                <td>{{ vacation_request.from_date }}</td>
+                <td>{{ vacation_request.end_date }}</td>
+                <td>{{ vacation_request.reason }}</td>
+                <td>{{ vacation_request.request_date|datetime }}</td>
+                <td>{{ vacation_request.state }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="6">신청내역이 없습니다.</td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <!-- 페이징 처리 시작 -->
+        <ul class="pagination justify-content-center">
+            <!-- 이전 페이지 -->
+            {% if vacation_request_list.has_prev %}
+            <li class="page-items">
+                <a class="page-link" data-page="{{ notice_list.prev_num }}" href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            {% for page_num in vacation_request_list.iter_pages() %}
+            {% if page_num %}
+            {% if page_num != vacation_request_list.page %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li class="disabled">
+                <a class="page-link" href="#">...</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            <!-- 다음 페이지 -->
+            {% if vacation_request_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ vacation_request_list.next_num }}" href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        <!-- 페이징 처리 끝 -->
+    </div>
+    <div>
+        <form method="post" action="{{ url_for('employee.create_vacation_request') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="from_date">휴가 시작일</label>
+            <input type="date" name="from_date" id="from_date">
+            <label for="to_date">휴가 끝일</label>
+            <input type="date" name="to_date" id="to_date">
+            <label for="reason">사유</label>
+            <textarea name="reason" id="reason" rows="10"></textarea>
+            <button class="btn btn-primary">신청</button>
+        </form>
+    </div>
+</div>
+<form id="searchForm" method="get">
+    <input type="hidden" id="page" name="page" value="{{ page or '' }}">
+</form>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".page-link").on('click', function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+    });
+</script>
+{% endblock %}
