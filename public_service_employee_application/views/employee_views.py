@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, g, flash, redirect, url_f
 from public_service_employee_application import db
 from public_service_employee_application.models import Post, User
 from public_service_employee_application.views.auth_views import login_required_employee
-from public_service_employee_application.forms import writeForm, EmployeeUserDetail, Request
+from public_service_employee_application.forms import writeForm, EmployeeUserDetail
 
 from sqlalchemy import and_
 
@@ -54,7 +54,6 @@ def notice_detail(post_id):
 def user_detail(user_id):
     employeeuserdetailform = EmployeeUserDetail()
     user = User.query.get_or_404(user_id)
-    requestform = Request()
 
     if request.method == 'POST':
         g.modifyError = True
@@ -64,6 +63,4 @@ def user_detail(user_id):
         db.session.commit()
         g.modifyError = False
 
-
-    return render_template('user/user_detail.html', user=user, employeeuserdetailform=employeeuserdetailform,
-                           requestform=requestform)
+    return render_template('user/user_detail.html', user=user, employeeuserdetailform=employeeuserdetailform)

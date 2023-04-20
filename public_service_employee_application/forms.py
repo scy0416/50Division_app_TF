@@ -87,12 +87,6 @@ class UserDetail(FlaskForm):
     bigo = StringField('비고')
 
 
-class Request(FlaskForm):
-    # 채용일
-    hire_date = DateField('채용일', validators=[DataRequired()])
-    # 퇴직일
-    retirement_date = DateField('퇴직일', validators=[DataRequired()])
-
 class EmployeeUserDetail(FlaskForm):
     # 연락처
     phone_num = StringField('연락처')
