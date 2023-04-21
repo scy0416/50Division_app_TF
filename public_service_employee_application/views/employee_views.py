@@ -194,3 +194,25 @@ def grievance_list():
 
     # 템플릿 출력
     return render_template('user/grievance_list.html', grievance_list=grievance, q=q, page=page)
+
+# 고충 글 작성 페이지
+@bp.route('/grievance/write', methods=('GET', ))
+@login_required_employee
+def grievance_write():
+    return render_template('user/write.html')
+
+# 고충 글 작성
+@bp.route('/grievance/write', methods=('POST', ))
+@login_required_employee
+def post_grievance():
+    subject = request.form.get('subject')
+    content = request.form.get('content')
+    post = Post(
+        user_id=g.user.id,
+        subject=subject,
+        content=content,
+        create_date=datetime.now()
+    )
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_list'))
