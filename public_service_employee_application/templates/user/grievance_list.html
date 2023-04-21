@@ -27,7 +27,7 @@
         <tr class="text-center">
             <td>{{ grievance_list.total - ((grievance_list.page-1) * grievance_list.per_page) - loop.index0 }}</td>
             <td class="text-left">
-                <a href="#">{{ grievance.subject }}</a>
+                <a href="{{ url_for('employee.grievance_detail', post_id=grievance.id) }}">{{ grievance.subject }}</a>
                 {% if grievance.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ grievance.comment_set|length }}</span>
                 {% endif %}

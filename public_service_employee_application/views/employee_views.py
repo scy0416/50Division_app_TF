@@ -44,9 +44,9 @@ def notice_detail(post_id):
     return render_template('user/notice_detail.html', post=post, form=form, cForm=cForm)
 
 # 댓글 등록
-@bp.route('/comment', methods=('POST', ))
+@bp.route('/notice/comment', methods=('POST', ))
 @login_required_employee
-def create_comment():
+def create_comment_notice():
     form = writeForm()
     if form.validate_on_submit():
         comment = Comment(
@@ -60,9 +60,9 @@ def create_comment():
     return redirect(url_for('employee.notice_detail', post_id=request.form.get('post_id')))
 
 # 댓글 수정
-@bp.route('/comment/<int:comment_id>/edit', methods=('POST', ))
+@bp.route('/notice/comment/<int:comment_id>/edit', methods=('POST', ))
 @login_required_employee
-def edit_comment(comment_id):
+def edit_comment_notice(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     post_id = comment.post_id
     comment.content = request.form.get('content')
@@ -71,9 +71,9 @@ def edit_comment(comment_id):
     return redirect(url_for('employee.notice_detail', post_id=post_id))
 
 # 댓글 삭제
-@bp.route('/comment/<int:comment_id>/delete', methods=('POST', ))
+@bp.route('/notice/comment/<int:comment_id>/delete', methods=('POST', ))
 @login_required_employee
-def delete_comment(comment_id):
+def delete_comment_notice(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     post_id = comment.post_id
     db.session.delete(comment)
@@ -216,3 +216,45 @@ def post_grievance():
     db.session.add(post)
     db.session.commit()
     return redirect(url_for('employee.grievance_list'))
+
+# 고충 글 상세 창
+@bp.route('/grievance/<int:post_id>', methods=('GET', ))
+@login_required_employee
+def grievance_detail(post_id):
+    # 확인하려는 글
+    post = Post.query.get_or_404(post_id)
+    # 템플릿 출력
+    return render_template('user/grievance_detail.html', post=post)
+
+# 댓글 작성
+@bp.route('/grievance/comment', methods=('POST', ))
+@login_required_employee
+def create_comment_grievance():
+    comment = Comment(
+        user_id=g.user.id,
+        post_id=request.form.get('post_id'),
+        content=request.form.get('content'),
+        create_date=datetime.now()
+    )
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+# 댓글 편집
+@bp.route('/grievance/comment/<int:comment_id>/edit', methods=('POST', ))
+@login_required_employee
+def edit_comment_grievance(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    comment.content = request.form.get('content')
+    comment.modify_date = datetime.now()
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+# 댓글 삭제
+@bp.route('/grievance/comment/<int:comment_id>/delete', methods=('POST', ))
+@login_required_employee
+def delete_comment_grievance(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
