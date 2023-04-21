@@ -200,6 +200,12 @@ class Medical_checkup_request(db.Model):
     user = db.relationship('User', backref=db.backref('medical_checkup_request_set'))
     # 올린 이미지가 저장된 주소
     img_addr = Column(String(128), nullable=True)
+    # 상태(ALLOWED/REJECTED/WAITING)
+    state = Column(String(10), nullable=True)
+    # 신청일시
+    request_date = Column(DateTime, nullable=True)
+    # 처리일시
+    proc_date = Column(DateTime, nullable=True)
 
 
 # 급여 명세서에 대한 모델
