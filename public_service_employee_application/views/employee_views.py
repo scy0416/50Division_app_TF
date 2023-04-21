@@ -178,3 +178,19 @@ def welfare():
 def edu():
     user = User.query.get_or_404(g.user.id)
     return render_template('user/edu.html', user=user)
+
+# 고충 글 리스트
+@bp.route('/grievance', methods=('GET', ))
+@login_required_employee
+def grievance_list():
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 검색 처리 과정
+    # 실질적인 검색
+    grievance = db.session.query(Post).join(User).filter(and_(User.id == g.user.id, Post.subject.contains(q))).order_by(Post.create_date.desc())
+    grievance = grievance.paginate(page=page, per_page=10)
+
+    # 템플릿 출력
+    return render_template('user/grievance_list.html', grievance_list=grievance, q=q, page=page)
