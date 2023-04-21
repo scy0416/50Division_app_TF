@@ -4,7 +4,7 @@ from datetime import datetime
 
 from public_service_employee_application.views.auth_views import login_required_employee
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -152,3 +152,22 @@ def create_vacation_request():
     db.session.add(vacation_request)
     db.session.commit()
     return redirect(url_for('employee.vacation'))
+
+# 복지 포인트 조회
+@bp.route('/welfare/', methods=('GET', ))
+@login_required_employee
+def welfare():
+    quarter_id = request.args.get('quarter_id', type=int, default=-1)
+    quarter = None
+
+    quarter_list = Quarter.query.all()
+
+    if quarter_id == -1:
+        quarter = Quarter.query.order_by(Quarter.quarter.desc()).first()
+        quarter_id = quarter.id
+    else:
+        quarter = Quarter.query.get_or_404(quarter_id)
+
+    welfare_point = Wellfare_point.query.filter_by(user_id=g.user.id, quarter_id=quarter_id).first()
+
+    return render_template('user/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
