@@ -171,3 +171,10 @@ def welfare():
     welfare_point = Wellfare_point.query.filter_by(user_id=g.user.id, quarter_id=quarter_id).first()
 
     return render_template('user/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
+
+# 의무 교육 현황
+@bp.route('/edu/', methods=('GET', ))
+@login_required_employee
+def edu():
+    user = User.query.get_or_404(g.user.id)
+    return render_template('user/edu.html', user=user)
