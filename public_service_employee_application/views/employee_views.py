@@ -282,11 +282,11 @@ def medical_checkup_request_page():
 @login_required_employee
 def medical_checkup_request():
     f = request.files['file']
-    f.save(os.path.join('medical_checkup', secure_filename(f.filename)))
+    f.save(os.path.join('static/medical_checkup', secure_filename(f.filename)))
 
     medical_checkup_request = Medical_checkup_request(
         user_id=g.user.id,
-        img_addr=os.path.join('medical_checkup', secure_filename(f.filename)),
+        img_addr=secure_filename(f.filename),
         state='WAITING',
         request_date=datetime.now()
     )
@@ -303,16 +303,10 @@ def get_image_url(request_id):
     medical_checkup_request = Medical_checkup_request.query.get_or_404(request_id)
     image_url = medical_checkup_request.img_addr
     #return jsonify({"url": image_url})
-    return jsonify(({"url": url_for('employee.medical_checkup_preview', filepath=image_url)}))
+    return jsonify(({"url": url_for('employee.medical_checkup_preview', filename=image_url)}))
 
 # 건강검진 이미지 미리보기
-@bp.route('/medical_checkup/<path:filepath>/preview', methods=('GET', ))
+@bp.route('/medical_checkup/<path:filename>/preview', methods=('GET', ))
 @login_required_employee
-def medical_checkup_preview(filepath):
-    splitted_path = filepath.split('\\')
-    filename = splitted_path[-1]
-    directory_paths = splitted_path[0:-1]
-    directory = ""
-    for i in directory_paths:
-        directory = directory.join(i)
-    return send_from_directory(directory, filename)
+def medical_checkup_preview(filename):
+    return send_from_directory('static/medical_checkup', filename)

@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response, Response
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response, Response, send_from_directory
 from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
 from werkzeug.utils import redirect
 from datetime import date
 from sqlalchemy import and_
@@ -7,7 +8,7 @@ from datetime import datetime
 
 from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter, Wellfare_point
+from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -382,7 +383,8 @@ def request_main():
     join_request = Join_request.query.filter_by(state='WAITING').all()
     hr_change_request = HR_change_request.query.filter_by(state='WAITING').all()
     vacation_request = Vacation_request.query.filter_by(state='WAITING').all()
-    return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request)
+    medical_checkup_request = Medical_checkup_request.query.filter_by(state='WAITING').all()
+    return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request, medical_checkup_request=medical_checkup_request)
 
 # 가입 신청 관리 부분
 @bp.route('/request/join/', methods=('GET', ))
@@ -701,3 +703,46 @@ def delete_quarter(quarter_id):
     db.session.delete(quarter)
     db.session.commit()
     return redirect(url_for('admin.welfare'))
+
+# 건강검진 확인 요청 처리 페이지
+@bp.route('/request/medical_checkup', methods=('GET', ))
+@login_required_admin
+def medical_checkup_list():
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    #medical_checkup = Medical_checkup_request.query.filter()
+    #medical_checkup = db.session.query(Medical_checkup_request, User).join(User, User.role=='USER', isouter=True)
+    #user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
+    #medical_checkup = medical_checkup.paginate(page=page, per_page=10)
+    ##.join(User).filter(User.role == 'USER').paginate(page=page, per_page=10)
+    medical_checkup = Medical_checkup_request.query.outerjoin(User, Medical_checkup_request.user_id == User.id).filter(User.role == 'USER').paginate(page=page, per_page=10)
+
+    return render_template('admin/medical_checkup_request.html', q=q, page=page, medical_checkup_list = medical_checkup)
+
+# 건강검진 확인 상세 페이지
+@bp.route('/request/medical_checkup/<int:request_id>', methods=('GET', ))
+@login_required_admin
+def medical_checkup_detail(request_id):
+    medical_checkup = Medical_checkup_request.query.get_or_404(request_id)
+    user = User.query.get_or_404(medical_checkup.user_id)
+    return render_template('admin/medical_checkup_request_detail.html', user=user, medical_checkup=medical_checkup)
+
+@bp.route('/request/medical_checkup/<int:request_id>/allow', methods=('POST', ))
+@login_required_admin
+def allow_medical_checkup(request_id):
+    medical_checkup = Medical_checkup_request.query.get_or_404(request_id)
+    medical_checkup.state = 'ALLOWED'
+    medical_checkup.proc_date = datetime.now()
+    db.session.commit()
+    return redirect(url_for('admin.medical_checkup_detail', request_id=request_id))
+
+@bp.route('/request/medical_checkup/<int:request_id>/reject', methods=('POST', ))
+@login_required_admin
+def deny_medical_checkup(request_id):
+    medical_checkup = Medical_checkup_request.query.get_or_404(request_id)
+    medical_checkup.state = 'REJECTED'
+    medical_checkup.proc_date = datetime.now()
+    db.session.commit()
+    return redirect(url_for('admin.medical_checkup_detail', request_id=request_id))
