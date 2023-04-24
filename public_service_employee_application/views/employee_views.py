@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, g
 from sqlalchemy import and_
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 from public_service_employee_application.views.auth_views import login_required_employee
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -258,3 +259,19 @@ def delete_comment_grievance(comment_id):
     db.session.delete(comment)
     db.session.commit()
     return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+# 건강검진 확인 요청 화면
+@bp.route('/medical_checkup', methods=('GET', ))
+@login_required_employee
+def medical_checkup():
+    page = request.args.get('page', default=1)
+    medical_checkup_list = Medical_checkup_request.query.filter_by(user_id=g.user.id).order_by(Medical_checkup_request.request_date.desc())
+    medical_checkup_list = medical_checkup_list.paginate(page=page, per_page=10)
+
+    return render_template('user/medical_checkup.html', page=page, medical_checkup_list=medical_checkup_list)
+
+# 이미지 업로드 및 건강검진 확인 요청 생성
+@bp.route('/medical_checkup', methods=('POST', ))
+@login_required_employee
+def medical_checkup_request():
+    pass
