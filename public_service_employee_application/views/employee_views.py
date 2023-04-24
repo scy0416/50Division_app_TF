@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, g
+import os
+from flask import Blueprint, render_template, request, session, redirect, url_for, g, send_from_directory, jsonify
 from sqlalchemy import and_
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -270,8 +271,50 @@ def medical_checkup():
 
     return render_template('user/medical_checkup.html', page=page, medical_checkup_list=medical_checkup_list)
 
+# 건강검진 등록 화면
+@bp.route('/medical_checkup/request', methods=('GET', ))
+@login_required_employee
+def medical_checkup_request_page():
+    return render_template('user/medical_checkup_request.html')
+
 # 이미지 업로드 및 건강검진 확인 요청 생성
 @bp.route('/medical_checkup', methods=('POST', ))
 @login_required_employee
 def medical_checkup_request():
-    pass
+    f = request.files['file']
+    f.save(os.path.join('medical_checkup', secure_filename(f.filename)))
+
+    medical_checkup_request = Medical_checkup_request(
+        user_id=g.user.id,
+        img_addr=os.path.join('medical_checkup', secure_filename(f.filename)),
+        state='WAITING',
+        request_date=datetime.now()
+    )
+    db.session.add(medical_checkup_request)
+    db.session.commit()
+
+    return redirect(url_for('employee.medical_checkup'))
+
+# 건강검진 이미지 미리보기 url
+@bp.route('/medical_checkup/<int:request_id>/get_url', methods=('GET', ))
+@login_required_employee
+def get_image_url(request_id):
+    #print("실행")
+    medical_checkup_request = Medical_checkup_request.query.get_or_404(request_id)
+    image_url = medical_checkup_request.img_addr
+    #return jsonify({"url": image_url})
+    return jsonify(({"url": url_for('employee.medical_checkup_preview', filepath=image_url)}))
+
+# 건강검진 이미지 미리보기
+@bp.route('/medical_checkup/<path:filepath>/preview', methods=('GET', ))
+@login_required_employee
+def medical_checkup_preview(filepath):
+    splitted_path = filepath.split('\\')
+    filename = splitted_path[-1]
+    directory_paths = splitted_path[0:-1]
+    directory = ""
+    for i in directory_paths:
+        directory = directory.join(i)
+    print(filename)
+    print(directory)
+    return send_from_directory(directory, filename)

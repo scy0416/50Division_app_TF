@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
+    <div class="container">
+        <a class="btn btn-primary" href="{{ url_for('employee.medical_checkup_request_page') }}">건강검진 결과 등록</a>
+    </div>
     <table class="table">
         <thead>
         <tr class="text-center">
@@ -15,9 +18,9 @@
         {% if medical_checkup_list.items %}
         {% for medical_checkup in medical_checkup_list.items %}
         <tr class="text-center">
-            <td>{{ medical_checkup_list.total - ((medical_checkup_list-1) * medical_checkup_list.per_page) - loop.index0 }}</td>
+            <td>{{ medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) - loop.index0 }}</td>
             <td>{{ medical_checkup.request_date|datetime }}</td>
-            <td><a href="#">확인</a></td>
+            <td><a href="#" data-type="image-view" data-request_id="{{ medical_checkup.id }}">확인</a></td>
             <td>
                 {% if medical_checkup.state=='WAITING' %}
                 대기중
@@ -87,13 +90,31 @@
         <input type="hidden" id="page" name="page" value="{{ page or '' }}">
     </form>
 </div>
+<div class="container" id="image_preview"></div>
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
     $(document).ready(function(){
-        ${".page-link").on('click', function(){
+        $(".page-link").on('click', function(){
             $("#page").val($(this).data("page"));
             $("#searchForm").submit();
+        });
+        $('a[data-type="image-view"]').on("click", function(){
+            //console.log("/employee/medical_checkup/" + $(this).data("request_id") + "/get_url")
+            $.ajax({
+                url: "/employee/medical_checkup/" + $(this).data("request_id") + "/get_url",
+                type: "GET",
+                dataType: "json",
+                success: function(response){
+                    var imageUrl = response.url;
+                    console.log(imageUrl);
+                    var imgElement = $("<img>").attr("src", imageUrl).attr("alt", "");
+                    $("#image_preview").html(imgElement);
+                },
+                error: function(){
+                    console.log("Error: 이미지를 불러오는 데 실패했습니다.");
+                }
+            });
         });
     });
 </script>
