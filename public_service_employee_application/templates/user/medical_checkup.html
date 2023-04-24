@@ -100,14 +100,12 @@
             $("#searchForm").submit();
         });
         $('a[data-type="image-view"]').on("click", function(){
-            //console.log("/employee/medical_checkup/" + $(this).data("request_id") + "/get_url")
             $.ajax({
                 url: "/employee/medical_checkup/" + $(this).data("request_id") + "/get_url",
                 type: "GET",
                 dataType: "json",
                 success: function(response){
                     var imageUrl = response.url;
-                    console.log(imageUrl);
                     var imgElement = $("<img>").attr("src", imageUrl).attr("alt", "");
                     $("#image_preview").html(imgElement);
                 },

@@ -315,6 +315,4 @@ def medical_checkup_preview(filepath):
     directory = ""
     for i in directory_paths:
         directory = directory.join(i)
-    print(filename)
-    print(directory)
     return send_from_directory(directory, filename)
