@@ -1,16 +1,36 @@
 {% extends 'base.html' %}<!-- user, form -->
 {% block content %}
-<div class="container my-3">
-    <div class="d-flex justify-content-end">
-        <button onclick="showEdit()" class="btn btn-primary" style="margin:1px;">수정</button>
-    </div>
-    <table class="table table-bordered">
-        <thead>
+<style>
+table thead{
+border-top:1px #dee2e6 solid;
+}
+  table th,
+table td {
+	border-left: 1px #dee2e6 solid;
+	border-right: 1px #dee2e6 solid;
+
+}
+table th:first-child,
+table td:first-child {
+	border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+	border-right: 0;
+}
+
+
+</style>
+<div class="container my-4">
+    <table class="table">
+        <thead style="text-align:center">
         <tr>
-            <td rowspan="3" style="width:150px;height:150px;text-align:center;margin=10px" class="align-middle">
+            <td rowspan="4" style="width:100px;height:100px;text-align:center;margin=10px" class="align-middle">
                 <img src="{{ user.img_addr or url_for('static', filename='basic image.png') }}" alt=""
                      style="display:inline-block;max-width: 100%;height:auto;">
             </td>
+        </tr>
+        <tr>
             <th class="text-center">성명</th>
             <td>{{ user.name }}</td>
         </tr>
@@ -19,79 +39,122 @@
             <td>{{ user.birth_date }}</td>
         </tr>
         <tr>
-            <th class="text-center">연락처</th>
-            <td>{{ user.phone_num }}</td>
-        </tr>
-        </thead>
-    </table>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th class="text-center">주소</th>
-            <td>{% if user.address %}{{ user.address }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th class="text-center">부대</th>
-            <td>{{ user.unit_name }}</td>
-        </tr>
-        <tr>
             <th class="text-center">직책</th>
             <td>{{ user.position }}</td>
         </tr>
+
+        </thead>
+        <tbody style="text-align:center">
+        <tr>
+            <th class="text-center">연락처</th>
+            <td style="border-right:none">
+                <input type="text" data-edit="phone_num"
+                       style="border:none;padding:none;width:100%;background:transparent"
+                       value="{{ user.phone_num or '' }}" readonly>
+            </td>
+            <td>
+                <button class="btn btn-light" style=";float:right">편집</button>
+                <button class="btn btn-secondary modify" style="display:none;float:right">저장</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">주소</th>
+            <td>
+                <input type="text" data-edit="address"
+                       style="border:none;padding:none;width:100%;background:transparent"
+                       value="{{ user.address or '' }}" readonly>
+            </td>
+            <td>
+                <button class="btn btn-light" style="float:right">편집</button>
+                <button class="btn btn-secondary modify" style="display:none;float:right">저장</button>
+            </td>
+        </tr>
+
         <tr>
             <th class="text-center">채용일</th>
-            <td>{{ user.hire_date }}</td>
+            <td>
+                <div style="width:100%;margin:none">{{ user.hire_date }}</div>
+            </td>
+            <td>
+                <button class="btn btn-light" style="float:right">변경 신청</button>
+
+                <input type="date" value="{{ user.hire_date }}" style="display:none">
+                <textarea rows="1" style="display:none">사유를 작성하세요.</textarea>
+                <button class="btn btn-secondary require" data-type="hire_date" style="display:none">신청</button>
+                <button class="btn btn-secondary cancel" style="display:none">취소</button>
+            </td>
         </tr>
         <tr>
             <th class="text-center">퇴직일</th>
-            <td>{{ user.retirement_date }}</td>
+            <td>
+                <div>{{ user.retirement_date }}</div>
+            </td>
+            <td style="text-align:end">
+                <button class="btn btn-light">변경 신청</button>
+
+                <input type="date" value="{{ user.retirement_date }}" style="display:none">
+                <textarea rows="5" style="display:none">사유를 작성하세요.</textarea>
+                <button class="btn btn-secondary require" data-type="retirement_date" style="display:none">신청
+                </button>
+                <button class="btn btn-secondary cancel" style="display:none">취소</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">부대</th>
+            <td colspan='2'>{{ user.unit_name }}</td>
         </tr>
         <tr>
             <th class="text-center">고용형태</th>
-            <td>{{ user.employment_type }}</td>
+            <td colspan='2'>{{ user.employment_type }}</td>
         </tr>
         <tr>
             <th class="text-center">비고</th>
-            <td>{% if user.bigo %}{{ user.bigo }}{% endif %}</td>
+            <td colspan='2'>{% if user.bigo %}{{ user.bigo }}{% endif %}</td>
         </tr>
-        </thead>
+        </tbody>
     </table>
-    <dialog id="Edit">
-        <h3>정보 편집</h3>
-        <form method="post" class="post-form" id="employeeuserdetailform">
-            {{ employeeuserdetailform.csrf_token }}
-            {% include "employeeuserdetailform_errors.html" %}
-            <div class="form-group">
-                <label for="phone_num">연락처</label>
-                <input type="text" class="form-control" name="phone_num" id="phone_num"
-                       value="{{ employeeuserdetailform.phone_num.data or user.phone_num }}">
-            </div>
-            <div class="form-group">
-                <label for="address">주소</label>
-                <input type="text" class="form-control" name="address" id="address"
-                       value="{{ employeeuserdetailform.address.data or user.address }}">
-            </div>
-            <button type="button" onclick="closeEdit()">취소</button>
-            <button>수정</button>
-        </form>
-    </dialog>
+
 </div>
+<form method="post" action="{{ url_for('employee.edit_pr_information', user_id=user.id) }}" id="edit">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="phone_num" id="phone_num" value="{{ user.phone_num or '' }}">
+    <input type="hidden" name="address" id="address" value="{{ user.address or '' }}">
+</form>
+<form method="post" action="{{ url_for('employee.require_edit_pr', user_id=user.id) }}" id="require">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="change_to" value="">
+    <input type="hidden" name="reason" value="">
+    <input type="hidden" name="type" value="">
+</form>
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-    function showEdit(){
-        var dialog = document.getElementById("Edit");
-        dialog.showModal();
-    }
-    function closeEdit(){
-        event.preventDefault();
-        var dialog = document.getElementById("Edit");
-        dialog.close();
-    }
+    $(function(){
+        $(".btn-light").on("click", function(){
+            $(this).siblings("input").removeAttr("readonly");
+            $(this).prevAll().css("display", "block");
+            $(this).nextAll().css("display", "block");
+            $(this).css("display", "none");
+        });
+        $(".modify").on("click", function(){
+            $("#"+$(this).siblings("input").data("edit")).val($(this).siblings("input").val());
+            $("#edit").submit();
+        });
+        $(".cancel").on("click", function(){
+            $(this).siblings("div").next().css("display", "block");
+            $(this).siblings("div").next().nextAll().css("display", "none");
+        });
+        $(".require").on("click", function(){
+            $("#require input[name='change_to']").val($(this).siblings("input").val());
+            $("#require input[name='reason']").val($(this).siblings("textarea").val());
+            $("#require input[name='type']").val($(this).data("type"));
+            $("#require").submit();
+        });
+    });
 
-    {% if g.modifyError %}
-    showEdit();
-    {% endif %}
+
+
+
 
 </script>
 {% endblock %}

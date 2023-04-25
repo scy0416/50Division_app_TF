@@ -30,7 +30,7 @@
         <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
         {% endif %}
       </td>
-      <td>{{ notice.user.name }}({{ notice.user.position }})</td>
+      <td>{{ notice.user.name }}</td>
       <td>{{ notice.create_date|datetime }}</td>
     </tr>
     {% endfor %}
@@ -95,7 +95,7 @@
       </div>
       <div class="form-group">
         <label for="content">내용</label>
-        <textarea style="resize:none;" rows="30" class="form-control" name="content" id="content" value="{{ form.content.data or '' }}"></textarea>
+        <textarea style="resize:none;" rows="20" class="form-control" name="content" id="content" value="{{ form.content.data or '' }}"></textarea>
       </div>
       <button type="button" onclick="closeWrite()" class="btn btn-primary">취소</button>
       <button class="btn btn-primary">등록</button>

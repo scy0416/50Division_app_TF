@@ -9,10 +9,60 @@
               {% if post.user_id!=session.get('user_id') %}disabled{% endif %}>삭제</button>
     </div>
     <div class="">제목</div>
-    <input type="text" id="subject" readonly value="{{ post.subject }}">
+    <input type="text" readonly value="{{ post.subject }}">
     <div class="">내용</div>
-    <textarea rows="10" id="content" readonly style="resize:none;">{{ post.content }}</textarea>
+    <textarea rows="10" readonly style="resize:none;">{{ post.content }}</textarea>
   </div>
+  <!-- 댓글 -->
+  {% if post.comment_set|length > 0 %}
+  <div class="mt-3">
+    {% for comment in post.comment_set %}
+    <div class="comment py-2 text-muted">
+      <!-- <span style="white-space: pre-line;">{{ comment.content }}</span>
+      <textarea readonly style="resize:none;">{{ comment.content }}</textarea>
+      <span>- {{ comment.user.username }}, {{ comment.create_date|datetime }}</span> -->
+      {% if g.user == comment.user %}
+      <div class="d-flex">
+        <div>
+          <form method="post" action="{{ url_for('admin.comment', comment_id=comment.id) }}">
+            {{ cForm.csrf_token }}
+            <input type="hidden" name="form_id" value="modify">
+            <textarea readonly style="resize:none" name="content" id="comment_{{ comment.id }}">{{ comment.content }}</textarea>
+            <button type="button" onclick="modify($(this))" class="btn btn-primary" data-comment_id="{{ comment.id }}" id="modify_{{ comment.id }}">수정</button>
+            <button class="btn btn-primary" onclick="save($(this))" style="display:none" data-comment_id="{{ comment.id }}" id="save_{{ comment.id }}">저장</button>
+            <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}{% if comment.modify_date %}(수정됨){% endif %}</span>
+          </form>
+        </div>
+        <div>
+          <form method="post" action="{{ url_for('admin.comment', comment_id=comment.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_id" value="delete">
+            <button class="small btn">삭제</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <textarea readonly style="resize:none">{{ comment.content }}</textarea>
+      <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div>
+    <form method="post">
+      {{ form.csrf_token }}
+      <input type="hidden" name="subject" value="none">
+      <div>
+        댓글 작성
+      </div>
+      <div>
+        <textarea name="content" rows="10" style="resize:none;"></textarea>
+      </div>
+      <button class="btn btn-primary">등록</button>
+    </form>
+  </div>
+  <!-- 댓글 끝 -->
 </div>
 {% endblock %}
 {% block script %}
@@ -29,6 +79,16 @@
     $("#editBtn").css('display','block');
     $("#saveBtn").css('display','none');
     getPatch($("#saveBtn").dataset.url);
+  }
+  function modify(element){
+    $("#comment_"+element.data("comment_id")).removeAttr('readonly');
+    element.css('display','none');
+    $("#save_"+element.data("comment_id")).css('display','block');
+  }
+  function save(element){
+    $("#comment_"+element.data("comment_id")).attr('readonly');
+    $("#modify_"+element.data("comment_id")).css('display','block');
+    element.css('display','none');
   }
   async function getPatch(url){
     try{

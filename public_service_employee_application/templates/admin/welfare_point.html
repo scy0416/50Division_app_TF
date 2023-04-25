@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center">복지 포인트 관리</h2>
+    <div class="container">
+        <button class="btn btn-primary" onclick="open_make_quarter()">분기 추가</button>
+        <button class="btn btn-primary" onclick="open_edit_quarter()">분기 편집</button>
+        {% if quarter %}
+        <form method="post" action="{{ url_for('admin.delete_quarter', quarter_id=quarter.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-primary">분기 삭제</button>
+        </form>
+        <form method="get" id="searchForm">
+            <input type="hidden" id="page" name="page" value="{{ page }}">
+            <input type="hidden" name="quarter_id" value="{{ quarter_id }}">
+            <label for="q">이름 검색</label>
+            <input type="text" id="q" name="q" value="{{ q }}">
+            <button type="button" class="btn btn-primary" id="btn_search">검색</button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr class="text-center">
+                <th>번호</th>
+                <th>이름</th>
+                <th>생년월일</th>
+                <th>
+                    <form method="get" id="quarter_select">
+                        <input type="hidden" name="q" value="{{ q }}">
+                        <select name="quarter_id" onchange="change_quarter(this)">
+                            <!-- <option value="">분기를 선택하세요.</option> -->
+                            {% if quarter_list %}
+                            {% for qt in quarter_list %}
+                            <option value="{{ qt.id }}" {% if quarter.quarter==qt.quarter %}selected{% endif %}>{{ qt.quarter }}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </form>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if user_list.items %}
+            {% for user in user_list.items %}
+            <tr class="text-center">
+                <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page)- loop.index0 }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.birth_date }}</td>
+                {% if user.point %}
+                <td>
+                    <form method="post" action="{{ url_for('admin.edit_welfare', welfare_point_id=user.welfare_point_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="text" name="point" value="{{ user.point }}" readonly id="point_{{ user.welfare_point_id }}">
+                        <button type="button" onclick="edit_mode($(this))" class="btn btn-primary" data-welfare_id="{{ user.welfare_point_id }}" id="edit_{{ user.welfare_point_id }}">편집</button>
+                        <button class="btn btn-primary" onclick="save_mode($(this))" style="display:none" id="save_{{ user.welfare_point_id }}" data-welfare_id="{{ user.welfare_point_id }}">저장</button>
+                    </form>
+                </td>
+                {% else %}
+                <td>
+                    <form method="post" action="{{ url_for('admin.create_welfare') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <input type="hidden" name="quarter_id" value="{{ quarter.id }}">
+                        <input type="text" name="point" value="정보가 없습니다." readonly id="user_{{ user.id }}">
+                        <button type="button" onclick="create_mode($(this))" class="btn btn-primary" data-user_id="{{ user.id }}" id="create_start_{{ user_id }}">생성</button>
+                        <button class="btn btn-primary" data-user_id="{{ user.id }}" id="create_done_{{ user.id }}" style="display:none">저장</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">사용자가 없습니다.</td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <!-- 페이징 처리 시작 -->
+        {% if user_list.items %}
+        <ul class="pagination justify-content-center">
+            <!-- 이전 페이지 -->
+            {% if user_list.has_prev %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ user_list.prev_num }}" href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            {% for page_num in user_list.iter_pages() %}
+            {% if page_num %}
+            {% if page_num != user_list.page %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li class="disabled">
+                <a class="page-link" href="#">...</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            <!-- 다음 페이지 -->
+            {% if user_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ user_list.next_num }}" href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+    <dialog id="make_quarter">
+        <form method="post" action="{{ url_for('admin.make_quarter') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="quarter_name">분기명</label>
+            <input type="text" id="quarter_name" name="quarter_name">
+            <button type="button" class="btn btn-primary" onclick="close_make_quarter()">취소</button>
+            <button class=" btn btn-primary">생성</button>
+        </form>
+    </dialog>
+    {% if quarter %}
+    <dialog id="edit_quarter">
+        <form method="post" action="{{ url_for('admin.edit_quarter', quarter_id=quarter.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="new_name">바뀔 이름</label>
+            <input type="text" id="new_name" name="new_name" value="{{ quarter.quarter }}">
+            <button type="button" class="btn btn-primary" onclick="close_edit_quarter()">취소</button>
+            <button class="btn btn-primary">변경</button>
+        </form>
+    </dialog>
+    {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    function change_quarter(element){
+        if(element.value != ''){
+            $("#quarter_select").submit();
+        }
+    }
+    function open_make_quarter(){
+        document.getElementById("make_quarter").showModal()
+    }
+    function close_make_quarter(){
+        document.getElementById("make_quarter").close()
+    }
+    function open_edit_quarter(){
+        document.getElementById("edit_quarter").showModal()
+    }
+    function close_edit_quarter(){
+        document.getElementById("edit_quarter").close()
+    }
+    $(document).ready(function(){
+        $(".page-link").on('click', function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+        $("#btn_search").on('click', function(){
+            $("#page").val(1);
+            $("#searchForm").submit();
+        });
+    });
+    function edit_mode(element){
+        $("#point_"+element.data('welfare_id')).removeAttr('readonly');
+        element.css('display','none');
+        $("#save_"+element.data('welfare_id')).css('display', 'block');
+    }
+    function save_mode(element){
+        $("#point_"+element.data('welfare_id')).attr('readonly');
+        $("#edit_"+element.data('welfare_id')).css('display', 'block');
+        element.css('display', 'none');
+    }
+    function create_mode(element){
+        $("#user_"+element.data('user_id')).removeAttr('readonly');
+        $("#user_"+element.data('user_id')).val('');
+        element.css('display', 'none');
+        $("#create_done_"+element.data('user_id')).css('display', 'block');
+    }
+</script>
+{% endblock %}

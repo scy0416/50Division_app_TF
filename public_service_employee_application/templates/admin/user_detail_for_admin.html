@@ -133,8 +133,7 @@
                 throw new Error('Error: ${response.statusText}');
             }
 
-            const data = await response.json();
-            console.log('User deleted:', data);
+            location.href = '{{ url_for('admin.pr_information') }}';
         } catch (error) {
             console.error('Error:', error);
         }
@@ -144,7 +143,6 @@
         $(".delete").on('click', function() {
             if(confirm("정말로 삭제하시겠습니까?")) {
                 deleteUser($(this).data('url'));
-                location.href = "{{ url_for('admin.pr_information') }}";
             }
         });
     });

@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, g, flash, redirect, url_for
-
-from public_service_employee_application import db
-from public_service_employee_application.models import Post, User
+from flask import Blueprint, render_template, request, session, redirect, url_for, g
+from datetime import datetime
 from public_service_employee_application.views.auth_views import login_required_employee
-from public_service_employee_application.forms import writeForm, EmployeeUserDetail
 
 from sqlalchemy import and_
+from public_service_employee_application import db
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request
+from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
 bp = Blueprint('employee', __name__, url_prefix='/employee')
@@ -19,48 +19,149 @@ def index():
     return render_template('user/employee_main.html')
 
 
+# 공지사항
 @bp.route('/notice/', methods=('GET', 'POST'))
 @login_required_employee
 def notice():
-    # 입력 폼 생성
-    form = writeForm()
-
-    if request.method == 'POST':
-        g.form_error = True
     # 검색 및 페이징 처리
     q = request.args.get('q', type=str, default='')
     page = request.args.get('page', type=int, default=1)
 
     # 검색 처리 과정
-    # 실질적인 검색
     notice_list = db.session.query(Post).join(User).filter(
-        and_(User.role == 'USER', Post.subject.contains(q))).order_by(Post.create_date.desc())
+        and_(User.role == 'ADMIN', Post.subject.contains(q))).order_by(Post.create_date.desc())
     notice_list = notice_list.paginate(page=page, per_page=10)
 
     # 템플릿 출력
-    return render_template('user/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
+    return render_template('user/notice_list.html', notice_list=notice_list, q=q, page=page)
 
 
+# 공지사항 상세창
 @bp.route('/notice/<int:post_id>', methods=('GET',))
 @login_required_employee
 def notice_detail(post_id):
+    # 폼 생성
+    form = writeForm()
+    cForm = contentForm()
+
     post = Post.query.get_or_404(post_id)
-    # 템플릿 출력
-    return render_template('user/notice_detail.html', post=post)
+    return render_template('user/notice_detail.html', post=post, form=form, cForm=cForm)
 
 
-@bp.route('/pr/detail/<int:user_id>', methods=('GET', 'POST'))
+# 댓글 등록
+@bp.route('/comment', methods=('POST',))
 @login_required_employee
-def user_detail(user_id):
-    employeeuserdetailform = EmployeeUserDetail()
+def create_comment():
+    form = writeForm()
+    if form.validate_on_submit():
+        comment = Comment(
+            user_id=session.get('user_id'),
+            post_id=request.form.get('post_id'),
+            content=form.content.data,
+            create_date=datetime.now()
+        )
+        db.session.add(comment)
+        db.session.commit()
+    return redirect(url_for('employee.notice_detail', post_id=request.form.get('post_id')))
+
+
+# 댓글 수정
+@bp.route('/comment/<int:comment_id>/edit', methods=('POST',))
+@login_required_employee
+def edit_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+    comment.content = request.form.get('content')
+    comment.modify_date = datetime.now()
+    db.session.commit()
+    return redirect(url_for('employee.notice_detail', post_id=post_id))
+
+
+# 댓글 삭제
+@bp.route('/comment/<int:comment_id>/delete', methods=('POST',))
+@login_required_employee
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('employee.notice_detail', post_id=post_id))
+
+
+# 인사정보 조회
+@bp.route('/pr/<int:user_id>', methods=('GET',))
+@login_required_employee
+def pr_information(user_id):
     user = User.query.get_or_404(user_id)
 
-    if request.method == 'POST':
-        g.modifyError = True
-    if request.method == 'POST' and employeeuserdetailform.validate_on_submit():
-        user.phone_num = employeeuserdetailform.phone_num.data
-        user.address = employeeuserdetailform.address.data
-        db.session.commit()
-        g.modifyError = False
+    return render_template('user/user_detail.html', user=user)
 
-    return render_template('user/user_detail.html', user=user, employeeuserdetailform=employeeuserdetailform)
+
+# 인사정보 변경
+@bp.route('pr/<int:user_id>/edit', methods=('POST',))
+@login_required_employee
+def edit_pr_information(user_id):
+    user = User.query.get_or_404(user_id)
+
+    phone_num = request.form.get("phone_num")
+    address = request.form.get("address")
+
+    user.phone_num = phone_num
+    user.address = address
+
+    db.session.commit()
+    return redirect(url_for('employee.pr_information', user_id=user_id))
+
+
+# 인사정보 변경 신청
+@bp.route('pr/<int:user_id>/hr_edit', methods=('POST',))
+@login_required_employee
+def require_edit_pr(user_id):
+    type = None
+    if request.form.get('type') == 'hire_date':
+        type = 'HIRE'
+    elif request.form.get('type') == 'retirement_date':
+        type = 'RETIREMENT'
+    hr_change_request = HR_change_request(
+        user_id=user_id,
+        reason=request.form.get('reason'),
+        change_to=request.form.get('change_to'),
+        type=type,
+        state="WAITING",
+        request_date=datetime.now()
+    )
+    db.session.add(hr_change_request)
+    db.session.commit()
+
+    return redirect(url_for('employee.pr_information', user_id=user_id))
+
+
+# 휴가 신청
+@bp.route('/vacation/', methods=('GET',))
+@login_required_employee
+def vacation():
+    page = request.args.get('page', type=int, default=1)
+    vacation_request_list = Vacation_request.query.filter_by(user_id=g.user.id).order_by(
+        Vacation_request.request_date.desc())
+    vacation_request_list = vacation_request_list.paginate(page=page, per_page=5)
+    return render_template('user/vacation.html', page=page, vacation_request_list=vacation_request_list)
+
+
+# 휴가 신청 등록
+@bp.route('/vacation/', methods=('POST',))
+@login_required_employee
+def create_vacation_request():
+    from_date = request.form.get('from_date')
+    to_date = request.form.get('to_date')
+    reason = request.form.get('reason')
+    vacation_request = Vacation_request(
+        user_id=g.user.id,
+        from_date=from_date,
+        to_date=to_date,
+        reason=reason,
+        state='WAITING',
+        request_date=datetime.now()
+    )
+    db.session.add(vacation_request)
+    db.session.commit()
+    return redirect(url_for('employee.vacation'))

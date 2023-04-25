@@ -3,9 +3,12 @@
     .nav-item{
         margin-left:10px;
     }
+
 </style>
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <a class="navbar-brand" href="{{ url_for('main.index') }}" style=" margin-left: 10px">50사단 공무직 시스템</a>
+    <a class="navbar-brand" href="{{ url_for('main.index') }}" style=" margin-left: 10px; width:50px"><img
+                        src="{{ url_for('static', filename='50division image.svg') }}" alt=""
+                        style="display:inline-block;max-width:100%"></a>
     <button class="navbar-toggler ml-auto" type="button"
             data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -31,6 +34,10 @@
                 <a class="nav-link" href="#">급여명세서 조회</a>
             <li class="nav-item">
                 <a class="nav-link" href="#">고충 글 작성</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">출근부</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">건강검진</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
@@ -38,36 +45,40 @@
         </ul>
         {% elif g.user.role=='ADMIN' %}
         <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin.notice') }}">공지사항관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin.pr_information') }}">인사정보관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="#">신청관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="#">복지포인트 관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="#">급여명세서 조회</a>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="#">고충 관리</a>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.notice') }}">공지사항관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.pr_information') }}">인사정보관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">신청관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">복지포인트 관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">급여명세서 조회</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">고충 관리</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">출근부</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#">건강검진</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
+            </li>
         </ul>
-            {% else %}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">가입신청</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
-                </li>
-            </ul>
-            {% endif %}
+        {% else %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">가입신청</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
+            </li>
+        </ul>
+        {% endif %}
         </li>
     </div>
 </nav>

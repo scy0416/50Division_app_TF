@@ -12,8 +12,8 @@
             <label for="password">비밀번호</label>
             <input type="password" class="form-control" name="password" id="password" value="{{ form.password.data or '' }}">
         </div>
-        <!-- TODO 이 부분에 체크박스를 만들어서 관리자와 사용자의 로그인을 구분지을 수 있도록 한다. -->
         <button type="submit" class="btn btn-primary">로그인</button>
+        <a href="{{ url_for('auth.join') }}" class="btn btn-primary">가입 신청</a>
     </form>
 </div>
 {% endblock %}

@@ -3,39 +3,55 @@
 <div class="container text-center" style="margin-top:10px">
     <div class="row row-cols-2 row-cols-md-7 g-3">
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.notice') }}"><img src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">공지사항 관리</div>
+            <div class="col"><a href="{{ url_for('admin.notice') }}"><img
+                    src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">공지사항 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.pr_information') }}"><img src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">인사정보 관리</div>
+            <div class="col"><a href="{{ url_for('admin.pr_information') }}"><img
+                    src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">인사정보 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="#"><img src="{{ url_for('static', filename='management image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">신청 관리</div>
+            <div class="col"><a href="{{ url_for('admin.request_main') }}"><img
+                    src="{{ url_for('static', filename='management image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">신청 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="#"><img src="{{ url_for('static', filename='point image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">복지포인트 관리</div>
+            <div class="col"><a href="{{ url_for('admin.welfare') }}"><img
+                    src="{{ url_for('static', filename='point image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">복지포인트 관리</div>
         </div>
         <div class="col-md-4">
             <div class="col"><a href="#"><img src="{{ url_for('static', filename='payslip image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">급여명세서 관리</div>
+                                              style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">급여명세서 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.edu') }}"><img src="{{ url_for('static', filename='education image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col"><a href="{{ url_for('admin.edu') }}"><img
+                    src="{{ url_for('static', filename='education image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
             <div class="col">의무교육 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="#"><img src="{{ url_for('static', filename='contract image.png') }}" alt=""
-                             style="display:inline-block;max-width: 25%;height:auto;"></a></div>
-                <div class="col">고충 관리</div>
+            <div class="col"><a href="{{ url_for('admin.grievance_list') }}"><img
+                    src="{{ url_for('static', filename='contract image.png') }}" alt=""
+                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">고충 관리</div>
+        </div>
+        <div class="col-md-4">
+            <div class="col"><a href="#"><img src="{{ url_for('static', filename='attendance image.png') }}" alt=""
+                                              style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">출근부 관리</div>
+        </div>
+        <div class="col-md-4">
+            <div class="col"><a href="#"><img src="{{ url_for('static', filename='medical image.png') }}" alt=""
+                                              style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+            <div class="col">건강검진</div>
         </div>
     </div>
 </div>

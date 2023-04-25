@@ -112,3 +112,21 @@ class writeForm(FlaskForm):
     subject = StringField('제목', validators=[DataRequired()])
     # 내용
     content = StringField('내용', validators=[DataRequired(), Length(1, 300)])
+
+class contentForm(FlaskForm):
+    content = StringField('내용', validators=[DataRequired()])
+
+# 가입 신청 폼
+class joinForm(FlaskForm):
+    # 로그인용id
+    userid = StringField('로그인용id', validators=[DataRequired(), Length(3, 30)])
+    # 비밀번호 확인
+    password1 = PasswordField('비밀번호', validators=[
+        DataRequired(), EqualTo('password2', '비밀번호가 일치하지 않습니다.')
+    ])
+    # 비밀번호 일치하는지 확인
+    password2 = PasswordField('비밀번호', validators=[DataRequired()])
+    # 이름
+    name = StringField('이름', validators=[DataRequired(), Length(2, 10)])
+    # 생년월일
+    birth_date = DateField('생년월일', validators=[DataRequired()])
