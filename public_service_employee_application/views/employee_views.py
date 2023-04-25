@@ -4,7 +4,7 @@ from public_service_employee_application.views.auth_views import login_required_
 
 from sqlalchemy import and_
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -49,9 +49,9 @@ def notice_detail(post_id):
 
 
 # 댓글 등록
-@bp.route('/comment', methods=('POST',))
+@bp.route('/notice/comment', methods=('POST', ))
 @login_required_employee
-def create_comment():
+def create_comment_notice():
     form = writeForm()
     if form.validate_on_submit():
         comment = Comment(
@@ -66,9 +66,9 @@ def create_comment():
 
 
 # 댓글 수정
-@bp.route('/comment/<int:comment_id>/edit', methods=('POST',))
+@bp.route('/notice/comment/<int:comment_id>/edit', methods=('POST', ))
 @login_required_employee
-def edit_comment(comment_id):
+def edit_comment_notice(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     post_id = comment.post_id
     comment.content = request.form.get('content')
@@ -78,9 +78,9 @@ def edit_comment(comment_id):
 
 
 # 댓글 삭제
-@bp.route('/comment/<int:comment_id>/delete', methods=('POST',))
+@bp.route('/notice/comment/<int:comment_id>/delete', methods=('POST', ))
 @login_required_employee
-def delete_comment(comment_id):
+def delete_comment_notice(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     post_id = comment.post_id
     db.session.delete(comment)
@@ -165,3 +165,109 @@ def create_vacation_request():
     db.session.add(vacation_request)
     db.session.commit()
     return redirect(url_for('employee.vacation'))
+
+# 복지 포인트 조회
+@bp.route('/welfare/', methods=('GET', ))
+@login_required_employee
+def welfare():
+    quarter_id = request.args.get('quarter_id', type=int, default=-1)
+    quarter = None
+
+    quarter_list = Quarter.query.all()
+
+    if quarter_id == -1:
+        quarter = Quarter.query.order_by(Quarter.quarter.desc()).first()
+        quarter_id = quarter.id
+    else:
+        quarter = Quarter.query.get_or_404(quarter_id)
+
+    welfare_point = Wellfare_point.query.filter_by(user_id=g.user.id, quarter_id=quarter_id).first()
+
+    return render_template('user/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
+
+# 의무 교육 현황
+@bp.route('/edu/', methods=('GET', ))
+@login_required_employee
+def edu():
+    user = User.query.get_or_404(g.user.id)
+    return render_template('user/edu.html', user=user)
+
+# 고충 글 리스트
+@bp.route('/grievance', methods=('GET', ))
+@login_required_employee
+def grievance_list():
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    # 검색 처리 과정
+    # 실질적인 검색
+    grievance = db.session.query(Post).join(User).filter(and_(User.id == g.user.id, Post.subject.contains(q))).order_by(Post.create_date.desc())
+    grievance = grievance.paginate(page=page, per_page=10)
+
+    # 템플릿 출력
+    return render_template('user/grievance_list.html', grievance_list=grievance, q=q, page=page)
+
+# 고충 글 작성 페이지
+@bp.route('/grievance/write', methods=('GET', ))
+@login_required_employee
+def grievance_write():
+    return render_template('user/write.html')
+
+# 고충 글 작성
+@bp.route('/grievance/write', methods=('POST', ))
+@login_required_employee
+def post_grievance():
+    subject = request.form.get('subject')
+    content = request.form.get('content')
+    post = Post(
+        user_id=g.user.id,
+        subject=subject,
+        content=content,
+        create_date=datetime.now()
+    )
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_list'))
+
+# 고충 글 상세 창
+@bp.route('/grievance/<int:post_id>', methods=('GET', ))
+@login_required_employee
+def grievance_detail(post_id):
+    # 확인하려는 글
+    post = Post.query.get_or_404(post_id)
+    # 템플릿 출력
+    return render_template('user/grievance_detail.html', post=post)
+
+# 댓글 작성
+@bp.route('/grievance/comment', methods=('POST', ))
+@login_required_employee
+def create_comment_grievance():
+    comment = Comment(
+        user_id=g.user.id,
+        post_id=request.form.get('post_id'),
+        content=request.form.get('content'),
+        create_date=datetime.now()
+    )
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+# 댓글 편집
+@bp.route('/grievance/comment/<int:comment_id>/edit', methods=('POST', ))
+@login_required_employee
+def edit_comment_grievance(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    comment.content = request.form.get('content')
+    comment.modify_date = datetime.now()
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+# 댓글 삭제
+@bp.route('/grievance/comment/<int:comment_id>/delete', methods=('POST', ))
+@login_required_employee
+def delete_comment_grievance(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))

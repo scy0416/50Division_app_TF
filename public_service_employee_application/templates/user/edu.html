@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>교육명</th>
+            <th>교육 현황</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>성희롱 예방 교육</td>
+            <td>
+                {% if user.sexual_harassment_prevent %}
+                <input type="checkbox" checked onclick="return false;">
+                {% else %}
+                <input type="checkbox" onclick="return false;">
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>장애인식 개선 교육</td>
+            <td>
+                {% if user.disability_awareness_improvement %}
+                <input type="checkbox" checked onclick="return false;">
+                {% else %}
+                <input type="checkbox" onclick="return false;">
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>직장 내 괴롭힘 예방 교육</td>
+            <td>
+                {% if user.workplace_harassment_prevent %}
+                <input type="checkbox" checked onclick="return false;">
+                {% else %}
+                <input type="checkbox" onclick="return false;">
+                {% endif %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
