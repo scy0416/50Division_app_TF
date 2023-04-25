@@ -23,21 +23,21 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('employee.notice') }}">공지사항</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">휴가신청</a>
+                <a class="nav-link" href="{{ url_for('employee.vacation') }}">휴가신청</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">인사정보</a>
+                <a class="nav-link" href="{{ url_for('employee.pr_information', user_id=g.user.id)}}">인사정보</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">복지포인트 조회</a>
+                <a class="nav-link" href="{{ url_for('employee.welfare') }}">복지포인트 조회</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">의무교육 현황</a>
+                <a class="nav-link" href="{{ url_for('employee.edu') }}">의무교육 현황</a>
             <li class="nav-item">
                 <a class="nav-link" href="#">급여명세서 조회</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">고충 글 작성</a>
+                <a class="nav-link" href="{{ url_for('employee.grievance_list') }}">고충 글 작성</a>
             <li class="nav-item">
                 <a class="nav-link" href="#">출근부</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">건강검진</a>
+                <a class="nav-link" href="{{ url_for('employee.medical_checkup') }}">건강검진</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
@@ -52,19 +52,17 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('admin.pr_information') }}">인사정보관리</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">신청관리</a>
+                <a class="nav-link" href="{{ url_for('admin.request_main') }}">신청관리</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">복지포인트 관리</a>
+                <a class="nav-link" href="{{ url_for('admin.welfare') }}">복지포인트 관리</a>
             <li class="nav-item">
                 <a class="nav-link" href="#">급여명세서 조회</a>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
             <li class="nav-item">
-                <a class="nav-link" href="#">고충 관리</a>
+                <a class="nav-link" href="{{ url_for('admin.grievance_list') }}">고충 관리</a>
             <li class="nav-item">
                 <a class="nav-link" href="#">출근부</a>
-            <li class="nav-item">
-                <a class="nav-link" href="#">건강검진</a>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
             </li>

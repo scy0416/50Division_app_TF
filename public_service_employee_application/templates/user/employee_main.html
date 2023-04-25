@@ -16,7 +16,12 @@
     <div class="container text-center">
         <div class="row row-cols-2">
             <div class="col-md-4">
-                <a href="#"><img
+                <a href="{{ url_for('employee.notice') }}"><img
+                        src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
+                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>공지사항
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('employee.vacation') }}"><img
                         src="{{ url_for('static', filename='vacation image.png') }}" alt=""
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>휴가신청
             </div>
@@ -26,7 +31,12 @@
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>인사정보
             </div>
             <div class="col-md-4">
-                <a href="#"><img
+                <a href="{{ url_for('employee.welfare') }}"><img
+                        src="{{ url_for('static', filename='point image.png') }}" alt=""
+                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>복지포인트
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('employee.edu') }}"><img
                         src="{{ url_for('static', filename='education image.png') }}" alt=""
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>의무교육
             </div>
@@ -36,14 +46,9 @@
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>급여명세서
             </div>
             <div class="col-md-4">
-                <a href="#"><img
+                <a href="{{ url_for('employee.grievance_list') }}"><img
                         src="{{ url_for('static', filename='contract image.png') }}" alt=""
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>고충글
-            </div>
-            <div class="col-md-4">
-                <a href="#"><img
-                        src="{{ url_for('static', filename='point image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>복지포인트
             </div>
             <div class="col-md-4">
                 <a href="#"><img
@@ -51,7 +56,7 @@
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>출근부
             </div>
             <div class="col-md-4">
-                <a href="#"><img
+                <a href="{{ url_for('employee.medical_checkup') }}"><img
                         src="{{ url_for('static', filename='medical image.png') }}" alt=""
                         style="display:inline-block;max-width: 30%;height:auto;"></a><br>건강검진
             </div>

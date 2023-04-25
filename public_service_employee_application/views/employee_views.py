@@ -1,10 +1,14 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, g
+import os
+from flask import Blueprint, render_template, request, session, redirect, url_for, g, send_from_directory, jsonify
+from sqlalchemy import and_
 from datetime import datetime
+from werkzeug.utils import secure_filename
+
 from public_service_employee_application.views.auth_views import login_required_employee
 
 from sqlalchemy import and_
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -271,3 +275,54 @@ def delete_comment_grievance(comment_id):
     db.session.delete(comment)
     db.session.commit()
     return redirect(url_for('employee.grievance_detail', post_id=request.form.get('post_id')))
+
+
+# 건강검진 확인 요청 화면
+@bp.route('/medical_checkup', methods=('GET', ))
+@login_required_employee
+def medical_checkup():
+    page = request.args.get('page', default=1)
+    medical_checkup_list = Medical_checkup_request.query.filter_by(user_id=g.user.id).order_by(Medical_checkup_request.request_date.desc())
+    medical_checkup_list = medical_checkup_list.paginate(page=page, per_page=10)
+
+    return render_template('user/medical_checkup.html', page=page, medical_checkup_list=medical_checkup_list)
+
+# 건강검진 등록 화면
+@bp.route('/medical_checkup/request', methods=('GET', ))
+@login_required_employee
+def medical_checkup_request_page():
+    return render_template('user/medical_checkup_request.html')
+
+# 이미지 업로드 및 건강검진 확인 요청 생성
+@bp.route('/medical_checkup', methods=('POST', ))
+@login_required_employee
+def medical_checkup_request():
+    f = request.files['file']
+    f.save(os.path.join('static/medical_checkup', secure_filename(f.filename)))
+
+    medical_checkup_request = Medical_checkup_request(
+        user_id=g.user.id,
+        img_addr=secure_filename(f.filename),
+        state='WAITING',
+        request_date=datetime.now()
+    )
+    db.session.add(medical_checkup_request)
+    db.session.commit()
+
+    return redirect(url_for('employee.medical_checkup'))
+
+# 건강검진 이미지 미리보기 url
+@bp.route('/medical_checkup/<int:request_id>/get_url', methods=('GET', ))
+@login_required_employee
+def get_image_url(request_id):
+    #print("실행")
+    medical_checkup_request = Medical_checkup_request.query.get_or_404(request_id)
+    image_url = medical_checkup_request.img_addr
+    #return jsonify({"url": image_url})
+    return jsonify(({"url": url_for('employee.medical_checkup_preview', filename=image_url)}))
+
+# 건강검진 이미지 미리보기
+@bp.route('/medical_checkup/<path:filename>/preview', methods=('GET', ))
+@login_required_employee
+def medical_checkup_preview(filename):
+    return send_from_directory('static/medical_checkup', filename)
