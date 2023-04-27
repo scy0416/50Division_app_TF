@@ -336,7 +336,6 @@ def punch_in_out():
 @bp.route('/punch_in_out/detail/<date>', methods=('GET', ))
 @login_required_employee
 def punch_in_out_detail(date):
-    print("실행됨")
     if date is None:
         response = {'response': '<div>문제가 발생했습니다</div>'}
     else:
@@ -359,7 +358,8 @@ def punch_in_out_create():
         punch_in=punch_in if punch_in != '' else None,
         pi_create_time=datetime.now() if punch_in != '' else None,
         punch_out=punch_out if punch_out != '' else None,
-        po_create_time=datetime.now() if punch_out != '' else None
+        po_create_time=datetime.now() if punch_out != '' else None,
+        state='WAITING'
     )
     db.session.add(punch_in_out_data)
     db.session.commit()
