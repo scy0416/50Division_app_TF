@@ -6,9 +6,9 @@ from werkzeug.utils import secure_filename
 
 from public_service_employee_application.views.auth_views import login_required_employee
 
-from sqlalchemy import and_
+from sqlalchemy import and_, cast, String
 from public_service_employee_application import db
-from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request
+from public_service_employee_application.models import Post, User, Comment, HR_change_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request, Punch_in_out
 from public_service_employee_application.forms import writeForm, contentForm
 
 # 블루프린트 객체 생성
@@ -326,3 +326,85 @@ def get_image_url(request_id):
 @login_required_employee
 def medical_checkup_preview(filename):
     return send_from_directory('static/medical_checkup', filename)
+
+# 출석부
+@bp.route('/punch_in_out', methods=('GET', ))
+@login_required_employee
+def punch_in_out():
+    return render_template('user/punch_in_out_calendar.html');
+
+@bp.route('/punch_in_out/detail/<date>', methods=('GET', ))
+@login_required_employee
+def punch_in_out_detail(date):
+    print("실행됨")
+    if date is None:
+        response = {'response': '<div>문제가 발생했습니다</div>'}
+    else:
+        pio = Punch_in_out.query.filter_by(date=date, user_id=g.user.id).first()
+        response = {'response': render_template('user/punch_in_out.html', pio=pio, date=date)}
+    return jsonify(response)
+
+# 출근부 데이터 생성
+@bp.route('/punch_in_out/create', methods=('POST', ))
+@login_required_employee
+def punch_in_out_create():
+    data = request.get_json()
+    date = data.get('date')
+    punch_in = data.get('punch_in')
+    punch_out = data.get('punch_out')
+
+    punch_in_out_data = Punch_in_out(
+        user_id=g.user.id,
+        date=date,
+        punch_in=punch_in if punch_in != '' else None,
+        pi_create_time=datetime.now() if punch_in != '' else None,
+        punch_out=punch_out if punch_out != '' else None,
+        po_create_time=datetime.now() if punch_out != '' else None
+    )
+    db.session.add(punch_in_out_data)
+    db.session.commit()
+
+    response = punch_in_out_detail(date=date)
+    return response
+
+# 출근부 데이터 편집
+@bp.route('/punch_in_out/<int:id>/edit', methods=('POST', ))
+@login_required_employee
+def punch_in_out_edit(id):
+    punch_in_out_data = Punch_in_out.query.get_or_404(id)
+    data = request.get_json()
+    punch_in = data.get('punch_in')
+    punch_out = data.get('punch_out')
+
+    if punch_in != '':
+        punch_in_out_data.punch_in = punch_in
+        punch_in_out_data.pi_create_time = datetime.now()
+    if punch_out != '':
+        punch_in_out_data.punch_out = punch_out
+        punch_in_out_data.po_create_time = datetime.now()
+    db.session.commit()
+
+    response = punch_in_out_detail(date=punch_in_out_data.date)
+    return response
+
+# 이벤트 생성 후 반환
+@bp.route('/punch_in_out/event/<date>', methods=('GET', ))
+@login_required_employee
+def punch_in_out_event(date):
+    events = Punch_in_out.query.filter(cast(Punch_in_out.date, String).like(date+'%')).all()
+    result = []
+    for event in events:
+        if event.punch_in != None:
+            result.append({
+                'id': 'pi_' + event.date.strftime('%Y-%m-%d'),
+                'title': '출근: ' + event.punch_in.strftime('%H:%M'),
+                'start': event.date.strftime('%Y-%m-%d'),
+            })
+        if event.punch_out != None:
+            result.append({
+                'id': 'po_' + event.date.strftime('%Y-%m-%d'),
+                'title': '퇴근: ' + event.punch_out.strftime('%H:%M'),
+                'start': event.date.strftime('%Y-%m-%d'),
+                'allDay': True
+            })
+    return jsonify(result)

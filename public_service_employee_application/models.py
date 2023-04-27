@@ -1,5 +1,5 @@
 from public_service_employee_application import db
-from sqlalchemy import Column, Integer, CHAR, String, DateTime, Text, ForeignKey, Date
+from sqlalchemy import Column, Integer, CHAR, String, DateTime, Text, ForeignKey, Date, Time
 
 
 # 유저테이블에 대한 모델
@@ -229,3 +229,27 @@ class Quarter(db.Model):
     id = Column(Integer, primary_key=True)
     # 분기 칼럼
     quarter = Column(String(128), nullable=True)
+
+# 출근부를 위한 테이블
+class Punch_in_out(db.Model):
+    __tablename__ = 'tb_punch_in_out'
+    __table_args__ = {'extend_existing': True}
+
+    # 식별용id
+    id = Column(Integer, primary_key=True)
+    # 유저 식별용id
+    user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
+    # 외래키가 참조하는 모델로 'punch_in_out_set'으로 역참조가 가능
+    user = db.relationship('User', backref=db.backref('punch_in_out_set'))
+    # 날짜
+    date = Column(Date, nullable=True)
+    # 출근 시간
+    punch_in = Column(Time, nullable=True)
+    # 출근 시간 생성 시간
+    pi_create_time = Column(DateTime, nullable=True)
+    # 퇴근 시간
+    punch_out = Column(Time, nullable=True)
+    # 퇴근 시간 생성 시간
+    po_create_time = Column(DateTime, nullable=True)
+    # 상태(ALLOWED/REJECTED/WAITING)
+    state = Column(Text, nullable=True)
