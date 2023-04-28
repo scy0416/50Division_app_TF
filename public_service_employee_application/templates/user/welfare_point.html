@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div>
-    <span>분기 선택</span>
+    <span class=" fw-bold">분기 선택</span>
     <form method="get">
         <select name="quarter_id" onchange="change_quarter()" id="quarter_list">
             {% if quarter_list %}

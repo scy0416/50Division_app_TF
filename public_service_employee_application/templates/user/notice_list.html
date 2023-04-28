@@ -1,31 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
+    table{
+    table-layout: fixed;
+    }
     .page-link, .page-items{
-    background:#dee2e6;
-    color:white;
+    background:#e9ecef;
+    color:black;
     }
-    .page-item active{
-    background:#dee2e6;
-    }
-    .page-item disabled{
-    background:#dee2e6;
-    color:white;
-    }
+
+
+
 
 </style>
 <div class="container my-3">
     <form id="searchForm" method="get">
         <input type="text" id="q" name="q" value="{{ q or '' }}" style="width:80%">
         <input type="hidden" id="page" name="page" value="{{ page or '' }}">
-        <button class="btn btn-outline-secondary">검색</button>
+        <button class="btn btn-outline-secondary btn-custom">검색</button>
     </form>
     <table class="table">
         <thead>
         <tr class="text-center thead-dark">
-            <th>번호</th>
+            <th style="word-break: keep-all;width:15%">번호</th>
             <th>제목</th>
-            <th>작성자</th>
         </tr>
         </thead>
         <tbody>
@@ -34,13 +32,12 @@
 
         <tr class="text-center">
             <td>{{ notice_list.total - ((notice_list.page-1) * notice_list.per_page) - loop.index0 }}</td>
-            <td class="text-left">
-                <a href="{{ url_for('employee.notice_detail', post_id=notice.id) }}">{{ notice.subject }}</a>
+            <td class="text-left" style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <a href="{{ url_for('employee.notice_detail', post_id=notice.id) }}"class="link-dark">{{ notice.subject }}</a>
                 {% if notice.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
                 {% endif %}
             </td>
-            <td>{{ notice.user.userid }}</td>
         </tr>
         {% endfor %}
         {% else %}
@@ -59,7 +56,8 @@
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#dee2e6;color:white" href="#">이전</a>
+            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#e9ecef;color:black"
+               href="#">이전</a>
         </li>
         {% endif %}
         {% for page_num in notice_list.iter_pages() %}
@@ -86,7 +84,8 @@
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#dee2e6;color:white" href="#">다음</a>
+            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#e9ecef;color:black"
+               href="#">다음</a>
         </li>
         {% endif %}
     </ul>
@@ -105,6 +104,11 @@
             $("#searchForm").submit();
         });
     });
+
+
+
+
+
 
 
 </script>
