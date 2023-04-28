@@ -1,0 +1,169 @@
+<div class="row justify-content-end my-3">
+    <div class="col-6 input-group input-group-sm">
+        <input type="text" class="form-control q" value="{{ q or '' }}">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead>
+    <tr class="text-center">
+        <th>번호</th>
+        <th>이름</th>
+        <th>출근 시간</th>
+        <th>퇴근 시간</th>
+        <th>상태</th>
+        <th>처리</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if pio_list.items %}
+    {% for pio in pio_list.items %}
+    <tr class="text-center">
+        <td>{{ pio_list.total - ((pio_list.page-1) * pio_list.per_page) - loop.index0 }}</td>
+        <td>{{ pio.name }}</td>
+        <td>
+            {% if pio.punch_in %}
+            {{ pio.punch_in.strftime('[%H:%M]') }}
+            {% else %}
+            ---
+            {% endif %}
+        </td>
+        <td>
+            {% if pio.punch_out %}
+            {{ pio.punch_out.strftime('[%H:%M]') }}
+            {% else %}
+            ---
+            {% endif %}
+        </td>
+        <td>
+            {% if pio.state=='WAITING' %}
+            대기중
+            {% elif pio.state=='PROCESSED' %}
+            확인됨
+            {% endif %}
+        </td>
+        <td>
+            {% if pio.state=="WAITING" %}
+            <button class="check btn btn-secondary" data-id="{{ pio.pio_id }}">확인</button>
+            {% elif pio.state=='PROCESSED' %}
+            <button class="btn btn-secondary disabled">확인</button>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="6">출퇴근 기록이 없습니다.</td>
+    </tr>
+    {% endif %}
+    </tbody>
+</table>
+<!-- 페이징 처리 시작 -->
+<ul class="pagination justify-content-center">
+    <!-- 이전 페이지 -->
+    {% if pio_list.has_prev %}
+    <li class="page-items">
+        <a class="page-link" data-page="{{ pio_list.prev_num }}" href="#">이전</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+    </li>
+    {% endif %}
+    {% for page_num in pio_list.iter_pages() %}
+    {% if page_num %}
+    {% if page_num != pio_list.page %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+    </li>
+    {% else %}
+    <li class="page-item active" aria-current="page">
+        <a class="page-link" href="#">{{ page_num }}</a>
+    </li>
+    {% endif %}
+    {% else %}
+    <li class="disabled">
+        <a class="page-link" href="#">...</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+    <!-- 다음 페이지 -->
+    {% if pio_list.has_next %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ pio_list.next_num }}" href="#">다음</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+    </li>
+    {% endif %}
+</ul>
+<form id="searchForm" method="get">
+    <input type="hidden" id="q" name="q" value="{{ q or '' }}">
+    <input type="hidden" id="page" name="page" value="{{ page or '' }}">
+</form>
+<script type="text/javascript">
+    function loadScript(){
+        $(".page-link").on('click', function(){
+            var q = $(".q").val();
+            var page = $(this).data("page");
+            $.ajax({
+                url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                type: 'GET',
+                contentType: 'application/json;charset=UTF-8',
+                data: {
+                    q: q,
+                    page: page
+                },
+                success: function(response){
+                    $("#detail").html(response.response);
+                }
+            });
+        });
+        $("#btn_search").on('click', function(){
+            var q = $(".q").val();
+            var page = 1;
+            $.ajax({
+                url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                type: 'GET',
+                contentType: 'application/json;charset=UTF-8',
+                data: {
+                    q: q,
+                    page: page
+                },
+                success: function(response){
+                    $("#detail").html(response.response);
+                }
+            });
+        });
+        $(".check").on("click", function(){
+            $.ajax({
+                url: '/admin/punch_in_out/' + $(this).data('id') + '/proc',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+                },
+                success: function(response){
+                    var q = $(".q").val();
+                    var page = $("#page").val();
+                    $.ajax({
+                        url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                        type: 'GET',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: {
+                            q: q,
+                            page: page
+                        },
+                        success: function(response){
+                            $("#detail").html(response.response);
+                        }
+                    });
+                }
+            });
+        });
+    }
+    loadScript();
+</script>
