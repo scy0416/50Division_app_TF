@@ -1,14 +1,15 @@
-from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response, Response, send_from_directory
+from flask import Blueprint, render_template, request, url_for, flash, g, jsonify, session, make_response, Response, send_from_directory, jsonify
 from sqlalchemy import desc
 from sqlalchemy.orm import joinedload
 from werkzeug.utils import redirect
 from datetime import date
-from sqlalchemy import and_
+from sqlalchemy import and_, union, alias
+from sqlalchemy.orm import aliased
 from datetime import datetime
 
 from public_service_employee_application import db, csrf
 from public_service_employee_application.views.auth_views import login_required_admin
-from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request
+from public_service_employee_application.models import User, Post, User, Comment, HR_change_request, Join_request, Vacation_request, Quarter, Wellfare_point, Medical_checkup_request, Punch_in_out
 from public_service_employee_application.forms import AddAdmin, AddEmployee, UserDetail, searchUser, writeForm, contentForm
 
 
@@ -747,3 +748,53 @@ def deny_medical_checkup(request_id):
     medical_checkup.proc_date = datetime.now()
     db.session.commit()
     return redirect(url_for('admin.medical_checkup_detail', request_id=request_id))
+
+# 출근부 확인창
+@bp.route('/punch_in_out', methods=('GET', ))
+@login_required_admin
+def punch_in_out():
+    return render_template('admin/punch_in_out_calendar.html')
+
+# 선택한 날짜에 대한 목록을 가져오는 라우팅
+@bp.route('/punch_in_out/<date>/', methods=('GET', ))
+@login_required_admin
+def punch_in_out_detail(date):
+    # 검색 및 페이징 처리
+    q = request.args.get('q', type=str, default='')
+    page = request.args.get('page', type=int, default=1)
+
+    if date is None:
+        response = {'response': '<div>문제가 발생했습니다</div>'}
+    else:
+        waiting_pio = db.session.query(
+            Punch_in_out.id.label('pio_id'), User.id.label('user_id'),
+            Punch_in_out, User
+        ).outerjoin(User, Punch_in_out.user_id == User.id).filter(
+            Punch_in_out.state == 'WAITING',
+            Punch_in_out.date == date,
+            User.name.like('%' + q + '%')
+        ).subquery()
+        processed_pio = db.session.query(
+            Punch_in_out.id.label('pio_id'), User.id.label('user_id'),
+            Punch_in_out, User
+        ).outerjoin(User, Punch_in_out.user_id == User.id).filter(
+            Punch_in_out.state == 'PROCESSED',
+            Punch_in_out.date == date,
+            User.name.like('%' + q + '%')
+        ).subquery()
+        pio = union(waiting_pio.select(), processed_pio.select()).subquery()
+        pio = db.session.query(pio)
+        #pio = db.session.query(Punch_in_out).select_entity_from(union(waiting_pio.select(), processed_pio.select()))
+        pio_list = pio.paginate(page=page, per_page=10)
+        response = {'response': render_template('admin/punch_in_out_detail.html', q=q, page=page, pio_list=pio_list, date=date)}
+
+    return jsonify(response)
+
+# 출석에 대한 처리
+@bp.route('/punch_in_out/<pio_id>/proc', methods=('POST', ))
+@login_required_admin
+def proc_pio(pio_id):
+    pio = Punch_in_out.query.get_or_404(pio_id)
+    pio.state = 'PROCESSED'
+    db.session.commit()
+    return jsonify({})

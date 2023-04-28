@@ -64,7 +64,7 @@
                 punch_out: punch_out
             }),
             beforeSend: function(xhr){
-                xhr.setRequestHeader('X-CSRFToken', csrf_token)
+                xhr.setRequestHeader('X-CSRFToken', csrf_token);
             },
             success: function(response){
                 $("#input").html(response.response);
