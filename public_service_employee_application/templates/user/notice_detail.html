@@ -1,40 +1,74 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+textarea.readonly{width:100%;resize:none;border:none}
+textarea{resize:none}
+
+</style>
 <div class="container my-3">
-    <div class="d-flex flex-column">
-        <div>제목</div>
-        <div>{{ post.subject }}</div>
-        <div>내용</div>
-        <div>{{ post.content }}</div>
-    </div>
+    <table class="table table-sm">
+        <thead>
+        <tr class="text-center thead-dark">
+            <th class="align-top" style="font-size:16px">제목 : {{ post.subject }}</th>
+        </tr>
+        <tr>
+            <td nowrap style="text-align:right;color:gray;font-size:12px;border-bottom:none;padding-bottom:0">작성자 : {{
+                post.user.name }}
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align:right;color:gray;font-size:12px;padding-top:0">작성일 : {{
+                post.create_date|datetime}}
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="2" style="font-size:16px;border-bottom-color:black;">{{
+                post.content }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
     <!-- 댓글 -->
     {% if post.comment_set|length > 0 %}
-    <div class="mt-3">
+    <div class="mt-2">
         {% for comment in post.comment_set %}
-        <div class="comment py-2 text-muted">
+        <div class="comment py-2" style="border-bottom:1px #dee2e6 solid;">
             {% if g.user == comment.user %}
-            <div class="d-flex">
-                <div>
+            <div class="row">
+                <div class="col">
                     <form method="post" action="{{ url_for('employee.edit_comment_notice', comment_id=comment.id) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="form_id" value="modify">
-                        <textarea readonly style="resize:none" name="content" id="comment_{{ comment.id }}">{{ comment.content }}</textarea>
-                        <button type="button" onclick="modify($(this))" class="btn btn-primary" data-comment_id="{{ comment.id }}" id="modify_{{ comment.id }}">수정</button>
-                        <button class="btn btn-primary" onclick="save($(this))" style="display:none" data-comment_id="{{ comment.id }}" id="save_{{ comment.id }}">저장</button>
-                        <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}{% if comment.modify_date %}(수정됨){% endif %}</span>
+                        <div>{{ comment.user.name }}</div>
+                        <textarea readonly class="autotext readonly" rows="1" name="content"
+                                  id="comment_{{ comment.id }}">{{ comment.content }}</textarea>
+                        <div style="font-size:12px">{{ comment.create_date|datetime }}</div>
+                        <div class="text-end">
+                            <button type="button" onclick="modify($(this))" class="btn btn-secondary btn-sm"
+                                    data-comment_id="{{ comment.id }}" id="modify_{{ comment.id }}">수정
+                            </button>
+                            <button style="display:none" class="btn btn-secondary btn-sm" onclick="save($(this))"
+                                    data-comment_id="{{ comment.id }}" id="save_{{ comment.id }}">저장
+                            </button>
+                        </div>
                     </form>
                 </div>
-                <div>
+                <div class="col-end"style="display:inline-block">
                     <form method="post" action="{{ url_for('employee.delete_comment_notice', comment_id=comment.id) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="form_id" value="delete">
-                        <button class="small btn">삭제</button>
+                        <div class="text-end">
+                            <button class="btn btn-secondary btn-sm" style="white-space:nowrap">삭제</button>
+                        </div>
                     </form>
                 </div>
             </div>
             {% else %}
-            <textarea readonly stle="resize:none">{{ comment.content }}</textarea>
-            <span>- {{ comment.user.name }}, {{ comment.create_date|datetime }}</span>
+            <div style="color:black">{{ comment.user.name }}</div>
+            <textarea class="readonly" rows="1" readonly>{{ comment.content }}</textarea>
+            <span style="font-size:12px">{{ comment.create_date|datetime }}</span>
             {% endif %}
         </div>
         {% endfor %}
@@ -46,10 +80,10 @@
                 <div>
                     댓글 작성
                 </div>
-                <div>
-                    <textarea name="content" rows="10" style="resize:none;"></textarea>
+                <div class="d-flex">
+                    <textarea class="autotext flex-grow-1" rows="1" class="autotext" name="content"></textarea>
+                    <button class="btn btn-secondary btn-sm align-self-end" style="white-space:nowrap">등록</button>
                 </div>
-                <button class="btn btn-primary">등록</button>
             </form>
         </div>
     </div>
@@ -69,5 +103,13 @@
         $("#modify_"+element.data("comment_id")).css('display', 'block');
         element.css('display','none');
     }
+    $("textarea.autotext").each(function () {
+  this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+}).on("input", function () {
+  this.style.height = 0;
+  this.style.height = (this.scrollHeight) + "px";
+});
+
+
 </script>
 {% endblock %}

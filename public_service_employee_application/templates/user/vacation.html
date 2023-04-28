@@ -20,7 +20,7 @@
             <tr class="text-center">
                 <td>{{ vacation_request_list.total - ((vacation_request_list.page-1) * vacation_request_list.per_page) - loop.index0 }}</td>
                 <td>{{ vacation_request.from_date }}</td>
-                <td>{{ vacation_request.end_date }}</td>
+                <td>{{ vacation_request.to_date }}</td>
                 <td>{{ vacation_request.reason }}</td>
                 <td>{{ vacation_request.request_date|datetime }}</td>
                 <td>{{ vacation_request.state }}</td>
