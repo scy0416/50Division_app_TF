@@ -1,9 +1,10 @@
 <div class="row justify-content-end my-3">
     <div class="col-6 input-group input-group-sm">
-        <input type="text" class="form-control q" value="{{ q or '' }}">
+        <input type="text" class="form-control q" name="q" id="q" value="{{ q or '' }}">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
         </div>
+        <input type="hidden" id="page" name="page" value="{{ page or '' }}">
     </div>
 </div>
 <table class="table">
@@ -15,6 +16,7 @@
         <th>퇴근 시간</th>
         <th>상태</th>
         <th>처리</th>
+        <th>비고</th>
     </tr>
     </thead>
     <tbody>
@@ -45,17 +47,32 @@
             {% endif %}
         </td>
         <td>
-            {% if pio.state=="WAITING" %}
+            {% if pio.state=='WAITING' %}
+            {% if pio.punch_in and pio.punch_out %}
             <button class="check btn btn-secondary" data-id="{{ pio.pio_id }}">확인</button>
-            {% elif pio.state=='PROCESSED' %}
+            {% else %}
             <button class="btn btn-secondary disabled">확인</button>
             {% endif %}
+            {% elif pio.state=='PROCESSED' %}
+            <button class="edit btn btn-secondary" data-id="{{ pio.pio_id }}">저장</button>
+            {% endif %}
+        </td>
+        <td>
+            <input
+                type="text"
+                placeholder="비고 입력"
+                {% if pio.state=='WAITING' %}
+                disabled
+                {% elif pio.state=='PROCESSED' %}
+                value="{{ pio.bigo or '' }}"
+                {% endif %}
+                id="bigo_{{ pio.pio_id }}">
         </td>
     </tr>
     {% endfor %}
     {% else %}
     <tr>
-        <td colspan="6">출퇴근 기록이 없습니다.</td>
+        <td colspan="7">출되근 기록이 없습니다.</td>
     </tr>
     {% endif %}
     </tbody>
@@ -100,25 +117,21 @@
     </li>
     {% endif %}
 </ul>
-<form id="searchForm" method="get">
-    <input type="hidden" id="q" name="q" value="{{ q or '' }}">
-    <input type="hidden" id="page" name="page" value="{{ page or '' }}">
-</form>
-<script type="text/javascript">
+<script>
     function loadScript(){
         $(".page-link").on('click', function(){
             var q = $(".q").val();
             var page = $(this).data("page");
             $.ajax({
-                url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                url: '{{ url_for("admin_punch_in_out.punch_in_out_detail", date=date) }}',
                 type: 'GET',
-                contentType: 'application/json;charset=UTF-8',
+                contentType: 'html',
                 data: {
                     q: q,
                     page: page
                 },
-                success: function(response){
-                    $("#detail").html(response.response);
+                success: function(data){
+                    $("#detail").html(data);
                 }
             });
         });
@@ -126,39 +139,69 @@
             var q = $(".q").val();
             var page = 1;
             $.ajax({
-                url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                url: '{{ url_for("admin_punch_in_out.punch_in_out_detail", date=date) }}',
                 type: 'GET',
-                contentType: 'application/json;charset=UTF-8',
+                contentType: 'html',
                 data: {
                     q: q,
                     page: page
                 },
-                success: function(response){
-                    $("#detail").html(response.response);
+                success: function(data){
+                    $("#detail").html(data)
                 }
             });
         });
         $(".check").on("click", function(){
             $.ajax({
-                url: '/admin/punch_in_out/' + $(this).data('id') + '/proc',
+                url: '/admin/punch_in_out/proc/accept/' + $(this).data('id'),
                 type: 'POST',
-                contentType: 'application/json;charset=UTF-8',
                 beforeSend: function(xhr){
                     xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
                 },
-                success: function(response){
+                success: function(){
                     var q = $(".q").val();
                     var page = $("#page").val();
                     $.ajax({
-                        url: '{{ url_for("admin.punch_in_out_detail", date=date) }}',
+                        url: '{{ url_for("admin_punch_in_out.punch_in_out_detail", date=date) }}',
                         type: 'GET',
-                        contentType: 'application/json;charset=UTF-8',
+                        contentType: 'html',
                         data: {
                             q: q,
                             page: page
                         },
-                        success: function(response){
-                            $("#detail").html(response.response);
+                        success: function(data){
+                            $("#detail").html(data);
+                        }
+                    });
+                }
+            });
+        });
+        $(".edit").on("click", function(){
+            console.log($("#bigo_" + $(this).data('id')).val());
+            var bigo = $("#bigo_" + $(this).data('id')).val();
+            $.ajax({
+                url: '/admin/punch_in_out/proc/edit/' + $(this).data('id'),
+                type: 'POST',
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+                },
+                dataType: 'json',
+                data: {
+                    bigo: bigo
+                },
+                success: function(){
+                    var q = $(".q").val();
+                    var page = $("#page").val();
+                    $.ajax({
+                        url: '{{ url_for("admin_punch_in_out.punch_in_out_detail", date=date) }}',
+                        type: 'GET',
+                        contentType: 'html',
+                        data: {
+                            q: q,
+                            page: page
+                        },
+                        success: function(data){
+                            $("#detail").html(data);
                         }
                     });
                 }

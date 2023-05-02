@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="conatiner">
+<div class="container">
     <div id="calendar"></div>
     <div class="container" id="detail"></div>
 </div>
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('static', filename='dist/index.global.min.js') }}"></script>
-<script type="text/javascript">
-    let selectedDate;
-    let calendarEl = document.querySelector("#calendar");
-    let calendar
+<script>
+    var selectedDate;
+    var calendarEl = document.querySelector("#calendar");
+    var calendar;
     $(document).ready(function(){
         calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'ko',
@@ -35,17 +35,15 @@
                 $.ajax({
                     url: '/admin/punch_in_out/' + info.dateStr,
                     type: 'GET',
-                    contentType: 'application/json;charset=UTF-8',
+                    contentType: 'html',
                     data: {
                         q: '',
                         page: '1'
                     },
-                    success: function(response){
-                        $("#detail").html(response.response);
+                    success: function(data){
+                        $("#detail").html(data);
                     }
                 });
-            },
-            datesSet: function(){
             },
         });
         calendar.render();
