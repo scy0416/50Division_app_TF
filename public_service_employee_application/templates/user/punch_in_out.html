@@ -1,23 +1,32 @@
 <div>
     {% if pio == None %}
     <!-- 정보가 없는 경우 -->
-    <form>
-        <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="date" id="date" value="{{ date }}">
-        <label for="punch_in">출근 시간</label>
-        <input type="time" name="punch_in" id="punch_in">
-        <label for="punch_out">퇴근 시간</label>
-        <input type="time" name="punch_out" id="punch_out">
-        <button type="button" class="btn btn-primary" onclick="create();rerender()">데이터 생성</button>
-    </form>
+    <div>
+        <form>
+            <div>
+                <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="date" id="date" value="{{ date }}">
+                <label for="punch_in">출근 시간</label>
+                <input type="time" name="punch_in" id="punch_in">
+            </div>
+            <div>
+                <label for="punch_out">퇴근 시간</label>
+                <input type="time" name="punch_out" id="punch_out">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="create();rerender()">데이터 생성</button>
+            </div>
+        </form>
+    </div>
     {% else %}
     <form method="post" action="#">
-        <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
-        <label for="punch_in">출근 시간</label>
-        <input type="time" name="punch_in" id="punch_in" value="{{ pio.punch_in or '' }}">
-        <label for="punch_out">퇴근 시간</label>
-        <input type="time" name="punch_out" id="punch_out" value="{{ pio.punch_out or '' }}">
-        <button type="button" class="btn btn-primary" onclick="edit();rerender()">변경사항 저장</button>
+        <div>
+            <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
+            <label for="punch_in">출근 시간</label>
+            <input type="time" name="punch_in" id="punch_in" value="{{ pio.punch_in or '' }}">
+        </div>
+        <div><label for="punch_out">퇴근 시간</label>
+            <input type="time" name="punch_out" id="punch_out" value="{{ pio.punch_out or '' }}">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="edit();rerender()">변경사항 저장</button>
+        </div>
     </form>
     {% endif %}
 </div>
@@ -73,4 +82,5 @@
         });
     }
     {% endif %}
+
 </script>

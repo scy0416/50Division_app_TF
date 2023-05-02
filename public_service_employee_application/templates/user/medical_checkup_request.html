@@ -1,17 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <ul>
-        <li><h4>건강검진 결과 등록</h4></li>
-        <li>
+    <h4>건강검진 결과 등록</h4>
             <form action="{{ url_for('employee.medical_checkup_request') }}"
                   method="post"
                   enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="file" name="file">
-                <button class="btn btn-primary">등록</button>
+                <button class="btn btn-secondary btn-sm">등록</button>
             </form>
-        </li>
-    </ul>
 </div>
 {% endblock %}

@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="containter my-3">
+<style>
+ table{
+    table-layout: fixed;
+    }
+    .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+</style>
+<div class="container my-3">
     <div class="row justify-content-end my-3">
         <div class="col-6 input-group input-group-sm">
             <input type="text" class="form-control q" value="{{ q or '' }}">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn_search">검색</button>
             </div>
-            <a class="btn btn-primary" href="{{ url_for('employee.grievance_write') }}">고충 글 작성</a>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('employee.grievance_write') }}">고충 글 작성</a>
         </div>
     </div>
     <table class="table">
         <thead>
         <tr class="text-center thead-dark">
-            <th>번호</th>
+            <th style="word-break:keep-all;width:15%">번호</th>
             <th>제목</th>
-            <th>작성자</th>
-            <th>직책</th>
-            <th>부대명</th>
             <th>작성일시</th>
         </tr>
         </thead>
@@ -26,27 +29,25 @@
         {% for grievance in grievance_list.items %}
         <tr class="text-center">
             <td>{{ grievance_list.total - ((grievance_list.page-1) * grievance_list.per_page) - loop.index0 }}</td>
-            <td class="text-left">
-                <a href="{{ url_for('employee.grievance_detail', post_id=grievance.id) }}">{{ grievance.subject }}</a>
+            <td class="text overflow">
+                <a href="{{ url_for('employee.grievance_detail', post_id=grievance.id) }}" class="link-dark">{{
+                    grievance.subject }}</a>
                 {% if grievance.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ grievance.comment_set|length }}</span>
                 {% endif %}
             </td>
-            <td>{{ grievance.user.name }}</td>
-            <td>{{ grievance.user.position }}</td>
-            <td>{{ grievance.user.unit_name }}</td>
             <td>{{ grievance.create_date|datetime }}</td>
         </tr>
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="6">고충 글이 없습니다.</td>
+            <td colspan="3">고충 글이 없습니다.</td>
         </tr>
         {% endif %}
         </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
-    <ul class="pagination justify-content-center">
+    <ul class="pagination pagination-sm justify-content-center">
         <!-- 이전 페이지 -->
         {% if grievance_list.has_prev %}
         <li class="page-items">
@@ -104,5 +105,7 @@
             $("#searchForm").submit();
         });
     });
+
+
 </script>
 {% endblock %}

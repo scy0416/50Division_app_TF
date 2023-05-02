@@ -4,14 +4,7 @@
     table{
     table-layout: fixed;
     }
-    .page-link, .page-items{
-    background:#e9ecef;
-    color:black;
-    }
-
-
-
-
+    .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 </style>
 <div class="container my-3">
     <form id="searchForm" method="get">
@@ -22,17 +15,16 @@
     <table class="table">
         <thead>
         <tr class="text-center thead-dark">
-            <th style="word-break: keep-all;width:15%">번호</th>
+            <th style="word-break:keep-all;width:15%">번호</th>
             <th>제목</th>
         </tr>
         </thead>
         <tbody>
         {% if notice_list.items %}
         {% for notice in notice_list.items %}
-
         <tr class="text-center">
             <td>{{ notice_list.total - ((notice_list.page-1) * notice_list.per_page) - loop.index0 }}</td>
-            <td class="text-left" style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <td class="text overflow">
                 <a href="{{ url_for('employee.notice_detail', post_id=notice.id) }}"class="link-dark">{{ notice.subject }}</a>
                 {% if notice.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
@@ -48,7 +40,7 @@
         </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
-    <ul class="pagination justify-content-center">
+    <ul class="pagination pagination-sm justify-content-center">
         <!-- 이전 페이지 -->
         {% if notice_list.has_prev %}
         <li class="page-item">
@@ -56,7 +48,7 @@
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#e9ecef;color:black"
+            <a class="page-link" tabindex="-1" aria-disabled="true"
                href="#">이전</a>
         </li>
         {% endif %}
@@ -68,7 +60,7 @@
         </li>
         {% else %}
         <li class="page-item active" aria-current="page">
-            <a class="page-link" href="#" style="background:gray;border-color:gray">{{ page_num }}</a>
+            <a class="page-link" href="#">{{ page_num }}</a>
         </li>
         {% endif %}
         {% else %}
@@ -84,7 +76,7 @@
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" style="background:#e9ecef;color:black"
+            <a class="page-link" tabindex="-1" aria-disabled="true"
                href="#">다음</a>
         </li>
         {% endif %}
@@ -104,12 +96,5 @@
             $("#searchForm").submit();
         });
     });
-
-
-
-
-
-
-
 </script>
 {% endblock %}

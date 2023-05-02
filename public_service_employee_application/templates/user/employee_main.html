@@ -1,66 +1,68 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<div class="card" style="width: 95%; margin:0 auto; margin-bottom:50px; margin-top:10px">
-    <div class="card-header">공지사항</div>
-    <ul class="list-group list-group-flush" style="text-align: center;">
-        <li class="list-group-item">최근 공지사항1</li>
-        <li class="list-group-item">최근 공지사항2</li>
-        <li class="list-group-item">최근 공지사항3</li>
-        <li class="list-group-item">최근 공지사항4</li>
-    </ul>
-    <div class="card-footer text-end" style="height:40px">
-        <a class="btn btn-btn-outline btn-sm" href="{{ url_for('employee.notice') }}" role="button">더보기</a>
-    </div>
-</div>
-    <div class="container text-center">
-        <div class="row row-cols-2">
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.notice') }}"><img
-                        src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>공지사항
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.vacation') }}"><img
-                        src="{{ url_for('static', filename='vacation image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>휴가신청
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.pr_information', user_id=g.user.id)}}"><img
-                        src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>인사정보
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.welfare') }}"><img
-                        src="{{ url_for('static', filename='point image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>복지포인트
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.edu') }}"><img
-                        src="{{ url_for('static', filename='education image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>의무교육
-            </div>
-            <div class="col-md-4">
-                <a href="#"><img
-                        src="{{ url_for('static', filename='payslip image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>급여명세서
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.grievance_list') }}"><img
-                        src="{{ url_for('static', filename='contract image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>고충글
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.punch_in_out') }}"><img
-                        src="{{ url_for('static', filename='attendance image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>출근부
-            </div>
-            <div class="col-md-4">
-                <a href="{{ url_for('employee.medical_checkup') }}"><img
-                        src="{{ url_for('static', filename='medical image.png') }}" alt=""
-                        style="display:inline-block;max-width: 30%;height:auto;"></a><br>건강검진
-            </div>
+<div class="container my-3">
+    <div class="card">
+        <div class="card-header">공지사항</div>
+        <ul class="list-group list-group-flush" style="text-align:center;">
+            <li class="list-group-item">최근 공지사항1</li>
+            <li class="list-group-item">최근 공지사항2</li>
+            <li class="list-group-item">최근 공지사항3</li>
+            <li class="list-group-item">최근 공지사항4</li>
+        </ul>
+        <div class="card-footer text-end">
+            <a class="btn btn-btn-outline btn-sm" href="{{ url_for('employee.notice') }}" role="button">더보기</a>
         </div>
     </div>
 </div>
+<div class="container text-center">
+    <div class="row row-cols-2">
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.notice') }}"><img
+                    src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>공지사항</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.vacation') }}"><img
+                    src="{{ url_for('static', filename='vacation image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>휴가신청</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.pr_information', user_id=g.user.id)}}"><img
+                    src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>인사정보</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.welfare') }}"><img
+                    src="{{ url_for('static', filename='point image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>복지포인트</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.edu') }}"><img
+                    src="{{ url_for('static', filename='education image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>의무교육</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="#"><img
+                    src="{{ url_for('static', filename='payslip image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>급여명세서</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.grievance_list') }}"><img
+                    src="{{ url_for('static', filename='contract image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>고충글</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.punch_in_out') }}"><img
+                    src="{{ url_for('static', filename='attendance image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a><h6>출근부</h6>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('employee.medical_checkup') }}"><img
+                    src="{{ url_for('static', filename='medical image.png') }}" alt=""
+                    style="display:inline-block;max-width: 30%;height:auto;"></a>
+            <h6>건강검진</h6>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

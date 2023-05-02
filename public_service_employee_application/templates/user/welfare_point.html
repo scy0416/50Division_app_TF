@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="container my-3">
 <div>
     <span class=" fw-bold">분기 선택</span>
     <form method="get">
@@ -35,6 +36,7 @@
 <form method="get" id="search">
     <input type="hidden" name="quarter_id">
 </form>
+</div>
 {% endblock %}
 {% block script %}
 <script type="text/javascript">

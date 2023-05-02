@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <div class="container">
-        <a class="btn btn-primary" href="{{ url_for('employee.medical_checkup_request_page') }}">건강검진 결과 등록</a>
+    <div class="container text-end">
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('employee.medical_checkup_request_page') }}">건강검진 결과 등록</a>
     </div>
     <table class="table">
         <thead>
@@ -20,7 +20,7 @@
         <tr class="text-center">
             <td>{{ medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) - loop.index0 }}</td>
             <td>{{ medical_checkup.request_date|datetime }}</td>
-            <td><a href="#" data-type="image-view" data-request_id="{{ medical_checkup.id }}">확인</a></td>
+            <td><a class="link-dark" href="#" data-type="image-view" data-request_id="{{ medical_checkup.id }}">확인</a></td>
             <td>
                 {% if medical_checkup.state=='WAITING' %}
                 대기중
@@ -47,7 +47,7 @@
         </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
-    <ul class="pagination justify-content-center">
+    <ul class="pagination pagination-sm justify-content-center">
         <!-- 이전 페이지 -->
         {% if medical_checkup_list.has_prev %}
         <li class="page-items">

@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    a{text-decoration-line:none;color:black}
+    .fc-daygrid-event{white-space:normal;text-align:end}
+    .fc-event-title-container{color:black;background:white;font-size:14px}
+    .fc-h-event{border-color:#ddd}
+    .fc-h-event{background:white}
+</style>
 <div class="container">
     <div id="calendar"></div>
     <div class="container" id="input"></div>
@@ -23,6 +30,7 @@
                 right: 'prev,next'
             },
             editable: false,
+            height: 'auto',
             dateClick: function(info){
                 //
                 if(selectedDate == undefined){

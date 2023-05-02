@@ -9,7 +9,7 @@ textarea{resize:none}
     <table class="table table-sm">
         <thead>
         <tr class="text-center thead-dark">
-            <th class="align-top" style="font-size:16px">제목 : {{ post.subject }}</th>
+            <th style="font-size:16px">제목 : {{ post.subject }}</th>
         </tr>
         <tr>
             <td nowrap style="text-align:right;color:gray;font-size:12px;border-bottom:none;padding-bottom:0">작성자 : {{
@@ -44,7 +44,7 @@ textarea{resize:none}
                         <div>{{ comment.user.name }}</div>
                         <textarea readonly class="autotext readonly" rows="1" name="content"
                                   id="comment_{{ comment.id }}">{{ comment.content }}</textarea>
-                        <div style="font-size:12px">{{ comment.create_date|datetime }}</div>
+                        <div style="font-size:12px">{{ comment.create_date|datetime }}{% if comment.modify_date %}(수정됨){% endif %}</div>
                         <div class="text-end">
                             <button type="button" onclick="modify($(this))" class="btn btn-secondary btn-sm"
                                     data-comment_id="{{ comment.id }}" id="modify_{{ comment.id }}">수정
@@ -96,11 +96,11 @@ textarea{resize:none}
     function modify(element){
         $("#comment_"+element.data("comment_id")).removeAttr("readonly");
         element.css('display', 'none');
-        $("#save_"+element.data("comment_id")).css('display', 'block');
+        $("#save_"+element.data("comment_id")).css('display', 'inline-block');
     }
     function save(element){
         $("#comment_"+element.data("comment_id")).attr('readonly');
-        $("#modify_"+element.data("comment_id")).css('display', 'block');
+        $("#modify_"+element.data("comment_id")).css('display', 'inline-block');
         element.css('display','none');
     }
     $("textarea.autotext").each(function () {
@@ -109,7 +109,5 @@ textarea{resize:none}
   this.style.height = 0;
   this.style.height = (this.scrollHeight) + "px";
 });
-
-
 </script>
 {% endblock %}

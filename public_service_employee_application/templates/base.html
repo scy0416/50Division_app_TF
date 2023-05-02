@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="kor">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <style>
     .fs-14,.table{
     font-size:14px;color:black;
@@ -7,13 +8,22 @@
     .btn-custom{
     height:35px;font-size:16px;
     }
+    .active>.page-link{
+    color:white;background:gray;border-color:gray
+    }
+    .pagination{--bs-pagination-disabled-bg: #e9ecef;
+    --bs-pagination-border-color: #e9ecef;
+    --bs-pagination-disabled-color:black;
+    --bs-pagination-color:black;
+    --bs-pagination-bg: #e9ecef;
+    }
 </style>
 <head>
     <!--Requered meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!--Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+
     <title>50사단 공무직 어플</title>
 </head>
 <body>
