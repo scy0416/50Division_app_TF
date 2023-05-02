@@ -9,6 +9,7 @@
 <script src="{{ url_for('static', filename='dist/index.global.min.js') }}"></script>
 <script>
     var selectedDate;
+    var prevColor;
     var calendarEl = document.querySelector("#calendar");
     var calendar;
     $(document).ready(function(){
@@ -24,11 +25,13 @@
             dateClick: function(info){
                 if(selectedDate == undefined){
                     selectedDate = info.dayEl;
+                    prevColor = selectedDate.style.backgroundColor;
                     selectedDate.style.backgroundColor = '#bce8f1';
                 }else if(selectedDate != undefined){
                     if(selectedDate != info.dayEl){
-                        selectedDate.style.backgroundColor = '';
+                        selectedDate.style.backgroundColor = prevColor;
                         selectedDate = info.dayEl;
+                        prevColor = selectedDate.style.backgroundColor;
                         selectedDate.style.backgroundColor = '#bce8f1';
                     }
                 }
@@ -45,8 +48,47 @@
                     }
                 });
             },
+            datesSet: function(){
+                var startDate = calendar.view.currentStart;
+                var endDate = calendar.view.currentEnd;
+                var formattedStartDate = formatDate(startDate);
+                var formattedEndDate = formatDate(endDate);
+                var startDayEl = $('[data-date='+formattedStartDate+']');
+                var endDayEl = $('[data-date='+formattedEndDate+']');
+                //startDayEl.css('background-color', 'pink');
+
+                var start_date = formatDate(calendar.view.currentStart);
+                var end_date = formatDate(calendar.view.currentEnd);
+                $.ajax({
+                    url: '{{ url_for("admin_punch_in_out.get_unprocessed") }}',
+                    type: 'GET',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: {
+                        start_date: start_date,
+                        end_date: end_date
+                    },
+                    success: function(response){
+                        response.forEach(date => {
+                            dayEl = $('[data-date=' + date + ']');
+                            dayEl.css('background-color', 'pink');
+                        });
+                    }
+                });
+            }
         });
         calendar.render();
     });
+    function rerender(){
+        calendar.destroy();
+        calendar.render();
+    }
+    function formatDate(date){
+        const pad = (number) => (number < 10 ? '0' : '') + number;
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+
+        return `${year}-${month}-${day}`;
+    }
 </script>
 {% endblock %}

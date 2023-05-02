@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, make_response
-from sqlalchemy import union
+from flask import Blueprint, render_template, request, make_response, jsonify
+from sqlalchemy import union, distinct, and_
 from datetime import datetime
 
 from public_service_employee_application.views.auth_views import login_required_admin
@@ -65,6 +65,7 @@ def proc_pio(pio_id):
     db.session.commit()
     return make_response("", 204)
 
+# 비고를 저장하는 엔드포인트
 @bp.route('/proc/edit/<pio_id>', methods=['POST'])
 @login_required_admin
 def edit_pio(pio_id):
@@ -74,3 +75,23 @@ def edit_pio(pio_id):
     pio.bigo = bigo
     db.session.commit()
     return make_response("", 204)
+
+# 전달받은 날짜 사이에 있는 처리되지 않은 출근 정보를 반환하는 엔드포인트
+@bp.route('/proc/yet', methods=['GET'])
+@login_required_admin
+def get_unprocessed():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    pio_list = db.session.query(distinct(Punch_in_out.date)).filter(
+        and_(
+            Punch_in_out.date.between('2023-04-07', '2023-05-17'),
+            Punch_in_out.state == 'WAITING'
+        )
+    ).all()
+
+    response = []
+    for pio in pio_list:
+        response.append(pio[0].strftime('%Y-%m-%d'))
+
+    return jsonify(response)
