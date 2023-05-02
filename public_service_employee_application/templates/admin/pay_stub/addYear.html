@@ -1,0 +1,39 @@
+<dialog open id="addYearDialog">
+    <p>추가할 년도</p>
+    <input type="number" id="year" min="2000" max="2100">
+    <button class="btn btn-secondary" id="addYear" onclick="addYear()">추가</button>
+    <button class="btn btn-secondary" id="addYearCancel" onclick="deleteAddYearDialog()">취소</button>
+</dialog>
+<script>
+    function initialDialog(){
+        var currentYear = new Date().getFullYear();
+        $("#addYearDialog input").val(currentYear);
+    }
+    function addYear(){
+        $.ajax({
+            url: '{{ url_for("admin_pay_stub.addYear") }}',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify({
+                year: $("#year").val()
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+            },
+            success: function(response){
+                if(response[0].isOverlap){
+                    alert('중복되는 년도가 있습니다.');
+                }else{
+                    $("#addYearDialogContainer").html('');
+                    getSelect()
+                    // 다른 옵션 창도 처리
+                }
+            }
+        });
+    }
+    function deleteAddYearDialog(){
+        $("#addYearDialogContainer").html('');
+    }
+    initialDialog();
+</script>

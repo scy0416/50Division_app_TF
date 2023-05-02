@@ -253,3 +253,13 @@ class Punch_in_out(db.Model):
     po_create_time = Column(DateTime, nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
     state = Column(Text, nullable=True)
+
+# 급여명세서 관련 파일을 관리하기 위한 테이블
+class Year(db.Model):
+    __tablename__ = 'tb_year'
+    __table_args__ = {'extend_existing': True}
+
+    # 식별용id
+    id = Column(Integer, primary_key=True)
+    # 년도
+    year = Column(Integer, nullable=True)
