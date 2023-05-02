@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <div class="container" id="selectContainer"></div>
+<div class="container my-3">
+    <h4>급여명세서</h4>
+    <div id="selectContainer"></div>
     <script>
         function getSelect(){
             $.ajax({
@@ -31,7 +32,7 @@
         <option value="11">11월</option>
         <option value="12">12월</option>
     </select>
-    <button class="btn btn-secondary" onclick="pay_stub_check()">급여명세서 확인</button>
+    <button class="btn btn-secondary btn-sm" onclick="pay_stub_check()">급여명세서 확인</button>
     <script>
         function pay_stub_check(){
             var user_id = {{ g.user.id }};

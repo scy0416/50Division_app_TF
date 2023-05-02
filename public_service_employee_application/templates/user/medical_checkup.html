@@ -1,26 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+table th{border-bottom:none}
+
+</style>
 <div class="container my-3">
+    <h4>건강검진</h4>
     <div class="container text-end">
         <a class="btn btn-secondary btn-sm" href="{{ url_for('employee.medical_checkup_request_page') }}">건강검진 결과 등록</a>
     </div>
-    <table class="table">
-        <thead>
-        <tr class="text-center">
-            <th>번호</th>
-            <th>등록일</th>
-            <th>이미지</th>
-            <th>상태</th>
-            <th>처리일</th>
-        </tr>
-        </thead>
-        <tbody>
+    <table class="table table-sm text-center">
         {% if medical_checkup_list.items %}
         {% for medical_checkup in medical_checkup_list.items %}
-        <tr class="text-center">
-            <td>{{ medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) - loop.index0 }}</td>
-            <td>{{ medical_checkup.request_date|datetime }}</td>
-            <td><a class="link-dark" href="#" data-type="image-view" data-request_id="{{ medical_checkup.id }}">확인</a></td>
+        <tr style="border-top:1px #dee2e6 solid">
+            <th rowspan="4" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid">{{
+                medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) -
+                loop.index0 }}
+            </th>
+            <th style="border-right:1px #dee2e6 solid">등록일</th>
+            <th>처리일</th>
+
+        </tr>
+        <tr>
+            <td style="border-right:1px #dee2e6 solid">{{ medical_checkup.request_date|datetime }}</td>
+            <td>
+                {% if medical_checkup.proc_date %}
+                {{ medical_checkup.proc_date|datetime }}
+                {% else %}
+                ---
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th style="border-right:1px #dee2e6 solid">이미지</th>
+            <th>상태</th>
+        </tr>
+        <tr>
+            <td style="border-right:1px #dee2e6 solid"><a class="link-dark" href="#" data-type="image-view"
+                                                          data-request_id="{{ medical_checkup.id }}">확인</a>
+            </td>
             <td>
                 {% if medical_checkup.state=='WAITING' %}
                 대기중
@@ -30,13 +48,7 @@
                 거부됨
                 {% endif %}
             </td>
-            <td>
-                {% if medical_checkup.proc_date %}
-                {{ medical_checkup.proc_date|datetime }}
-                {% else %}
-                ---
-                {% endif %}
-            </td>
+
         </tr>
         {% endfor %}
         {% else %}
@@ -44,7 +56,6 @@
             <td colspan="5">요청 목록이 없습니다.</td>
         </tr>
         {% endif %}
-        </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
     <ul class="pagination pagination-sm justify-content-center">
@@ -115,5 +126,7 @@
             });
         });
     });
+
+
 </script>
 {% endblock %}
