@@ -1,0 +1,38 @@
+<dialog open id="addYearDialog" style="z-index:9999;">
+    <p>파일 등록(.xlsx)</p>
+    <input type="file" accept=".xlsx" id="file-input">
+    <button class="btn btn-secondary" id="upload_file" onclick="upload_file()">업로드</button>
+    <button class="btn btn-secondary" id="upload_file_cancel" onclick="upload_file_close()">취소</button>
+</dialog>
+<script>
+    function upload_file(){
+        var fileInput = $("#file-input")[0];
+        if(fileInput.files.length === 0){
+            alert("파일을 선택해주세요");
+            return;
+        }
+        var file = fileInput.files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        $.ajax({
+            url: 'file/upload/' + $("#year").val(),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+            },
+            success: function(response){
+                console.log('File uploaded successfully:', response);
+                upload_file_close();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+    function upload_file_close(){
+        $("#file_upload_container").html('');
+    }
+</script>

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="container" id="selectContainer"></div>
+    <script>
+        function getSelect(){
+            $.ajax({
+                url: '{{ url_for("employee_pay_stub.get_select_year") }}',
+                type: 'GET',
+                contentType: 'html',
+                success: function(data){
+                    $("#selectContainer").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        }
+    </script>
+    <select id="month">
+        <option value="1">1월</option>
+        <option value="2">2월</option>
+        <option value="3">3월</option>
+        <option value="4">4월</option>
+        <option value="5">5월</option>
+        <option value="6">6월</option>
+        <option value="7">7월</option>
+        <option value="8">8월</option>
+        <option value="9">9월</option>
+        <option value="10">10월</option>
+        <option value="11">11월</option>
+        <option value="12">12월</option>
+    </select>
+    <button class="btn btn-secondary" onclick="pay_stub_check()">급여명세서 확인</button>
+    <script>
+        function pay_stub_check(){
+            var user_id = {{ g.user.id }};
+            var year_id = $("#year").val();
+            var month = $("#month").val();
+            $.ajax({
+                url: '{{ url_for("employee_pay_stub.get_pay_stub") }}',
+                type: 'GET',
+                contentType: 'application/json;charset=UTF-8',
+                data: {
+                    year_id: year_id,
+                    month: month
+                },
+                success: function(response){
+                    if(response.isEmployeeExist == false){
+                        alert("귀하의 데이터가 존재하지 않습니다.");
+                        return;
+                    }
+                    if(response.isMonthDataExist == false){
+                        alert("해당 달의 데이터가 존재하지 않습니다.");
+                        return;
+                    }
+                    var pdfName = response.pdfName;
+                    $.ajax({
+                        url: '/employee/pay_stub/detail/' + pdfName,
+                        type: 'GET',
+                        dataType: 'html',
+                        success: function(data){
+                            var newWindow = window.open("", "_black");
+                            newWindow.document.write(data);
+                            newWindow.document.close();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        }
+    </script>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        getSelect();
+    });
+</script>
+{% endblock %}

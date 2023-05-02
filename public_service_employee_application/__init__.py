@@ -29,10 +29,14 @@ def create_app():
 
     # 블루프린트
     from views import main_views, auth_views, employee_views, admin_views
+    from views.admin import pay_stub_views as admin_pay_stub
+    from views.employee import pay_stub_views as employee_pay_stub
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
     app.register_blueprint(employee_views.bp)
     app.register_blueprint(admin_views.bp)
+    app.register_blueprint(admin_pay_stub.bp)
+    app.register_blueprint(employee_pay_stub.bp)
 
     # 필터
     from filter import formal_datetime

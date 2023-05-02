@@ -12,4 +12,5 @@
 **Flask-SQLAlchemy**: 3.0.3  
 **SQLAlchemy**: 2.0.7  
 **PyMySQL**: 1.0.3  
-**email-validator**: 1.3.1
+**email-validator**: 1.3.1  
+**pywin32**: 306

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-end my-3">
+        <div class="container" id="addYearDialogContainer"></div>
+        <button class="btn btn-secondary" onclick="getAddYearDialog()">년도 생성</button>
+        <script>
+            function getAddYearDialog(){
+                $.ajax({
+                    url: '{{ url_for("admin_pay_stub.get_dialog_addYear") }}',
+                    type: 'GET',
+                    contentType: 'html',
+                    success: function(data){
+                        $("#addYearDialogContainer").html(data);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        console.error("Error: " + textStatus + ", " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <button class="btn btn-secondary" onclick="deleteYear()">삭제</button>
+        <script>
+            function deleteYear(){
+                $.ajax({
+                    url: '/admin/pay_stub/year/' + $("#year").val() + '/delete',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+                    },
+                    success: function(data){
+                        if(data.isOnly){
+                            alert("년도가 하나밖에 없습니다.");
+                        }else{
+                            getSelect();
+                            // 삭제 후 년도 및 월의 선택을 새로 하도록 초기화
+                        }
+                    }
+                });
+            }
+        </script>
+        <div id="file_upload_container"></div>
+        <button class="btn btn-secondary" onclick="get_file_upload()">파일 업로드</button>
+        <script>
+            function get_file_upload(){
+                $.ajax({
+                    url: '{{ url_for("admin_pay_stub.get_file_upload") }}',
+                    type: 'GET',
+                    content: 'html',
+                    success: function(data){
+                        $("#file_upload_container").html(data);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        console.error("Error: " + textStatus + ", " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <div class="container" id="selectContainer"></div>
+        <script>
+            function getSelect(){
+                $.ajax({
+                    url: '{{ url_for("admin_pay_stub.get_select_year") }}',
+                    type: 'GET',
+                    contentType: 'html',
+                    success: function(data){
+                        $("#selectContainer").html(data);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        console.error("Error: " + textStatus + ", " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <select id="month">
+            <option value="1">1월</option>
+            <option value="2">2월</option>
+            <option value="3">3월</option>
+            <option value="4">4월</option>
+            <option value="5">5월</option>
+            <option value="6">6월</option>
+            <option value="7">7월</option>
+            <option value="8">8월</option>
+            <option value="9">9월</option>
+            <option value="10">10월</option>
+            <option value="11">11월</option>
+            <option value="12">12월</option>
+        </select>
+    </div>
+    <div class="container" id="userContainer"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    function getUser(){
+        $.ajax({
+            url: '{{ url_for('admin_pay_stub.get_user_list') }}',
+            type: 'GET',
+            contentType: 'html',
+            success: function(data){
+                $("#userContainer").html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    $(document).ready(function(){
+        getUser();
+        getSelect();
+    });
+</script>
+{% endblock %}
