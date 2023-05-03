@@ -247,12 +247,20 @@ class Punch_in_out(db.Model):
     punch_in = Column(Time, nullable=True)
     # 출근 시간 생성 시간
     pi_create_time = Column(DateTime, nullable=True)
+    # 출근 시간 변경 시간
+    pi_modify_time = Column(DateTime, nullable=True)
     # 퇴근 시간
     punch_out = Column(Time, nullable=True)
     # 퇴근 시간 생성 시간
     po_create_time = Column(DateTime, nullable=True)
+    # 퇴근 시간 변경 시간
+    po_modify_time = Column(DateTime, nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
     state = Column(Text, nullable=True)
+    # 처리된 시간
+    proc_date = Column(DateTime, nullable=True)
+    # 비고
+    bigo = Column(String(128), nullable=True)
 
 # 급여명세서 관련 파일을 관리하기 위한 테이블
 class Year(db.Model):

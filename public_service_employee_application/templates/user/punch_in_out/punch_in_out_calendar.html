@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    a{text-decoration-line:none;color:black}
+    .fc-daygrid-event{white-space:normal;text-align:end}
+    .fc-event-title-container{color:black;background:white;font-size:14px}
+    .fc-h-event{border-color:#ddd}
+    .fc-h-event{background:white}
+</style>
+<div class="container">
+    <div id="calendar"></div>
+    <div class="container" id="input"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='dist/index.global.min.js') }}"></script>
+<script>
+    var selectedDate;
+    var calendarEl = document.querySelector('#calendar');
+    var calendar;
+    var prevColor;
+    $(document).ready(function(){
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'ko',
+            headerToolbar: {
+                left: 'today',
+                center: 'title',
+                right: 'prev,next'
+            },
+            editable: false,
+            height: 'auto',
+            dateClick: function(info){
+                if(new Date(info.dateStr).getTime() > new Date().getTime()){
+                    //클릭된 부분이 오늘 날보다 늦다.
+                    alert("출퇴근 시간은 미리 등록할 수 없습니다.");
+                    return;
+                }
+
+                if(selectedDate == undefined){
+                    selectedDate = info.dayEl;
+                    prevColor = selectedDate.style.backgroundColor;
+                    selectedDate.style.backgroundColor = '#bce8f1';
+                }else if(selectedDate != undefined){
+                    if(selectedDate != info.dayEl){
+                        selectedDate.style.backgroundColor = prevColor;
+                        selectedDate = info.dayEl;
+                        prevColor = selectedDate.style.backgroundColor;
+                        selectedDate.style.backgroundColor = '#bce8f1';
+                    }
+                }
+                $.ajax({
+                    url: info.dateStr,
+                    type: 'GET',
+                    contentType: 'html',
+                    success: function(data){
+                        $("#input").html(data);
+                    }
+                });
+            },
+            datesSet: function(){
+                //var start_date = formatDate(calendar.view.currentStart);
+                var start_date = formatDate(calendar.view.activeStart);
+                //var end_date = formatDate(calendar.view.currentEnd);
+                var end_date = formatDate(calendar.view.activeEnd);
+                var current_date = formatDate(new Date());
+                var from_date = start_date;
+                var to_date;
+                if(calendar.view.activeEnd.getTime() > new Date().getTime()){
+                    to_date = current_date;
+                }else{
+                    to_date = end_date;
+                }
+                $.ajax({
+                    url: '{{ url_for("employee_punch_in_out.get_unprocessed") }}',
+                    type: 'GET',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: {
+                        from_date: from_date,
+                        to_date: to_date,
+                        all_dates: JSON.stringify(getAllDatesBetween(from_date, to_date))
+                    },
+                    success: function(response){
+                        $("[role='gridcell']").each(function(){
+                            $(this).css('background-color', '');
+                        });
+                        response.forEach(date => {
+                            dayEl = $('[data-date=' + date + ']');
+                            dayEl.css('background-color', 'pink');
+                        });
+                    }
+                });
+            }
+        });
+        calendar.render();
+    });
+    function rerender(){
+        calendar.destroy();
+        calendar.render();
+    }
+    function formatDate(date){
+        var pad = (number) => (number < 10 ? '0' : '') + number;
+        var year = date.getFullYear();
+        var month = pad(date.getMonth() + 1);
+        var day = pad(date.getDate());
+
+        return `${year}-${month}-${day}`;
+    }
+    function getAllDatesBetween(start, end){
+        var startDate = new Date(start);
+        var endDate = new Date(end);
+        var dates = [];
+
+        while(startDate <= endDate){
+            dates.push(formatDate(startDate));
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        return dates;
+    }
+</script>
+{% endblock %}
