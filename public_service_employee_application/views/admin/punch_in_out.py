@@ -85,7 +85,7 @@ def get_unprocessed():
 
     pio_list = db.session.query(distinct(Punch_in_out.date)).filter(
         and_(
-            Punch_in_out.date.between('2023-04-07', '2023-05-17'),
+            Punch_in_out.date.between(start_date, end_date),
             Punch_in_out.state == 'WAITING'
         )
     ).all()

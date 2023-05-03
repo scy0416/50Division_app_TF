@@ -49,14 +49,6 @@
                 });
             },
             datesSet: function(){
-                var startDate = calendar.view.currentStart;
-                var endDate = calendar.view.currentEnd;
-                var formattedStartDate = formatDate(startDate);
-                var formattedEndDate = formatDate(endDate);
-                var startDayEl = $('[data-date='+formattedStartDate+']');
-                var endDayEl = $('[data-date='+formattedEndDate+']');
-                //startDayEl.css('background-color', 'pink');
-
                 var start_date = formatDate(calendar.view.currentStart);
                 var end_date = formatDate(calendar.view.currentEnd);
                 $.ajax({

@@ -1,0 +1,84 @@
+<div>
+    <div>
+        <input type="hidden" id="date" value="{{ date }}">
+        <label for="punch_in">출근 시간</label>
+        <input type="time"
+               id="punch_in"
+               {% if pio!=None %}
+               value="{{ pio.punch_int }}"
+               {% endif %}>
+        <label for="punch_out">퇴근 시간</label>
+        <input type="time"
+               id="punch_out"
+               {% if pio!=None %}
+               value="{{ pio.punch_out }}"
+               {% endif %}>
+        <button type="button"
+                class="btn btn-secondary btn-sm"
+                {% if pio==None %}
+                onclick="create();rerender()"
+                {% else %}
+                onclick="edit();rerender()"
+                {% endif %}>
+            {% if pio == None %}
+            시간 입력
+            {% else %}
+            변경사항 저장
+            {% endif %}
+        </button>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='dist/index.global.min.js') }}"></script>
+<script>
+    {% if pio == None %}
+    function create(){
+        var date = $("#date").val();
+        var punch_in = $("#punch_in").val();
+        var punch_out = $("#punch_out").val();
+        if(punch_in == '' && punch_out == ''){
+            alert('비어있는 상태로 저장할 수 없습니다.');
+            return;
+        }
+        $.ajax({
+            url: '{{ url_for("employee_punch_in_out.punch_in_out_create") }}',
+            type: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                date: date,
+                punch_in: punch_in,
+                punch_out: punch_out
+            }),
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}')
+            },
+            success: function(response){
+                if(response.isEmpty){
+                    alert('비어있는 값으로 생성을 시도');
+                    return;
+                }
+                $("#input").html(response.html);
+            }
+        });
+    }
+    {% else %}
+    function edit(){
+        var punch_in = $("#punch_in").val();
+        var punch_out = $("#punch_out").val();
+        $.ajax({
+            url: '{{ url_for("employee_punch_in_out.punch_in_out_edit", id=pio.id) }}',
+            type: 'POST',
+            contentType: 'html',
+            data: JSON.stringify({
+                punch_in: punch_in,
+                punch_out: punch_out
+            }),
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+            },
+            success: function(data){
+                $("#input").html(data);
+            }
+        });
+    }
+    {% endif %}
+</script>
