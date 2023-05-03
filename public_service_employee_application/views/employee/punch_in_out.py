@@ -25,7 +25,7 @@ def punch_in_out_detail(date):
         response = "<div>문제가 발생했습니다.</div>"
     else:
         pio = Punch_in_out.query.filter_by(date=date, user_id=g.user.id).first()
-        response = render_template('user/punch_in_out.html', pio=pio, date=date)
+        response = render_template('user/punch_in_out/punch_in_out_detail.html', pio=pio, date=date)
     return response
 
 

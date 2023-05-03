@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .img-container{
+        position:relative;
+        overflow:hidden;
+    }
+    .img{
+        max-width:100%;
+        height:auto;
+    }
+</style>
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>신청일시</th>
+            <th>상태</th>
+            <th>처리일시</th>
+            <th>비고</th>
+        </tr>
+        <tr>
+            <td>{{ medical_checkup.request_date|datetime }}</td>
+            <td>
+                {% if medical_checkup.state == 'WAITING' %}
+                대기중
+                {% elif medical_checkup.state == 'REJECTED' %}
+                거부됨
+                {% elif medical_checkup.state == 'ALLOWED' %}
+                승인됨
+                {% endif %}
+            </td>
+            <td>
+                {% if medical_checkup.proc_date %}
+                {{ medical_checkup.proc_date|datetime }}
+                {% else %}
+                ---
+                {% endif %}
+            </td>
+            <td>
+                {% if medical_checkup.bigo %}
+                {{ medical_checkup.bigo }}
+                {% else %}
+                ---
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <h4>신청시 등록한 사진</h4>
+    <div class="container img-container">
+        <img src="{{ url_for('employee_medical_checkup.medical_checkup_image', filename=img_name) }}"
+             alt="" class="img">
+    </div>
+</div>
+{% endblock %}

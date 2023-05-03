@@ -206,6 +206,8 @@ class Medical_checkup_request(db.Model):
     request_date = Column(DateTime, nullable=True)
     # 처리일시
     proc_date = Column(DateTime, nullable=True)
+    # 비고
+    bigo = Column(String(128), nullable=True)
 
 
 # 급여 명세서에 대한 모델

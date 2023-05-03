@@ -34,7 +34,8 @@ def create_app():
     )
     from views.employee import (
     pay_stub_views as employee_pay_stub,
-    punch_in_out as employee_punch_in_out
+    punch_in_out as employee_punch_in_out,
+    medical_checkup as employee_medical_checkup
     )
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
@@ -44,6 +45,7 @@ def create_app():
     app.register_blueprint(admin_punch_in_out.bp)
     app.register_blueprint(employee_pay_stub.bp)
     app.register_blueprint(employee_punch_in_out.bp)
+    app.register_blueprint(employee_medical_checkup.bp)
 
     # 필터
     from filter import formal_datetime
