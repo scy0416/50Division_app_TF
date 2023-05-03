@@ -1,71 +1,85 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h2 class="text-center">복지 포인트 관리</h2>
-    <div class="container">
-        <button class="btn btn-primary" onclick="open_make_quarter()">분기 추가</button>
-        <button class="btn btn-primary" onclick="open_edit_quarter()">분기 편집</button>
+<div class="container my-3">
+    <h4>복지 포인트 관리</h4>
+    <div class="mb-3">
+        <form method="get" id="quarter_select">
+            <input type="hidden" name="q" value="{{ q }}">
+            <select name="quarter_id" onchange="change_quarter(this)">
+                <!-- <option value="">분기를 선택하세요.</option> -->
+                {% if quarter_list %}
+                {% for qt in quarter_list %}
+                <option value="{{ qt.id }}" {% if quarter.quarter==qt.quarter %}selected{% endif %}>{{
+                    qt.quarter }}
+                </option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </form>
+    </div>
+    <div class="d-flex">
+        <button class="btn btn-secondary btn-sm" onclick="open_make_quarter()">분기 추가</button>
+        <button class="btn btn-secondary btn-sm" onclick="open_edit_quarter()">분기 편집</button>
         {% if quarter %}
         <form method="post" action="{{ url_for('admin.delete_quarter', quarter_id=quarter.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-primary">분기 삭제</button>
+            <button class="btn btn-secondary btn-sm">분기 삭제</button>
         </form>
+    </div>
+    <div class="d-flex">
         <form method="get" id="searchForm">
             <input type="hidden" id="page" name="page" value="{{ page }}">
             <input type="hidden" name="quarter_id" value="{{ quarter_id }}">
-            <label for="q">이름 검색</label>
-            <input type="text" id="q" name="q" value="{{ q }}">
-            <button type="button" class="btn btn-primary" id="btn_search">검색</button>
+            <input placeholder="이름 검색" type="text" id="q" name="q" value="{{ q }}">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn_search">검색</button>
         </form>
-        {% endif %}
     </div>
-    <div class="container">
-        <table class="table">
-            <thead>
-            <tr class="text-center">
-                <th>번호</th>
-                <th>이름</th>
-                <th>생년월일</th>
-                <th>
-                    <form method="get" id="quarter_select">
-                        <input type="hidden" name="q" value="{{ q }}">
-                        <select name="quarter_id" onchange="change_quarter(this)">
-                            <!-- <option value="">분기를 선택하세요.</option> -->
-                            {% if quarter_list %}
-                            {% for qt in quarter_list %}
-                            <option value="{{ qt.id }}" {% if quarter.quarter==qt.quarter %}selected{% endif %}>{{ qt.quarter }}</option>
-                            {% endfor %}
-                            {% endif %}
-                        </select>
-                    </form>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
+    {% endif %}
+    <div class="container mt-3">
+        <table class="table text-center">
             {% if user_list.items %}
             {% for user in user_list.items %}
-            <tr class="text-center">
-                <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page)- loop.index0 }}</td>
+            <tr style="border-top:1px #dee2e6 solid">
+                <th rowspan="3" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid">{{
+                    user_list.total - ((user_list.page-1) * user_list.per_page)- loop.index0 }}
+                </th>
+                <th>이름</th>
                 <td>{{ user.name }}</td>
+            </tr>
+            <tr>
+                <th>생년월일</th>
                 <td>{{ user.birth_date }}</td>
+            </tr>
+            <tr class="text-center">
                 {% if user.point %}
-                <td>
-                    <form method="post" action="{{ url_for('admin.edit_welfare', welfare_point_id=user.welfare_point_id) }}">
+                <td colspan="2">
+                    <form method="post"
+                          action="{{ url_for('admin.edit_welfare', welfare_point_id=user.welfare_point_id) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <input type="text" name="point" value="{{ user.point }}" readonly id="point_{{ user.welfare_point_id }}">
-                        <button type="button" onclick="edit_mode($(this))" class="btn btn-primary" data-welfare_id="{{ user.welfare_point_id }}" id="edit_{{ user.welfare_point_id }}">편집</button>
-                        <button class="btn btn-primary" onclick="save_mode($(this))" style="display:none" id="save_{{ user.welfare_point_id }}" data-welfare_id="{{ user.welfare_point_id }}">저장</button>
+                        <input type="text" name="point" value="{{ user.point }}" readonly
+                               id="point_{{ user.welfare_point_id }}">
+                        <button type="button" onclick="edit_mode($(this))" class="btn btn-secondary btn-sm"
+                                data-welfare_id="{{ user.welfare_point_id }}" id="edit_{{ user.welfare_point_id }}">편집
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="save_mode($(this))" style="display:none"
+                                id="save_{{ user.welfare_point_id }}" data-welfare_id="{{ user.welfare_point_id }}">저장
+                        </button>
                     </form>
                 </td>
                 {% else %}
-                <td>
+                <td colspan="2">
                     <form method="post" action="{{ url_for('admin.create_welfare') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="user_id" value="{{ user.id }}">
                         <input type="hidden" name="quarter_id" value="{{ quarter.id }}">
                         <input type="text" name="point" value="정보가 없습니다." readonly id="user_{{ user.id }}">
-                        <button type="button" onclick="create_mode($(this))" class="btn btn-primary" data-user_id="{{ user.id }}" id="create_start_{{ user_id }}">생성</button>
-                        <button class="btn btn-primary" data-user_id="{{ user.id }}" id="create_done_{{ user.id }}" style="display:none">저장</button>
+                        <button type="button" onclick="create_mode($(this))" class="btn btn-secondary btn-sm"
+                                data-user_id="{{ user.id }}" id="create_start_{{ user_id }}">생성
+                        </button>
+                        <button class="btn btn-secondary btn-sm" data-user_id="{{ user.id }}"
+                                id="create_done_{{ user.id }}"
+                                style="display:none">저장
+                        </button>
                     </form>
                 </td>
                 {% endif %}
@@ -76,11 +90,10 @@
                 <td colspan="4">사용자가 없습니다.</td>
             </tr>
             {% endif %}
-            </tbody>
         </table>
         <!-- 페이징 처리 시작 -->
         {% if user_list.items %}
-        <ul class="pagination justify-content-center">
+        <ul class="pagination pagination-sm justify-content-center">
             <!-- 이전 페이지 -->
             {% if user_list.has_prev %}
             <li class="page-item">
@@ -175,18 +188,21 @@
     function edit_mode(element){
         $("#point_"+element.data('welfare_id')).removeAttr('readonly');
         element.css('display','none');
-        $("#save_"+element.data('welfare_id')).css('display', 'block');
+        $("#save_"+element.data('welfare_id')).css('display', 'inline-block');
     }
     function save_mode(element){
         $("#point_"+element.data('welfare_id')).attr('readonly');
-        $("#edit_"+element.data('welfare_id')).css('display', 'block');
+        $("#edit_"+element.data('welfare_id')).css('display', 'inline-block');
         element.css('display', 'none');
     }
     function create_mode(element){
         $("#user_"+element.data('user_id')).removeAttr('readonly');
         $("#user_"+element.data('user_id')).val('');
         element.css('display', 'none');
-        $("#create_done_"+element.data('user_id')).css('display', 'block');
+        $("#create_done_"+element.data('user_id')).css('display', 'inline-block');
     }
+
+
+
 </script>
 {% endblock %}

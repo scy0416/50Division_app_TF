@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
+  <h4>공지사항 관리</h4>
   <div class="row justify-content-end my-3">
     <div class="col-6 input-group input-group-sm">
       <input type="text" class="form-control q" value="{{ q or '' }}">
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+        <button class="btn btn-outline-secondary btn-sm" type="button" id="btn_search">검색</button>
       </div>
-      <button class="btn btn-primary mx-3" onclick="showWrite()">글 작성</button>
+      <button class="btn btn-secondary btn-sm" onclick="showWrite()">글 작성</button>
     </div>
   </div>
   <table class="table">
     <thead>
-    <tr class="text-center thead-dark">
+    <tr class="text-center">
       <th style="width:15%;">번호</th>
       <th style="width:35%;">제목</th>
       <th style="width:25%;">작성자</th>
@@ -25,7 +26,7 @@
     <tr class="text-center">
       <td>{{ notice_list.total - ((notice_list.page-1) * notice_list.per_page) - loop.index0 }}</td>
       <td class="text-left">
-        <a href="{{ url_for('admin.notice_detail', post_id=notice.id) }}">{{ notice.subject }}</a>
+        <a class="link-dark" href="{{ url_for('admin.notice_detail', post_id=notice.id) }}">{{ notice.subject }}</a>
         {% if notice.comment_set|length > 0 %}
         <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
         {% endif %}
@@ -42,7 +43,7 @@
     </tbody>
   </table>
   <!-- 페이징 처리 시작 -->
-  <ul class="pagination justify-content-center">
+  <ul class="pagination pagination-sm justify-content-center">
     <!-- 이전 페이지 -->
     {% if notice_list.has_prev %}
     <li class="page-items">

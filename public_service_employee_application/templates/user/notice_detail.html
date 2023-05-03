@@ -72,6 +72,7 @@ textarea{resize:none}
             {% endif %}
         </div>
         {% endfor %}
+
         <div>
             <form method="post" action="{{ url_for('employee.create_comment_notice') }}">
                 {{ form.csrf_token }}

@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
+   <h4>인사정보 관리</h4>
   <div class="d-flex justify-content-end">
-    <button onclick="showSearchEmployee()" class="btn btn-primary" style="margin: 1px;">상세 검색</button>
-    <button onclick="showAddEmployee()" class="btn btn-primary" style="margin: 1px;">사용자 추가</button>
-    <button onclick="showAddAdmin()" class="btn btn-primary" style="margin: 1px;">관리자 추가</button>
+    <button onclick="showSearchEmployee()" class="btn btn-secondary btn-sm" style="margin: 1px;">상세 검색</button>
+    <button onclick="showAddEmployee()" class="btn btn-secondary btn-sm" style="margin: 1px;">사용자 추가</button>
+    <button onclick="showAddAdmin()" class="btn btn-secondary btn-sm" style="margin: 1px;">관리자 추가</button>
     <div>
       <dialog id="addAdmin">
         <h3>관리자 추가</h3>
@@ -24,8 +25,8 @@
             <label for="password2">비밀번호 확인</label>
             <input type="password" class="form-control" name="password2" id="password2" value="{% if g.addAdmin_error %}{{ adminForm.password2.data or '' }}{% endif %}">
           </div>
-          <button type="button" onclick="closeAddAdmin()" class="btn btn-primary" id="closeAddAdmin_button">취소</button>
-          <button type="submit" class="btn btn-primary">생성하기</button>
+          <button type="button" onclick="closeAddAdmin()" class="btn btn-secondary btn-sm" id="closeAddAdmin_button">취소</button>
+          <button type="submit" class="btn btn-secondary btn-sm">생성하기</button>
         </form>
       </dialog>
     </div>
@@ -72,8 +73,8 @@
             <label for="bigo">비고</label>
             <input type="text" class="form-control" name="bigo" id="bigo" value="{% if g.addEmployee_error %}{{ employeeForm.bigo.data or '' }}{% endif %}">
           </div>
-          <button type="button" onclick="closeAddEmployee()" class="btn btn-primary" id="closeAddEmployee_button">취소</button>
-          <button type="submit" class="btn btn-primary">생성하기</button>
+          <button type="button" onclick="closeAddEmployee()" class="btn btn-secondary btn-sm" id="closeAddEmployee_button">취소</button>
+          <button type="submit" class="btn btn-secondary btn-sm">생성하기</button>
         </form>
       </dialog>
     </div>
@@ -98,8 +99,8 @@
             <input type="date" class="form-control" name="BirthDate" id="BirthDate" value="{{ searchForm.birth_date.data or '' }}">
           </div>
           <input type="hidden" id="page" name="page" value="{{ page }}">
-          <button type="button" onclick="closeSearchEmployee()" class="btn btn-primary">취소</button>
-          <button type="button" class="btn btn-primary" id="btn_search">검색</button>
+          <button type="button" onclick="closeSearchEmployee()" class="btn btn-secondary btn-sm">취소</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn_search">검색</button>
         </form>
       </dialog>
     </div>
@@ -107,7 +108,7 @@
   <table class="table">
     <thead>
     <tr class="text-center thead-dark">
-      <th>번호</th>
+      <th nowrap>번호</th>
       <th>이름</th>
       <th>부대명</th>
       <th>직책</th>
@@ -120,7 +121,7 @@
     <tr class="text-center">
       <td>{{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}</td>
       <td class="text-left">
-        <a href="{{ url_for('admin.detail', user_id=user.id) }}">{{ user.name }}</a>
+        <a class="link-dark" href="{{ url_for('admin.detail', user_id=user.id) }}">{{ user.name }}</a>
       </td>
       <td>{{ user.unit_name }}</td>
       <td>{{ user.position }}</td>
@@ -135,7 +136,7 @@
     </tbody>
   </table>
   <!-- 페이징 처리 시작 -->
-  <ul class="pagination justify-content-center">
+  <ul class="pagination pagination-sm justify-content-center">
     <!-- 이전 페이지 -->
     {% if user_list.has_prev %}
     <li class="page-item">

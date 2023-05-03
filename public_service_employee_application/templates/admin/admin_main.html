@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container text-center" style="margin-top:10px">
-    <div class="row row-cols-2 row-cols-md-7 g-3">
+<div class="container text-center my-3">
+    <div class="row row-cols-2 row-cols-md-8 g-3">
         <div class="col-md-4">
             <div class="col"><a href="{{ url_for('admin.notice') }}"><img
                     src="{{ url_for('static', filename='megaphone image.png') }}" alt=""
-                    style="display:inline-block;max-width: 25%;height:auto;"></a></div>
+                    style="display:inline-block;max-width: 25%;height:auto;"></a>
+            </div>
             <div class="col">공지사항 관리</div>
         </div>
         <div class="col-md-4">
@@ -16,7 +17,7 @@
         </div>
         <div class="col-md-4">
             <div class="col"><a href="{{ url_for('admin.request_main') }}"><img
-                    src="{{ url_for('static', filename='management image.png') }}" alt=""
+                    src="{{ url_for('static', filename='subscription image.png') }}" alt=""
                     style="display:inline-block;max-width: 25%;height:auto;"></a></div>
             <div class="col">신청 관리</div>
         </div>
