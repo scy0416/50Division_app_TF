@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <select id="order_by_date" onchange="getUser()">
+        <option value="desc">최신순</option>
+        <option value="asc">오래된순</option>
+    </select>
+    <input type="checkbox" id="processed" checked onchange="getUser()">처리됨
+    <input type="checkbox" id="unprocessed" checked onchange="getUser()">대기중
+    <div class="container" id="userContainer"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function getUserFirst(){
+        var order = $("#order_by_date").val();
+        var processed = $("#processed").is(':checked');
+        var unprocessed = $("#unprocessed").is(':checked');
+        $.ajax({
+            url: '{{ url_for("admin_medical_checkup.get_user_list") }}',
+            type: 'GET',
+            contentType: 'html',
+            data: {
+                order: order,
+                processed: processed,
+                unprocessed: unprocessed
+            },
+            success: function(data){
+                $("#userContainer").html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    function getUser(){
+        var q = $("#q").val();
+        var page = $("#page").val();
+        var order = $("#order_by_date").val();
+        var processed = $("#processed").is(':checked');
+        var unprocessed = $("#unprocessed").is(':checked');
+        $.ajax({
+            url: '{{ url_for("admin_medical_checkup.get_user_list") }}',
+            type: 'GET',
+            contentType: 'html',
+            data: {
+                q: q,
+                page: page,
+                order: order,
+                processed: processed,
+                unprocessed: unprocessed
+            },
+            success: function(data){
+                $("#userContainer").html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    $(document).ready(function(){
+        getUserFirst();
+    });
+</script>
+{% endblock %}
