@@ -34,7 +34,6 @@
     </div>
     <!-- 댓글 -->
     {% if post.comment_set|length > 0 %}
-    <div class="mt-2">
         {% for comment in post.comment_set %}
         {% if g.user == comment.user %}
         <div class="comment py-2" style="border-bottom:1px #dee2e6 solid;">
@@ -72,27 +71,30 @@
         {% else %}
         <div>
             <!-- 로그인 한 사람의 댓글이 아닌 경우 -->
-            <span>{{ comment.content }}- {{ comment.user.name }}, {{ comment.create_date|datetime }}</span>
+            <div class="container my-3" style="border-bottom:1px #dee2e6 solid;">
+                <div style="color:black">{{ comment.user.name }}</div>
+                <textarea class="readonly" rows="1" readonly>{{ comment.content }}</textarea>
+                <span style="font-size:12px">{{ comment.create_date|datetime }}</span>
+            </div>
         </div>
         {% endif %}
-    </div>
+
     {% endfor %}
     {% endif %}
     <!-- 댓글 작성 -->
-    <div class="container my-3">
-    <form method="post" action="{{ url_for('employee.create_comment_grievance') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="form_id" value="post">
-        <input type="hidden" name="post_id" value="{{ post.id }}">
-        <div class="d-flex my-3">
-            <textarea class="flex-grow-1" placeholder="댓글입력" class="autotext" name="content" rows="1"
-                      style="resize:none;"></textarea>
-            <button class="btn btn-secondary btn-sm align-self-end">등록</button>
-        </div>
-    </form>
+    <div>
+        <form method="post" action="{{ url_for('employee.create_comment_grievance') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_id" value="post">
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+            <div class="d-flex">
+            <textarea class="autotext flex-grow-1" placeholder="댓글입력" name="content" rows="1"></textarea>
+                <button class="btn btn-secondary btn-sm align-self-end">등록</button>
+            </div>
+        </form>
     </div>
 </div>
-    <!-- 댓글 끝 -->
+<!-- 댓글 끝 -->
 {% endblock %}
 {% block script %}
 <script type="text/javascript">

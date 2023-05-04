@@ -21,7 +21,7 @@ def index():
 
     # 검색 처리
     user_list = User.query.filter(and_(User.role == 'USER', User.name.contains(q)))
-    user_list = user_list.paginate(page=page, per_page=10)
+    user_list = user_list.paginate(page=page, per_page=5)
 
     return render_template('admin/pay_stub/pay_stub.html', user_list=user_list, page=page, q=q)
 
@@ -90,7 +90,7 @@ def get_user_list():
     page = request.args.get('page', type=int, default=1)
 
     user_list = User.query.filter(and_(User.role == 'USER', User.name.contains(q)))
-    user_list = user_list.paginate(page=page, per_page=10)
+    user_list = user_list.paginate(page=page, per_page=5)
 
     return render_template('admin/pay_stub/user_list.html', user_list=user_list, q=q, page=page)
 

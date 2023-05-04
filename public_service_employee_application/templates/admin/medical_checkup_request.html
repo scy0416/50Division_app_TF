@@ -1,12 +1,8 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<style>
-    table{white-space:nowrap}
-    table{table-layout: fixed;}
-</style>
 <div class="container my-3">
-    <h4>인사정보 변경신청 관리</h4>
-    <div class="row justify-content-end my-3">
+    <h4>건강검진 확인요청 관리</h4>
+    <div class="row justify-content-end">
         <div class="col-6 input-group input-group-sm">
             <input type="text" class="form-control q" value="{{ q or '' }}">
             <div class="input-group-append">
@@ -14,65 +10,65 @@
             </div>
         </div>
     </div>
-    <table class="table text-center">
-        {% if request_list.items %}
-        {% for request in request_list.items %}
+    <table class="table text-center my-3">
+        {% if medical_checkup_list.items %}
+        {% for medical_checkup in medical_checkup_list.items %}
         <tr style="border-top:1px black solid">
-            <th rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">{{ request_list.total - ((request_list.page-1) * request_list.per_page) - loop.index0 }}</th>
+            <th rowspan="5"
+                style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">{{
+                medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) -
+                loop.index0 }}
+            </th>
             <th>신청자</th>
-            {% if request.state == 'WAITING' %}
-            <td><a href="{{ url_for('admin.hr_information_detail', request_id=request.id) }}">{{ request.user.name
-                }}</a></td>
-            {% else %}
-            <td>{{ request.user.name }}</td>
-            {% endif %}
-          </tr>
-        <tr>
-            <th>생년월일</th>
-            <td>{{ request.user.birth_date }}</td>
+            <td><a href="{{ url_for('admin.medical_checkup_detail', request_id=medical_checkup.id) }}">{{
+                medical_checkup.user.name }}</a></td>
         </tr>
         <tr>
-            <th>신청분류</th>
-            <td>{{ request.type }}</td>
-       </tr>
+            <th>생년월일</th>
+            <td>{{ medical_checkup.user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th>부대명</th>
+            <td>{{ medical_checkup.user.unit_name }}</td>
+        </tr>
         <tr>
             <th>신청일시</th>
-            <td>{{ request.request_date|datetime }}</td>
+            <td>{{ medical_checkup.request_date }}</td>
         </tr>
         <tr>
             <th style="border-bottom:1px black solid">상태</th>
             <td style="border-bottom:1px black solid">
-            {% if request.state == 'WAITING' %}
-            대기중
-            {% elif request.state == 'ALLOWED' %}
-            승인됨
-            {% elif request.state == 'REJECTED' %}
-            거부됨
-            {% endif %}
+                {% if medical_checkup.state == 'WAITING' %}
+                대기중
+                {% elif medical_checkup.state == 'ALLOWED' %}
+                승인됨
+                {% elif medical_checkup.state == 'REJECTED' %}
+                거부됨
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="3">변경 신청이 없습니다.</td>
+            <td colspan="3">확인 요청이 없습니다.</td>
         </tr>
         {% endif %}
     </table>
     <!-- 페이징 처리 시작 -->
-    <ul class="pagination pagination-sm justify-content-center">
+    <ul class="pagination justify-content-center">
         <!-- 이전 페이지 -->
-        {% if request_list.has_prev %}
+        {% if medical_checkup_list.has_prev %}
         <li class="page-items">
-            <a class="page-link" data-page="{{ request_list.prev_num }}" href="#">이전</a>
+            <a class="page-link" data-page="{{ medical_checkup_list.prev_num }}" href="#">이전</a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
         </li>
         {% endif %}
-        {% for page_num in request_list.iter_pages() %}
+        {% for page_num in medical_checkup_list.iter_pages() %}
         {% if page_num %}
-        {% if page_num != request_list.page %}
+        {% if page_num != medical_checkup_list.page %}
         <li class="page-item">
             <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
         </li>
@@ -88,9 +84,9 @@
         {% endif %}
         {% endfor %}
         <!-- 다음 페이지 -->
-        {% if request_list.has_next %}
+        {% if medical_checkup_list.has_next %}
         <li class="page-item">
-            <a class="page-link" data-page="{{ request_list.next_num }}" href="#">다음</a>
+            <a class="page-link" data-page="{{ medical_checkup_list.next_num }}" href="#">다음</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -106,17 +102,16 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-  $(document).ready(function(){
-    $(".page-link").on('click', function(){
-      $("#page").val($(this).data("page"));
-      $("#searchForm").submit();
+    $(document).ready(function(){
+        $(".page-link").on('click', function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+        $("#btn_search").on('click', function(){
+            $("#q").val($(".q").val());
+            $("#page").val(1);
+            $("#searchForm").submit();
+        });
     });
-    $("#btn_search").on('click', function(){
-      $("#q").val($(".q").val());
-      $("#page").val(1);
-      $("#searchForm").submit();
-    });
-  });
-
 </script>
 {% endblock %}
