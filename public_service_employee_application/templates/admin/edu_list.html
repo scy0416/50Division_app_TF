@@ -1,31 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <div class="d-flex justify-content-end">
-        <button onclick="showSearch()" class="btn btn-primary">상세검색</button>
+    <h4>의무교육 관리</h4>
+    <div class="d-flex justify-content-end my-3">
+        <button onclick="showSearch()" class="btn btn-secondary btn-sm">상세검색</button>
     </div>
-    <table class="table">
-        <thead>
-        <tr class="text-center thead-dark">
-            <th>번호</th>
-            <th>이름</th>
-            <th>부대명</th>
-            <th>직책</th>
-            <th>생년월일</th>
-        </tr>
-        </thead>
-        <tbody>
+    <table class="table text-center">
         {% if user_list.items %}
         {% for user in user_list.items %}
-        <tr class="text-center">
-            <td rowspan="4" style="border-right-width:thin;" class="align-middle">{{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}</td>
-            <td class="text-left">{{ user.name }}</td>
-            <td>{{ user.unit_name }}</td>
+        <tr style="border-top:1px black solid">
+            <td rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid" class="align-middle">{{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}</td>
+            <th>이름</th>
+            <td>{{ user.name }}</td>
+            <th>부대명</th>
             <td>{{ user.position }}</td>
-            <td>{{ user.birth_date }}</td>
         </tr>
-        <tr class="text-center">
-            <th rowspan="3" style="border-right-width:thin;" class="align-middle">교육명</th>
+        <tr>
+            <th>직책</th>
+            <td>{{ user.unit_name }}</td>
+            <th>생년월일</th>
+            <td nowrap>{{ user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th rowspan="3" style="border-right-width:thin;border-bottom:1px black solid" class="align-middle">교육명</th>
             <td colspan="2" class="text-start">성희롱 예방 교육</td>
             <td>
                 <select data-id="{{ user.id }}" data-type="sexual_harassment_prevent" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
@@ -34,7 +31,7 @@
                 </select>
             </td>
         </tr>
-        <tr class="text-center">
+        <tr>
             <td colspan="2" class="text-start">장애인식 개선 교육</td>
             <td>
                 <select data-id="{{ user.id }}" data-type="disability_awareness_improvement" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
@@ -43,9 +40,9 @@
                 </select>
             </td>
         </tr>
-        <tr class="text-center">
-            <td colspan="2" class="text-start">직장 내 괴롭힘 예방 교육</td>
-            <td>
+        <tr>
+            <td style="border-bottom:1px black solid" colspan="2" class="text-start">직장 내 괴롭힘 예방 교육</td>
+            <td style="border-bottom:1px black solid">
                 <select data-id="{{ user.id }}" data-type="workplace_harassment_prevent" onchange="getPatch('{{ url_for('admin.edu') }}', this)">
                     <option value="N" {% if user.workplace_harassment_prevent=='N' %}selected{% endif %}>N</option>
                     <option value="Y" {% if user.workplace_harassment_prevent=='Y' %}selected{% endif %}>Y</option>
@@ -58,10 +55,9 @@
             <td colspan="5">사용자가 없습니다</td>
         </tr>
         {% endif %}
-        </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
-    <ul class="pagination justify-content-center">
+    <ul class="pagination pagination-sm justify-content-center">
         <!-- 이전 페이지 -->
         {% if user_list.has_prev %}
         <li class="page-item">
@@ -121,8 +117,8 @@
                 <input type="date" class="form-control" name="birthDate" id="birthDate" value="{{ form.birth_date.data or '' }}">
             </div>
             <input type="hidden" id="page" name="page" value="{{ page }}">
-            <button type="button" onclick="closeSearch()" class="btn btn-primary">취소</button>
-            <button type="button" class="btn btn-primary" id="btn_search">검색</button>
+            <button type="button" onclick="closeSearch()" class="btn btn-secondary btn-sm">취소</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn_search">검색</button>
         </form>
     </dialog>
 </div>

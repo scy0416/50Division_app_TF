@@ -9,7 +9,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <td rowspan="3" style="width:150px;height:150px;text-align:center;margin=10px" class="align-middle">
+            <td rowspan="3" style="width:100px;height:100px;text-align:center;margin=10px" class="align-middle">
                 <img src="{{ user.img_addr or url_for('static', filename='basic image.png') }}" alt="" style="display:inline-block;max-width: 100%;height:auto;">
             </td>
             <th class="text-center">성명</th>
@@ -24,7 +24,6 @@
             <td>{{ user.phone_num }}</td>
         </tr>
         </thead>
-    </table>
     <table class="table table-bordered">
         <thead>
         <tr>

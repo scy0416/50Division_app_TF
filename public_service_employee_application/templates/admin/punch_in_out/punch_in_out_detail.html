@@ -7,24 +7,16 @@
         <input type="hidden" id="page" name="page" value="{{ page or '' }}">
     </div>
 </div>
-<table class="table">
-    <thead>
-    <tr class="text-center">
-        <th>번호</th>
-        <th>이름</th>
-        <th>출근 시간</th>
-        <th>퇴근 시간</th>
-        <th>상태</th>
-        <th>처리</th>
-        <th>비고</th>
-    </tr>
-    </thead>
-    <tbody>
+<table class="table text-start">
     {% if pio_list.items %}
     {% for pio in pio_list.items %}
-    <tr class="text-center">
-        <td>{{ pio_list.total - ((pio_list.page-1) * pio_list.per_page) - loop.index0 }}</td>
+    <tr style="border-top:1px black solid">
+        <th rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">{{ pio_list.total - ((pio_list.page-1) * pio_list.per_page) - loop.index0 }}</th>
+        <th>이름</th>
         <td>{{ pio.name }}</td>
+    </tr>
+    <tr>
+        <th>출근 시간</th>
         <td>
             {% if pio.punch_in %}
             {{ pio.punch_in.strftime('[%H:%M]') }}
@@ -32,6 +24,9 @@
             ---
             {% endif %}
         </td>
+    </tr>
+    <tr>
+        <th>퇴근 시간</th>
         <td>
             {% if pio.punch_out %}
             {{ pio.punch_out.strftime('[%H:%M]') }}
@@ -39,46 +34,49 @@
             ---
             {% endif %}
         </td>
+    </tr>
+    <tr>
         <td>
+            <input type="text" placeholder="비고 입력"
+                    {% if pio.state=='WAITING' %}
+                    disabled
+                    {% elif pio.state=='PROCESSED' %}
+                    value="{{ pio.bigo or '' }}"
+                    {% endif %}
+                    id="bigo_{{ pio.pio_id }}">
+        </td>
+        <td>
+            {% if pio.state=='WAITING' %}
+            {% if pio.punch_in and pio.punch_out %}
+            <button class="check btn btn-secondary btn-sm" data-id="{{ pio.pio_id }}">확인</button>
+            {% else %}
+            <button class="btn btn-secondary btn-sm disabled">확인</button>
+            {% endif %}
+            {% elif pio.state=='PROCESSED' %}
+            <button class="edit btn btn-secondary btn-sm" data-id="{{ pio.pio_id }}">저장</button>
+            {% endif %}
+        </td>
+
+    </tr>
+    <tr>
+        <th style="border-bottom:1px black solid">상태</th>
+        <td style="border-bottom:1px black solid">
             {% if pio.state=='WAITING' %}
             대기중
             {% elif pio.state=='PROCESSED' %}
             확인됨
             {% endif %}
         </td>
-        <td>
-            {% if pio.state=='WAITING' %}
-            {% if pio.punch_in and pio.punch_out %}
-            <button class="check btn btn-secondary" data-id="{{ pio.pio_id }}">확인</button>
-            {% else %}
-            <button class="btn btn-secondary disabled">확인</button>
-            {% endif %}
-            {% elif pio.state=='PROCESSED' %}
-            <button class="edit btn btn-secondary" data-id="{{ pio.pio_id }}">저장</button>
-            {% endif %}
-        </td>
-        <td>
-            <input
-                type="text"
-                placeholder="비고 입력"
-                {% if pio.state=='WAITING' %}
-                disabled
-                {% elif pio.state=='PROCESSED' %}
-                value="{{ pio.bigo or '' }}"
-                {% endif %}
-                id="bigo_{{ pio.pio_id }}">
-        </td>
     </tr>
     {% endfor %}
     {% else %}
     <tr>
-        <td colspan="7">출되근 기록이 없습니다.</td>
+        <td colspan="3">출되근 기록이 없습니다.</td>
     </tr>
     {% endif %}
-    </tbody>
 </table>
 <!-- 페이징 처리 시작 -->
-<ul class="pagination justify-content-center">
+<ul class="pagination pagination-sm justify-content-center">
     <!-- 이전 페이지 -->
     {% if pio_list.has_prev %}
     <li class="page-items">
@@ -210,4 +208,6 @@
         });
     }
     loadScript();
+
+
 </script>

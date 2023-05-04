@@ -227,7 +227,7 @@ def edu():
     if birth_date != None and birth_date != '':
         user_list = user_list.filter_by(birth_date=birth_date)
     # 페이징 처리
-    user_list = user_list.paginate(page=page, per_page=10)
+    user_list = user_list.paginate(page=page, per_page=5)
 
     return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
 
@@ -451,7 +451,7 @@ def hr_information_list():
 
     # 인사정보 관련 신청 중에서 유저의 이름에 q가 포함되어 있는걸 필터링
     request_list = HR_change_request.query.join(User).filter(User.name.contains(q))
-    request_list = request_list.paginate(page=page, per_page=10)
+    request_list = request_list.paginate(page=page, per_page=5)
 
     return render_template('admin/hr_information_change_request_list.html', q=q, page=page, request_list=request_list)
 
@@ -500,7 +500,7 @@ def vacation_list():
 
     # 휴가 관련 신청 중에서 유저의 이름에 q가 포함되어 있는걸 필터링
     request_list = Vacation_request.query.join(User).filter(User.name.contains(q))
-    request_list = request_list.paginate(page=page, per_page=10)
+    request_list = request_list.paginate(page=page, per_page=5)
 
     return render_template('admin/vacation_request_list.html', q=q, page=page, request_list=request_list)
 
@@ -571,7 +571,7 @@ def welfare():
     # 서브쿼리로 만들었던 것 다시 아우터 조인
     user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
     # 페이지네이션
-    user_list = user_list.paginate(page=page, per_page=10)
+    user_list = user_list.paginate(page=page, per_page=5)
 
     # 모든 분기 추출
     quarter_list = Quarter.query.all()

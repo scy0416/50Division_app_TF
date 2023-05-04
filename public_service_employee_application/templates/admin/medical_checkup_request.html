@@ -1,35 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-end my-3">
+<div class="container my-3">
+    <h4>건강검진 확인요청 관리</h4>
+    <div class="row justify-content-end">
         <div class="col-6 input-group input-group-sm">
             <input type="text" class="form-control q" value="{{ q or '' }}">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn_search">검색</button>
             </div>
         </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr class="text-center thead-dark">
-            <th>번호</th>
-            <th>신청자</th>
-            <th>생년월일</th>
-            <th>부대명</th>
-            <th>신청일</th>
-            <th>상태</th>
-        </tr>
-        </thead>
-        <tbody>
+    <table class="table text-center my-3">
         {% if medical_checkup_list.items %}
         {% for medical_checkup in medical_checkup_list.items %}
-        <tr class="text-center">
-            <td>{{ medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) - loop.index0 }}</td>
-            <td><a href="{{ url_for('admin.medical_checkup_detail', request_id=medical_checkup.id) }}">{{ medical_checkup.user.name }}</a></td>
+        <tr style="border-top:1px black solid">
+            <th rowspan="5"
+                style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">{{
+                medical_checkup_list.total - ((medical_checkup_list.page-1) * medical_checkup_list.per_page) -
+                loop.index0 }}
+            </th>
+            <th>신청자</th>
+            <td><a href="{{ url_for('admin.medical_checkup_detail', request_id=medical_checkup.id) }}">{{
+                medical_checkup.user.name }}</a></td>
+        </tr>
+        <tr>
+            <th>생년월일</th>
             <td>{{ medical_checkup.user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th>부대명</th>
             <td>{{ medical_checkup.user.unit_name }}</td>
+        </tr>
+        <tr>
+            <th>신청일시</th>
             <td>{{ medical_checkup.request_date }}</td>
-            <td>
+        </tr>
+        <tr>
+            <th style="border-bottom:1px black solid">상태</th>
+            <td style="border-bottom:1px black solid">
                 {% if medical_checkup.state == 'WAITING' %}
                 대기중
                 {% elif medical_checkup.state == 'ALLOWED' %}
@@ -42,10 +50,9 @@
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="6">확인 요청이 없습니다.</td>
+            <td colspan="3">확인 요청이 없습니다.</td>
         </tr>
         {% endif %}
-        </tbody>
     </table>
     <!-- 페이징 처리 시작 -->
     <ul class="pagination justify-content-center">
