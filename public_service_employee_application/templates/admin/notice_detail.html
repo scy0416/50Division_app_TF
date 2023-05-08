@@ -48,7 +48,7 @@ textarea{resize:none}
         <div class="comment py-2" style="border-bottom:1px #dee2e6 solid;">
             <!-- <span style="white-space: pre-line;">{{ comment.content }}</span>
             <textarea readonly style="resize:none;">{{ comment.content }}</textarea>
-            <span>- {{ comment.user.username }}, {{ comment.create_date|datetime }}</span> -->
+            <span>- {{ comment.employee.username }}, {{ comment.create_date|datetime }}</span> -->
             {% if g.user == comment.user %}
             <div class="row">
                 <div class="col">

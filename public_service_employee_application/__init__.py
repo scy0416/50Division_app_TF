@@ -11,6 +11,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 csrf = None
+app = None
 
 def create_app():
     # Flask앱 생성
@@ -57,4 +58,5 @@ def create_app():
 
 # Flask앱 생성(실행)
 #create_app().run(debug=True)
-create_app().run(host='0.0.0.0', port=3000, debug=True)
+#create_app().run(host='0.0.0.0', port=3000, debug=True)
+app = create_app()

@@ -20,7 +20,7 @@ bp = Blueprint('employee', __name__, url_prefix='/employee')
 # 직원으로 로그인이 되었나 확인하는 부분
 @login_required_employee
 def index():
-    return render_template('user/employee_main.html')
+    return render_template('employee/employee_main.html')
 
 
 # 공지사항
@@ -37,7 +37,7 @@ def notice():
     notice_list = notice_list.paginate(page=page, per_page=10)
 
     # 템플릿 출력
-    return render_template('user/notice_list.html', notice_list=notice_list, q=q, page=page)
+    return render_template('employee/notice_list.html', notice_list=notice_list, q=q, page=page)
 
 
 # 공지사항 상세창
@@ -49,7 +49,7 @@ def notice_detail(post_id):
     cForm = contentForm()
 
     post = Post.query.get_or_404(post_id)
-    return render_template('user/notice_detail.html', post=post, form=form, cForm=cForm)
+    return render_template('employee/notice_detail.html', post=post, form=form, cForm=cForm)
 
 
 # 댓글 등록
@@ -98,7 +98,7 @@ def delete_comment_notice(comment_id):
 def pr_information(user_id):
     user = User.query.get_or_404(user_id)
 
-    return render_template('user/user_detail.html', user=user)
+    return render_template('employee/user_detail.html', user=user)
 
 
 # 인사정보 변경
@@ -148,7 +148,7 @@ def vacation():
     vacation_request_list = Vacation_request.query.filter_by(user_id=g.user.id).order_by(
         Vacation_request.request_date.desc())
     vacation_request_list = vacation_request_list.paginate(page=page, per_page=5)
-    return render_template('user/vacation.html', page=page, vacation_request_list=vacation_request_list)
+    return render_template('employee/vacation.html', page=page, vacation_request_list=vacation_request_list)
 
 
 # 휴가 신청 등록
@@ -187,14 +187,14 @@ def welfare():
 
     welfare_point = Wellfare_point.query.filter_by(user_id=g.user.id, quarter_id=quarter_id).first()
 
-    return render_template('user/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
+    return render_template('employee/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
 
 # 의무 교육 현황
 @bp.route('/edu/', methods=('GET', ))
 @login_required_employee
 def edu():
     user = User.query.get_or_404(g.user.id)
-    return render_template('user/edu.html', user=user)
+    return render_template('employee/edu.html', user=user)
 
 # 고충 글 리스트
 @bp.route('/grievance', methods=('GET', ))
@@ -210,13 +210,13 @@ def grievance_list():
     grievance = grievance.paginate(page=page, per_page=10)
 
     # 템플릿 출력
-    return render_template('user/grievance_list.html', grievance_list=grievance, q=q, page=page)
+    return render_template('employee/grievance_list.html', grievance_list=grievance, q=q, page=page)
 
 # 고충 글 작성 페이지
 @bp.route('/grievance/write', methods=('GET', ))
 @login_required_employee
 def grievance_write():
-    return render_template('user/write.html')
+    return render_template('employee/write.html')
 
 # 고충 글 작성
 @bp.route('/grievance/write', methods=('POST', ))
@@ -241,7 +241,7 @@ def grievance_detail(post_id):
     # 확인하려는 글
     post = Post.query.get_or_404(post_id)
     # 템플릿 출력
-    return render_template('user/grievance_detail.html', post=post)
+    return render_template('employee/grievance_detail.html', post=post)
 
 # 댓글 작성
 @bp.route('/grievance/comment', methods=('POST', ))

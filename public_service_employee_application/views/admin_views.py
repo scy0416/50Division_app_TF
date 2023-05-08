@@ -144,10 +144,10 @@ def detail(user_id):
         flash('삭제 권한이 없습니다.')
         return redirect(url_for('admin.pr_information', user_id=user.id))
     elif request.method == "DELETE" and g.user.role == 'ADMIN':
-        #user = User.query.get_or_404(user_id)
+        #employee = User.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        #return redirect(url_for('admin.detail', user_id=user.id))
+        #return redirect(url_for('admin.detail', user_id=employee.id))
         return jsonify({'status': 'success'})
 
     if request.method == 'POST':

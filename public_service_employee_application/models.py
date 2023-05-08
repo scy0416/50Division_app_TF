@@ -84,11 +84,11 @@ class Wellfare_point(db.Model):
     # 부여된 사용자의 식별용id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('wellfare_point_set'))
+    #user = db.relationship('User', backref=db.backref('wellfare_point_set'))
     # 분기 식별id
     quarter_id = Column(Integer, ForeignKey('tb_quarter.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'wellfare_point_set'으로 역참조가 가능
-    quarter = db.relationship('Quarter', backref=db.backref('wellfare_point_set'))
+    #quarter = db.relationship('Quarter', backref=db.backref('wellfare_point_set'))
     # 지급된 포인트
     point = Column(Integer, nullable=True)
 
@@ -103,7 +103,7 @@ class Post(db.Model):
     # 작성자id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'post_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('post_set'))
+    #user = db.relationship('User', backref=db.backref('post_set'))
     # 제목
     subject = Column(String(128), nullable=True)
     # 내용
@@ -124,11 +124,11 @@ class Comment(db.Model):
     # 작성자id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'comment_set_user'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('comment_set'))
+    #user = db.relationship('User', backref=db.backref('comment_set'))
     # 게시글id(외래키)
     post_id = Column(Integer, ForeignKey('tb_post.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'comment_set_post'으로 역참조가 가능
-    post = db.relationship('Post', backref=db.backref('comment_set'))
+    #post = db.relationship('Post', backref=db.backref('comment_set'))
     # 내용
     content = Column(String(128), nullable=True)
     # 생성 시간
@@ -147,7 +147,7 @@ class HR_change_request(db.Model):
     # 신청자 식별용id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'hr_change_request_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('hr_change_request_set'))
+    #user = db.relationship('User', backref=db.backref('hr_change_request_set'))
     # 사유
     reason = Column(String(128), nullable=True)
     # 바꾸기를 원하는 날짜
@@ -172,7 +172,7 @@ class Vacation_request(db.Model):
     # 신청자id(외래키)
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'vacation_request_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('vacation_request_set'))
+    #user = db.relationship('User', backref=db.backref('vacation_request_set'))
     # 휴가 시작일
     from_date = Column(Date, nullable=True)
     # 휴가 끝일
@@ -197,7 +197,7 @@ class Medical_checkup_request(db.Model):
     # 신청자id
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'medical_checkup_request_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('medical_checkup_request_set'))
+    #user = db.relationship('User', backref=db.backref('medical_checkup_request_set'))
     # 올린 이미지가 저장된 주소
     img_addr = Column(String(128), nullable=True)
     # 상태(ALLOWED/REJECTED/WAITING)
@@ -242,7 +242,7 @@ class Punch_in_out(db.Model):
     # 유저 식별용id
     user_id = Column(Integer, ForeignKey('tb_user.id', ondelete='CASCADE'), nullable=True)
     # 외래키가 참조하는 모델로 'punch_in_out_set'으로 역참조가 가능
-    user = db.relationship('User', backref=db.backref('punch_in_out_set'))
+    #user = db.relationship('User', backref=db.backref('punch_in_out_set'))
     # 날짜
     date = Column(Date, nullable=True)
     # 출근 시간
