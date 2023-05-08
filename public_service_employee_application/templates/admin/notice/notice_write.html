@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="https://cdn.ckeditor.com/ckeditor5/37.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
+<script src="{{ url_for('static', filename='UploadAdapter.js') }}"></script>
+<div class="container my-3">
+    <div id="editor"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function MyCustomUploadAdapterPlugin( editor ) {
+        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            return new MyUploadAdapter( loader, '{{ csrf_token() }}' );
+        }
+    }
+    ClassicEditor
+        .create( document.querySelector('#editor'), {
+            extraPlugins: [ MyCustomUploadAdapterPlugin ],
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    function func(){
+        var content = editor.getData();
+        var blocks = CKBlock.findBlocks(content);
+        console.log(blocks);
+    }
+</script>
+{% endblock %}

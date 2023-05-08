@@ -230,7 +230,7 @@ def edu():
     user_list = user_list.paginate(page=page, per_page=10)
 
     return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
-
+'''
 # 공지사항 관리창
 @bp.route('/notice/', methods=('GET', 'POST'))
 @login_required_admin
@@ -266,7 +266,7 @@ def notice():
 
     # 템플릿 출력
     return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
-
+'''
 # 공지사항 상세창
 @bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH', 'DELETE', 'POST'))
 @login_required_admin

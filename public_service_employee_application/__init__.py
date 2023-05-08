@@ -31,7 +31,8 @@ def create_app():
     from views.admin import (
     pay_stub_views as admin_pay_stub,
     punch_in_out as admin_punch_in_out,
-    medical_checkup as admin_medical_checkup
+    medical_checkup as admin_medical_checkup,
+    notice as admin_notice
     )
     from views.employee import (
     pay_stub_views as employee_pay_stub,
@@ -41,10 +42,13 @@ def create_app():
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
     app.register_blueprint(employee_views.bp)
+    #
     app.register_blueprint(admin_views.bp)
     app.register_blueprint(admin_pay_stub.bp)
     app.register_blueprint(admin_punch_in_out.bp)
     app.register_blueprint(admin_medical_checkup.bp)
+    app.register_blueprint(admin_notice.bp)
+    #
     app.register_blueprint(employee_pay_stub.bp)
     app.register_blueprint(employee_punch_in_out.bp)
     app.register_blueprint(employee_medical_checkup.bp)
