@@ -1,0 +1,98 @@
+<nav class="navbar navbar-light navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="link-dark"style="text-decoration-line:none" href="{{ url_for('main.index') }}"><h5>공무직 근로자 관리체계</h5></a>
+        <a class="navbar-brand" href="{{ url_for('main.index') }}"><img
+                src="{{ url_for('static', filename='50division image.svg') }}" width="40"></a>
+        <div class="offcanvas offcanvas-start w-75" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header text-center">
+                <img src="{{ url_for('static', filename='50division image.svg') }}" width="50">
+                <h5 style="word-break:keep-all" class="offcanvas-title" id="offcanvasNavbarLabel">공무직 근로자 관리체계</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                {% if g.user.role=='USER' %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.notice') }}">공지사항</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.vacation') }}">휴가신청</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.pr_information', user_id=g.user.id)}}">인사정보</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.welfare') }}">복지포인트 조회</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.edu') }}">의무교육 현황</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee_pay_stub.index') }}">급여명세서 조회</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee.grievance_list') }}">고충 글 작성</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">출근부</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employee_medical_checkup.index') }}">건강검진</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
+                    </li>
+                </ul>
+                {% elif g.user.role=='ADMIN' %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.notice') }}">공지사항관리</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.pr_information') }}">인사정보관리</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="offcanvasNavbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">신청관리</a>
+                        <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('admin.join_list') }}">가입신청 관리</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.hr_information_list') }}">인사정보 변경신청
+                                관리</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.vacation_list') }}">휴가신청 관리</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin_medical_checkup.index') }}">건강검진 확인요청
+                                관리</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.request_main') }}">신청관리 홈</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.welfare') }}">복지포인트 관리</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">급여명세서 조회</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.grievance_list') }}">고충 관리</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">출근부</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">가입신청</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
+                    </li>
+                </ul>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</nav>
