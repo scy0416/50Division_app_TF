@@ -6,13 +6,13 @@
         <thead>
         <tr>
             <th>교육명</th>
-            <th>교육 현황</th>
+            <th class="text-center">교육 현황</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>성희롱 예방 교육</td>
-            <td>
+            <td class="text-center">
                 {% if user.sexual_harassment_prevent %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}
@@ -22,7 +22,7 @@
         </tr>
         <tr>
             <td>장애인식 개선 교육</td>
-            <td>
+            <td class="text-center">
                 {% if user.disability_awareness_improvement %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}
@@ -32,7 +32,7 @@
         </tr>
         <tr>
             <td>직장 내 괴롭힘 예방 교육</td>
-            <td>
+            <td class="text-center">
                 {% if user.workplace_harassment_prevent %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}

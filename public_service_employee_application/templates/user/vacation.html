@@ -7,8 +7,8 @@
 </style>
 <div class="container my-3">
     <h4>휴가 신청</h4>
-    <form method="post" action="{{ url_for('employee.create_vacation_request') }}">
-        <div class="d-flex">
+    <form style="border-bottom:1px black solid;border-top:1px black solid" method="post" action="{{ url_for('employee.create_vacation_request') }}">
+        <div class="d-flex my-2">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="from_date">휴가 시작일</label>
             <input style="margin-left:5px" class="flex-grow-1" type="date" name="from_date" id="from_date">
@@ -17,7 +17,7 @@
             <label for="to_date">휴가 끝일</label>
             <input style="margin-left:5px" class="flex-grow-1" type="date" name="to_date" id="to_date">
         </div>
-        <div class="d-flex">
+        <div class="d-flex my-2">
                     <textarea class="autotext flex-grow-1" placeholder="사유" name="reason" id="reason"
                               rows="1"></textarea>
             <button class="btn btn-secondary btn-sm align-self-end">신청</button>
@@ -29,8 +29,8 @@
     <table class="table text-center">
         {% if vacation_request_list.items %}
         {% for vacation_request in vacation_request_list.items %}
-            <tr style="border-top:1px #dee2e6 solid">
-                <th rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid">
+            <tr style="border-top:1px black solid">
+                <th rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">
                     {{ vacation_request_list.total - ((vacation_request_list.page-1) *
                     vacation_request_list.per_page) -
                     loop.index0 }}
@@ -51,8 +51,8 @@
                 <td>{{ vacation_request.request_date|datetime }}</td>
             </tr>
             <tr>
-                <th>상태</th>
-                <td>{{vacation_request.state}}</td>
+                <th style="border-bottom:1px black solid">상태</th>
+                <td style="border-bottom:1px black solid">{{vacation_request.state}}</td>
             </tr>
         {% endfor %}
         {% else %}
