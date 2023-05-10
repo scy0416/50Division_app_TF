@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <form method="post" action="{{ url_for('admin_notice.create_post') }}">
+    <form method="post" action="{{ url_for('admin_notice.edit_post', post_id=post.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-secondary">등록</button>
-        <textarea id="summernote_subject" name="subject"></textarea>
-        <textarea id="summernote_content" name="content"></textarea>
+        <button class="btn btn-secondary btn-sm">저장</button>
+        <textarea id="subject" name="subject"></textarea>
+        <textarea id="content" name="content"></textarea>
     </form>
 </div>
 {% endblock %}
@@ -14,7 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#summernote_content').summernote({
+        $("#content").summernote({
             height: 300,
             minHeight: null,
             maxHeight: null,
@@ -37,10 +37,12 @@
                 '24', '28', '30', '36', '50', '72'],
                 placeholder: '내용 작성'
         });
-        $("#summernote_subject").summernote({
+        $("#content").summernote('code', `{{ post.content|safe }}`);
+        $("#subject").summernote({
             toolbar: [],
             placeholder: '제목 작성'
         });
+        $("#subject").summernote('code', `{{ post.subject|safe }}`);
     });
 </script>
 {% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <form method="get" id="edit_post" action="{{ url_for('admin_notice.get_edit_post', post_id=post[0].id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+    <form method="post" id="delete_post" action="{{ url_for('admin_notice.delete_post', post_id=post[0].id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+    <button class="btn btn-secondary btn-sm" onclick="edit_post()">수정</button>
+    <button class="btn btn-secondary btn-sm" onclick="delete_post()">삭제</button>
+    <h4 class="my-3">{{ post[0].subject|safe }}</h4>
+    <table class="table">
+        <tr>
+            <th>게시자</th>
+            <td>{{ post[1].name }}</td>
+            <th>등록일</th>
+            <td>{{ post[0].create_date|datetime }}</td>
+        </tr>
+    </table>
+    <div class="container" id="content">
+    </div>
+    <!-- 댓글 작성 -->
+    <hr>
+    <div class="container">
+        <small>댓글 작성</small>
+        <form method="post" action="{{ url_for('admin_notice.create_comment', post_id=post[0].id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <textarea class="summernote" name="content"></textarea>
+            <button class="btn btn-secondary btn-sm">등록</button>
+        </form>
+    </div>
+    <hr>
+    <!-- 댓글 -->
+    {% if post[0].comment_set|length > 0 %}
+    <div class="mt-2">
+        {% for comment in comments %}
+        <div class="comment py-2" style="border-bottom:1px #dee2e6 solid;">
+            {% if g.user.id == comment[0].user_id %}
+            <div style="color:black">{{ comment[1].name }}</div>
+            <div class="container sn" data-comment_id="{{ comment[0].id }}">{{ comment[0].content|safe }}</div>
+            <span style="font-size:12px;">
+                {{ comment[0].create_date|datetime }}
+                {% if comment[0].modify_date %}
+                (수정됨)
+                {% endif %}
+            </span>
+            <div>
+                <button class="btn btn-secondary btn-sm" onclick="edit(this)">수정</button>
+                <button class="btn btn-secondary btn-sm" style="display:none" onclick="save(this)">저장</button>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="delete_comment(this)">삭제</button>
+            <form method="post" action="{{ url_for('admin_notice.delete_comment', comment_id=comment[0].id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="post_id" value="{{ post[0].id }}">
+            </form>
+            {% else %}
+            <div style="color:black">작성자-{{ comment[1].name }}</div>
+            <div class="container">
+                {{ comment[0].content }}
+            </div>
+            <span style="font-size:12px">
+                {{ comment[0].create_date|datetime }}
+                {% if comment[0].create_date %}
+                (수정됨)
+                {% endif %}
+            </span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".summernote").summernote({
+            toolbar:[]
+        });
+        $("#content").html(`{{ post[0].content|safe }}`);
+    });
+    function edit(El){
+        var editBtn = $(El);
+        //var sn = editBtn.siblings(".sn");
+        var sn = editBtn.parent().siblings('.sn');
+        var saveBtn = editBtn.next();
+        editBtn.css('display', 'none');
+        saveBtn.css('display', 'block');
+        sn.summernote({toolbar:[]});
+    }
+    function save(El){
+        var saveBtn = $(El);
+        //var sn = saveBtn.siblings(".sn");
+        var sn = saveBtn.parent().siblings('.sn');
+        var editBtn = saveBtn.prev();
+        var content = sn.summernote('code');
+        saveBtn.css('display', 'none');
+        editBtn.css('display', 'block');
+        sn.summernote('destroy');
+
+        $.ajax({
+            url: 'comment/' + sn.data('comment_id') + '/edit',
+            type: 'POST',
+            data: {
+                content: content
+            },
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token() }}');
+            },
+            success: function(){},
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    function delete_comment(El){
+        var deleteBtn = $(El);
+        var comment_id = deleteBtn.siblings(".sn").data("comment_id");
+        if(confirm("정말 삭제하시겠습니까?")){
+            deleteBtn.next().submit();
+        }
+    }
+    function edit_post(){
+        $("#edit_post").submit();
+    }
+    function delete_post(){
+        if(confirm("정말 삭제하시겠습니까?")){
+            $("#delete_post").submit();
+        }
+    }
+</script>
+{% endblock %}

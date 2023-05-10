@@ -30,7 +30,7 @@
                 loop.index0 }}
             </td>
             <td class="text-left">
-                <a class="link-dark" href="#">{{ notice.subject }}</a>
+                <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice.id) }}">{{ notice.subject|safe }}</a>
                 {% if notice.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
                 {% endif %}

@@ -230,98 +230,6 @@ def edu():
     user_list = user_list.paginate(page=page, per_page=10)
 
     return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
-'''
-# 공지사항 관리창
-@bp.route('/notice/', methods=('GET', 'POST'))
-@login_required_admin
-def notice():
-    # 입력 폼 생성
-    form = writeForm()
-
-    if request.method == 'POST':
-        g.form_error = True
-    # 공지사항 등록
-    if request.method == 'POST' and form.validate_on_submit():
-        notice = Post(
-            user_id=session.get('user_id'),
-            subject=form.subject.data,
-            content=form.content.data,
-            create_date=datetime.now()
-        )
-        db.session.add(notice)
-        db.session.commit()
-        g.form_error = False
-        form.subject.data = None
-        form.content.data = None
-        return redirect(url_for('admin.notice'))
-
-    # 검색 및 페이징 처리
-    q = request.args.get('q', type=str, default='')
-    page = request.args.get('page', type=int, default=1)
-
-    # 검색 처리 과정
-    # 실질적인 검색
-    notice_list = db.session.query(Post).join(User).filter(and_(User.role == 'ADMIN', Post.subject.contains(q))).order_by(Post.create_date.desc())
-    notice_list = notice_list.paginate(page=page, per_page=10)
-
-    # 템플릿 출력
-    return render_template('admin/notice_list.html', notice_list=notice_list, q=q, page=page, form=form)
-'''
-# 공지사항 상세창
-@bp.route('/notice/<int:post_id>', methods=('GET', 'PATCH', 'DELETE', 'POST'))
-@login_required_admin
-def notice_detail(post_id):
-    # 폼 생성
-    form = writeForm()
-    cForm = contentForm()
-
-    # delete로 요청이 전달된 경우
-    if request.method == 'DELETE':
-        notice = Post.query.get_or_404(post_id)
-        if notice.user_id != session.get('user_id'):
-            return jsonify({"error": f"An error occurred while deleting the resource"}), 500
-        else:
-            db.session.delete(notice)
-            db.session.commit()
-            return jsonify({"result": f"Resource has been deleted."}), 200
-
-
-    # patch로 요청이 전달된 경우
-    if request.method == 'PATCH':
-        # 데이터 추출
-        data = request.get_json()
-        # 바꿀 제목 추출
-        subject = data.get('subject')
-        # 바꿀 내용 추출
-        content = data.get('content')
-        # 바꿔질 글 추출
-        post = Post.query.get_or_404(post_id)
-        # 값 편집
-        post.subject = subject
-        post.content = content
-        # 데이터베이스에 적용
-        db.session.commit()
-
-        # 결과를 반환
-        return jsonify({'status': 'success'})
-
-    # post로 요청이 온 경우
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            comment = Comment(
-                user_id=session.get('user_id'),
-                post_id=post_id,
-                content=form.content.data,
-                create_date=datetime.now()
-            )
-            db.session.add(comment)
-            db.session.commit()
-            return redirect(url_for('admin.notice_detail', post_id=post_id))
-
-    # 확인하려는 공지사항 확인
-    post = Post.query.get_or_404(post_id)
-    # 템플릿 출력
-    return render_template('admin/notice_detail.html', post=post, form=form, cForm=cForm)
 
 # 댓글에 대한 엔드포인트(편집, 삭제)
 @bp.route('/comment/', defaults={'comment_id':None}, methods=('POST', ))
@@ -546,13 +454,7 @@ def welfare():
         q = request.args.get('q', type=str, default='')
         page = request.args.get('page', type=int, default=1)
         quarter_id = request.args.get('quarter_id', type=int, default=Quarter.query.order_by(desc(Quarter.quarter)).first().id)
-    '''
-    # 검색어, 페이지, 분기id를 불러옴
-    q = request.args.get('q', type=str, default=session.pop('q', ''))
-    page = request.args.get('page', type=int, default=session.pop('page', 1))
-    quarter_id = request.args.get('quarter_id', type=int,
-                                  default=session.pop('quarter_id', Quarter.query.order_by(desc(Quarter.quarter)).first().quarter))
-    '''
+
     # 추출한 검색 데이터들을 세션에 저장
     session['q'] = q
     session['page'] = page
@@ -578,66 +480,7 @@ def welfare():
 
     return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list,
                            q=q, page=page, quarter_id=quarter_id)
-    '''
-    # 사용자 목록, 분기, 검색어, 페이지들을 None으로 초기화
-    user_list = None
-    quarter = None
-    q = ''
-    #q = session.pop('q', '')
-    page = None
-    #page = session.pop('page', None)
-    # 분기id를 받아온다
-    #quarter_id = session.pop('quarter_id', '')
-    quarter_id = request.args.get('quarter_id', type=str, default='')
-    # 분기id가 존재하는 경우
-    if quarter_id != '':
-        # 검색 및 페이징 처리
-        q = request.args.get('q', type=str, default='')
-        page = request.args.get('page', type=int, default=1)
-        
-        # 분기 데이터를 받아온다
-        quarter = Quarter.query.get_or_404(quarter_id)
-        # 현재 복지 포인트에 대한 서브쿼리를 만든다.
-        welfare_point = Wellfare_point.query.filter(Wellfare_point.quarter_id == quarter_id).subquery()
-        # 공무직원이고, 이름에 검색어를 포함하는 경우에 대한 필터링을 서브쿼리로 만듦
-        user_list = User.query.filter(User.role == 'USER', User.name.contains(q)).subquery()
-        # 만들었던 서브쿼리끼리 아우터 조인을 실시한 결과를 서브쿼리화
-        user_list = db.session.query(user_list, welfare_point, welfare_point.c.id.label('welfare_point_id')).join(welfare_point,
-                                                                     user_list.c.id == welfare_point.c.user_id,
-                                                                     isouter=True).subquery()
-        # 서브쿼리로 만들었던 것 다시 아우터 조인
-        user_list = db.session.query(user_list, Quarter).join(Quarter, user_list.c.quarter_id == Quarter.id, isouter=True)
-        # 페이지네이션
-        user_list = user_list.paginate(page=page, per_page=10)
-    
-    # 모든 분기 추출
-    quarter_list = Quarter.query.all()
 
-    session['q'] = q
-    session['page'] = page
-    session['quarter_id'] = quarter_id
-    #session['quarter'] = quarter
-
-    if request.method == 'POST':
-        #print("실행")
-        #quarter = Quarter.query.get_or_404(session.get('quarter_id'))
-        user_id = request.form.get('user_id')
-        quarter_id = request.form.get('quarter_id')
-        point = request.form.get('point')
-
-        welfare_point = Wellfare_point(
-            user_id=user_id,
-            quarter_id=quarter_id,
-            point=point
-        )
-        db.session.add(welfare_point)
-        db.session.commit()
-        #return render_template('admin/welfare_point.html', quarter=quarter,quarter_list=quarter_list, q=session.pop('q', ''),quarter_id=session.pop('quarter_id', ''), user_list=user_list)
-        return Response(status=302)
-
-    return render_template('admin/welfare_point.html', quarter=quarter, quarter_list=quarter_list, user_list=user_list, q=q, page=page, quarter_id=quarter_id)
-    #return render_template('admin/welfare_point.html', quarter=session.pop('quarter', None), quarter_list=quarter_list, q=session.pop('q', ''), quarter_id=session.pop('quarter_id', ''), user_list=user_list)
-    '''
 
 # 복지 포인트 데이터를 생성하는 라우팅
 @bp.route('/welfare/', methods=('POST', ))
