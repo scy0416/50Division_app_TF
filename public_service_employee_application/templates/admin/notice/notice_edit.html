@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <form method="post" action="{{ url_for('admin_notice.edit_post', post_id=post.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-secondary btn-sm">저장</button>
+        <textarea id="subject" name="subject"></textarea>
+        <textarea id="content" name="content"></textarea>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#content").summernote({
+            height: 300,
+            minHeight: null,
+            maxHeight: null,
+            focus: false,
+            lang: "ko-KR",
+            toolbar: [
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['color', ['forecolor', 'color']],
+                ['table', ['table']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['picture', 'link']],
+                ['view', ['fullscreen', 'help']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS',
+                'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22',
+                '24', '28', '30', '36', '50', '72'],
+                placeholder: '내용 작성'
+        });
+        $("#content").summernote('code', `{{ post.content|safe }}`);
+        $("#subject").summernote({
+            toolbar: [],
+            placeholder: '제목 작성'
+        });
+        $("#subject").summernote('code', `{{ post.subject|safe }}`);
+    });
+</script>
+{% endblock %}
