@@ -1,14 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<style>
-.parent {
-  display: flex;
-}
-
-</style>
 <div class="container my-3">
-    <ul>
-        <li>
             <h4>신청자 정보</h4>
             <table class="table">
                 <thead>
@@ -28,8 +20,6 @@
                 </tr>
                 </tbody>
             </table>
-        </li>
-        <li>
             <table class="table">
                 <thead>
                 <tr>
@@ -44,15 +34,12 @@
                 </tr>
                 </tbody>
             </table>
-        </li>
-        <li>
             <h4>사유</h4>
             <div class="container">
                 {{ request.reason }}
             </div>
-        </li>
-    </ul>
-    <div class="parent">
+<hr>
+    <div class="d-flex justify-content-end">
         <form method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" name="form_id" value="OK">

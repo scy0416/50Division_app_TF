@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <h4>의무교육 관리</h4>
-    <div class="d-flex justify-content-end my-3">
-        <button onclick="showSearch()" class="btn btn-secondary btn-sm">상세검색</button>
+    <div class="d-flex">
+        <h4>의무교육 관리</h4>
+        <button onclick="showSearch()" class="btn btn-secondary btn-sm align-self-center ms-auto">상세검색</button>
     </div>
     <table class="table text-center">
         {% if user_list.items %}

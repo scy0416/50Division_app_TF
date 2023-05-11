@@ -110,6 +110,11 @@
     $("#modify_"+element.data("comment_id")).css('display', 'block');
     element.css('display', 'none');
   }
-
+  $("textarea.autotext").each(function () {
+  this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+}).on("input", function () {
+  this.style.height = 0;
+  this.style.height = (this.scrollHeight) + "px";
+});
 </script>
 {% endblock %}

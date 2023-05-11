@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-  <ul>
-    <li>
       <h4>신청자 정보</h4>
       <table class="table">
         <thead>
@@ -22,8 +20,7 @@
         </tr>
         </tbody>
       </table>
-    </li>
-    <li>
+
       {% if request.type=='HIRE' %}
       <h4>고용일 변경 신청</h4>
       <table class="table">
@@ -57,23 +54,22 @@
         </tbody>
       </table>
       {% endif %}
-    </li>
-    <li>
+
       <h4>사유</h4>
       <div class="container">
         {{ request.reason }}
       </div>
-    </li>
-  </ul>
+<div>
   <form method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="form_id" value="OK">
-    <button class="btn btn-primary">승인</button>
+    <button class="btn btn-secondary btn-sm">승인</button>
   </form>
   <form method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="form_id" value="DENY">
-    <button class="btn btn-primary">거절</button>
+    <button class="btn btn-secondary btn-sm">거절</button>
   </form>
+</div>
 </div>
 {% endblock %}

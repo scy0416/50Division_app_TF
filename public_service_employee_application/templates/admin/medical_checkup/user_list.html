@@ -1,3 +1,7 @@
+<style>
+    .table th, .table td{white-space:nowrap}
+    .table{table-layout:fixed}
+</style>
 <div class="row justify-content-end my-3">
     <div class="col-6 input-group input-group-sm">
         <input type="hidden" id="page" value="{{ page or '' }}">
@@ -10,11 +14,10 @@
 <table class="table">
     <thead>
     <tr class="text-center">
-        <th>번호</th>
+        <th style="width:10%">번호</th>
         <th>신청자</th>
         <th>생년월일</th>
         <th>부대명</th>
-        <th>신청일</th>
         <th>상태</th>
     </tr>
     </thead>
@@ -27,12 +30,11 @@
             ((medical_checkup_list.page-1) * medical_checkup_list.per_page) -
             loop.index0 }}
         </td>
-        <td><a href="{{ url_for('admin_medical_checkup.medical_checkup_detail', request_id=medical_checkup.id) }}">
+        <td><a class="link-dark" href="{{ url_for('admin_medical_checkup.medical_checkup_detail', request_id=medical_checkup.id) }}">
             {{ medical_checkup.user.name }}</a>
         </td>
         <td>{{ medical_checkup.user.birth_date }}</td>
-        <td>{{ medical_checkup.user.unit_name }}</td>
-        <td>{{ medical_checkup.request_date|datetime }}</td>
+        <td style="white-space:normal; word-break:keep-all;">{{ medical_checkup.user.unit_name }}</td>
         <td>
                 {% if medical_checkup.state == 'WAITING' %}
                 대기중

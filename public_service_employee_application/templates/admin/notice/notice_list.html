@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    table{
+    table-layout: fixed;
+    }
+    .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+</style>
 <div class="container my-3">
     <h4>공지사항 관리</h4>
     <div class="row justify-content-end my-3">
@@ -15,9 +21,7 @@
         <thead>
         <tr class="text-center">
             <th style="width:15%">번호</th>
-            <th style="width:35%">제목</th>
-            <th style="width:25%;">작성자</th>
-            <th style="width:25%;">작성일시</th>
+            <th style="width:85%">제목</th>
         </tr>
         </thead>
         <tbody>
@@ -29,14 +33,12 @@
                 ((notice_list.page-1) * notice_list.per_page) -
                 loop.index0 }}
             </td>
-            <td class="text-left">
+            <td class="text-left overflow">
                 <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice.id) }}">{{ notice.subject|safe }}</a>
                 {% if notice.comment_set|length > 0 %}
                 <span class="text-danger small ml-2">{{ notice.comment_set|length }}</span>
                 {% endif %}
             </td>
-            <td>{{ notice.user.name }}</td>
-            <td>{{ notice.create_date|datetime }}</td>
         </tr>
         {% endfor %}
         {% else %}

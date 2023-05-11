@@ -35,7 +35,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee.grievance_list') }}">고충 글 작성</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">출근부</a>
+                        <a class="nav-link" href="{{ url_for('employee_punch_in_out.index') }}">출근부</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_medical_checkup.index') }}">건강검진</a>
                     </li>
@@ -70,13 +70,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin.welfare') }}">복지포인트 관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">급여명세서 조회</a>
+                        <a class="nav-link" href="{{ url_for('admin_pay_stub.index') }}">급여명세서 관리</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.grievance_list') }}">고충 관리</a>
+                        <a class="nav-link" href="{{ url_for('admin.grievance_list') }}">고충 글 관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">출근부</a>
+                        <a class="nav-link" href="{{ url_for('admin_punch_in_out.index') }}">출근부 관리</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.name }} (로그아웃)</a>
                     </li>
@@ -84,7 +84,7 @@
                 {% else %}
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">가입신청</a>
+                        <a class="nav-link" href="{{ url_for('auth.join') }}">가입신청</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>

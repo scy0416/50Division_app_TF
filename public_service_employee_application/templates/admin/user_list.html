@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    .table{table-layout:fixed}
+    .table th, table td{white-space:nowrap;}
+</style>
 <div class="container my-3">
-   <h4>인사정보 관리</h4>
+  <h4>인사정보 관리</h4>
   <div class="d-flex justify-content-end">
     <button onclick="showSearchEmployee()" class="btn btn-secondary btn-sm" style="margin: 1px;">상세 검색</button>
     <button onclick="showAddEmployee()" class="btn btn-secondary btn-sm" style="margin: 1px;">사용자 추가</button>
@@ -108,7 +112,7 @@
   <table class="table">
     <thead>
     <tr class="text-center thead-dark">
-      <th nowrap>번호</th>
+      <th>번호</th>
       <th>이름</th>
       <th>부대명</th>
       <th>직책</th>
@@ -123,7 +127,7 @@
       <td class="text-left">
         <a class="link-dark" href="{{ url_for('admin.detail', user_id=user.id) }}">{{ user.name }}</a>
       </td>
-      <td>{{ user.unit_name }}</td>
+      <td style="white-space:normal;word-break:keep-all">{{ user.unit_name }}</td>
       <td>{{ user.position }}</td>
       <td>{{ user.birth_date }}</td>
     </tr>

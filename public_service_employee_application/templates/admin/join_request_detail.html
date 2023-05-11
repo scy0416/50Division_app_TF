@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <div class="justify-content-center my-3"><h2>계정 연결</h2></div>
-    <h4><ul><li>신청자 정보</li></ul></h4>
-    <table class="table">
+   <h4>계정연결</h4>
+    <div class="d-flex">
+    <h4 class="me-auto">신청자 정보</h4>
+        <form method="post">
+            <input type="hidden" name="form_id" value="reject">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-danger btn-sm">가입 거부</button>
+        </form>
+    </div>
+    <table class="table my-2">
         <thead>
         <tr class="text-center">
             <th>이름</th>
@@ -17,53 +24,65 @@
         <td>{{ join_request.request_date|datetime }}</td>
         </tbody>
     </table>
-    <h4><ul><li>검색 창</li></ul></h4>
+    <h4>검색 창</h4>
     <form method="get">
+        <div class="my-1">
         <label for="name">이름</label>
         <input type="text" name="name" id="name" value="{{ name or '' }}">
+        </div>
+        <div class="mb-2">
         <label for="birth_date">생년월일</label>
         <input type="date" name="birth_date" id="birth_date" value="{{ birth_date or '' }}">
-        <button class="btn btn-primary">검색</button>
+        <button class="btn btn-secondary btn-sm">검색</button>
+        </div>
     </form>
-    <table class="table">
-        <thead>
-        <tr class="text-center">
-            <th>번호</th>
-            <th>이름</th>
-            <th>생년월일</th>
-            <th>부대명</th>
-            <th>직책</th>
-            <th>
-                <form method="post">
-                    <input type="hidden" name="form_id" value="reject">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-danger">가입 거부</button>
-                </form>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
+    <table class="table text-center">
         {% if result_list %}
         {% for result in result_list %}
-        <tr class="text-center">
-            <td>{{ loop.index }}</td>
+        <thead>
+        <tr>
+            <th>이름</th>
             <td>{{ result.name }}</td>
+        </tr>
+        <tr>
+             <th>생년월일</th>
             <td>{{ result.birth_date }}</td>
+
+        </tr>
+        <tr>
+            <th>부대명</th>
             <td>{{ result.unit_name }}</td>
+
+        </tr>
+        <tr>
+            <th>직책</th>
             <td>{{ result.position }}</td>
+
+        </tr>
+        <tr>
+            <th>확인</th>
             <td>
                 <form method="post">
                     <input type="hidden" name="form_id" value="regist">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="user_id" value="{{ result.id }}">
-                    <button class="btn btn-primary">연결</button>
+                    <button class="btn btn-secondary btn-sm">연결</button>
                 </form>
             </td>
         </tr>
+        <tr>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr class="text-center">
+
+        </tr>
         {% endfor %}
         {% else %}
-        <tr>
-            <td colspan="6">검색 결과가 없습니다.</td>
+        <tr style="border-top:1px #dee2e6 solid">
+            <td colspan="2">검색 결과가 없습니다.</td>
         </tr>
         {% endif %}
         </tbody>
