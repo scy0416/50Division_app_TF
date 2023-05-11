@@ -18,8 +18,22 @@ def index():
     q = request.args.get('q', type=str, default='')
     page = request.args.get('page', type=int, default=1)
 
+    '''
     # 검색 처리 과정
     notice_list = Post.query.outerjoin(User, Post.user_id == User.id).filter(
+        and_(
+            User.role == 'ADMIN',
+            Post.subject.contains(q)
+        )
+    ).order_by(desc(Post.create_date))
+    notice_list = notice_list.paginate(page=page, per_page=10)
+    '''
+
+    # 검색 처리 과정
+    notice_list = db.session.query(Post, User).outerjoin(
+        User,
+        Post.user_id == User.id
+    ).filter(
         and_(
             User.role == 'ADMIN',
             Post.subject.contains(q)
