@@ -1,7 +1,7 @@
 from flask import Blueprint, request, g, render_template, jsonify, url_for, send_from_directory
 from sqlalchemy import and_, func
 import os
-import win32com.client as win32
+import win32com
 import pythoncom
 
 from public_service_employee_application.views.auth_views import login_required_admin
@@ -190,7 +190,7 @@ def get_pay_stub(user_id):
 #엑셀 프로그램을 열고 지정한 경로의 엑셀 파일을 열고 반환하는 함수
 def open_excel_file(file_path):
     pythoncom.CoInitialize()
-    excel_app = win32.gencache.EnsureDispatch('Excel.Application')
+    excel_app = win32com.client.Dispatch("Excel.Application")
     excel_app.Visible = False
 
     workbook = excel_app.Workbooks.Open(file_path)
