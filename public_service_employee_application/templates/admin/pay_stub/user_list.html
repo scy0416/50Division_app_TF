@@ -6,6 +6,7 @@
         </div>
     </div>
 </div>
+<form method="get" action="/admin/pay_stub/pdf/detail/" id="display_pdf"></form>
 <table class="table text-center">
     {% if user_list.items %}
     {% for user in user_list.items %}
@@ -144,7 +145,8 @@
                         return;
                     }
                     var pdfName = response.pdfName;
-                    window.open('/admin/pay_stub/pdf/detail/'+pdfName);
+                    $("#display_pdf").attr('action', $("#display_pdf").attr('action')+pdfName);
+                    $("#display_pdf").submit();
                 }
             });
         });
