@@ -139,8 +139,10 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="quarter_name">분기명</label>
             <input type="text" id="quarter_name" name="quarter_name">
-            <button type="button" class="btn btn-primary" onclick="close_make_quarter()">취소</button>
-            <button class=" btn btn-primary">생성</button>
+            <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="close_make_quarter()">취소</button>
+            <button class=" btn btn-secondary btn-sm">생성</button>
+            </div>
         </form>
     </dialog>
     {% if quarter %}
@@ -149,8 +151,10 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="new_name">바뀔 이름</label>
             <input type="text" id="new_name" name="new_name" value="{{ quarter.quarter }}">
-            <button type="button" class="btn btn-primary" onclick="close_edit_quarter()">취소</button>
-            <button class="btn btn-primary">변경</button>
+            <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="close_edit_quarter()">취소</button>
+            <button class="btn btn-secondary btn-sm">변경</button>
+            </div>
         </form>
     </dialog>
     {% endif %}
