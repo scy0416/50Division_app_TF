@@ -14,14 +14,14 @@ bp = Blueprint('employee_pay_stub', __name__, url_prefix='/employee/pay_stub')
 @bp.route('/', methods=['GET'])
 @login_required_employee
 def index():
-    return render_template('user/pay_stub/pay_stub.html')
+    return render_template('employee/pay_stub/pay_stub.html')
 
 # 년도 선택창을 반환
 @bp.route('/year/select', methods=['GET'])
 @login_required_employee
 def get_select_year():
     years = Year.query.order_by(Year.year.asc()).all()
-    return render_template('user/pay_stub/selectYear.html', years=years)
+    return render_template('employee/pay_stub/selectYear.html', years=years)
 
 # 급여명세서 pdf로 생성
 @bp.route('/detail', methods=['GET'])
@@ -105,7 +105,7 @@ def open_excel_file(file_path):
 @login_required_employee
 def print_pdf(pdfname):
     pdfPath = url_for('employee_pay_stub.send_pdf', filename=pdfname)
-    return render_template('user/pay_stub/print_pdf.html', pdfpath=pdfPath)
+    return render_template('employee/pay_stub/print_pdf.html', pdfpath=pdfPath)
 
 # pdf파일을 전달하는 엔드포인트
 @bp.route('/pdf/<filename>', methods=['GET'])

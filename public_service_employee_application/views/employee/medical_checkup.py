@@ -21,7 +21,7 @@ def index():
     ).order_by(Medical_checkup_request.request_date.desc())
     medical_checkup_list = medical_checkup_list.paginate(page=page, per_page=10)
 
-    return render_template('user/medical_checkup/medical_checkup.html',
+    return render_template('employee/medical_checkup/medical_checkup.html',
                            page=page,
                            medical_checkup_list=medical_checkup_list)
 
@@ -30,7 +30,7 @@ def index():
 @bp.route('/request', methods=['GET'])
 @login_required_employee
 def medical_checkup_request_page():
-    return render_template('user/medical_checkup/medical_checkup_request.html')
+    return render_template('employee/medical_checkup/medical_checkup_request.html')
 
 
 # 이미지 업로드 및 건강검진 확인 요청 생성
@@ -58,7 +58,7 @@ def medical_checkup_request_detail(request_id):
     request = Medical_checkup_request.query.get_or_404(request_id)
     img_name = request.img_addr
 
-    return render_template('user/medical_checkup/medical_checkup_detail.html',
+    return render_template('employee/medical_checkup/medical_checkup_detail.html',
                            medical_checkup=request, img_name=img_name)
 
 # 건강검진 이미지 반환

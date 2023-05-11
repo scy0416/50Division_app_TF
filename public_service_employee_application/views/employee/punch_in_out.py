@@ -15,7 +15,7 @@ bp = Blueprint('employee_punch_in_out', __name__, url_prefix='/employee/punch_in
 @bp.route('/', methods=['GET'])
 @login_required_employee
 def index():
-    return render_template('user/punch_in_out/punch_in_out_calendar.html')
+    return render_template('employee/punch_in_out/punch_in_out_calendar.html')
 
 # 선택한 날짜에 대한 처리를 위한 엔드포인트
 @bp.route('/<date>', methods=['GET'])
@@ -25,7 +25,7 @@ def punch_in_out_detail(date):
         response = "<div>문제가 발생했습니다.</div>"
     else:
         pio = Punch_in_out.query.filter_by(date=date, user_id=g.user.id).first()
-        response = render_template('user/punch_in_out/punch_in_out_detail.html', pio=pio, date=date)
+        response = render_template('employee/punch_in_out/punch_in_out_detail.html', pio=pio, date=date)
     return response
 
 

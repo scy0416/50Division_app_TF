@@ -82,7 +82,7 @@ def get_select_year():
     return render_template('admin/pay_stub/selectYear.html', years=years)
 
 # 유저 목록
-@bp.route('/user', methods=['GET'])
+@bp.route('/employee', methods=['GET'])
 @login_required_admin
 def get_user_list():
     # 검색 및 페이징 처리
