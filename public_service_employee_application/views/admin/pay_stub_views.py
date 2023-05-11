@@ -201,7 +201,7 @@ def open_excel_file(file_path):
 @login_required_admin
 def print_pdf(pdfname):
     pdfPath = url_for('admin_pay_stub.send_pdf', filename=pdfname)
-    return render_template('admin/pay_stub/print_pdf.html', pdfpath=pdfPath)
+    return render_template('admin/pay_stub/print_pdf.html', pdfname=pdfname)
 
 # pdf파일을 전달하는 엔드포인트
 @bp.route('/pdf/<filename>', methods=['GET'])

@@ -149,9 +149,8 @@
                         type: 'GET',
                         dataType: 'html',
                         success: function(data){
-                            var newWindow = window.open("", "_blank");
-                            newWindow.document.write(data);
-                            newWindow.document.close();
+                            // pdf를 출력하는 새 창을 연다.
+                            var newWindow = window.open({{  }});
                         }
                     });
                 }

@@ -13,6 +13,6 @@
     </style>
 </head>
 <body>
-    <iframe src="{{ pdfpath }}" type="application/pdf"></iframe>
+    <iframe src="{{ url_for('admin_pay_stub.send_pdf', filename=pdfname) }}" type="application/pdf"></iframe>
 </body>
 </html>
