@@ -144,15 +144,7 @@
                         return;
                     }
                     var pdfName = response.pdfName;
-                    $.ajax({
-                        url: '/admin/pay_stub/pdf/detail/' + pdfName,
-                        type: 'GET',
-                        dataType: 'html',
-                        success: function(data){
-                            // pdf를 출력하는 새 창을 연다.
-                            var newWindow = window.open({{  }});
-                        }
-                    });
+                    window.open('/admin/pay_stub/pdf/detail/'+pdfName);
                 }
             });
         });
