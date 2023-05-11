@@ -60,24 +60,33 @@ def logout():
     session.clear()
     return redirect(url_for('main.index'))
 
-@bp.route('/join/', methods=('GET', 'POST',))
-def join():
-    form = joinForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
-        join_request = Join_request(
-            userid=form.userid.data,
-            password=form.password1.data,
-            name=form.name.data,
-            birth_date=form.birth_date.data,
-            state='WAITING',
-            request_date=datetime.now()
-        )
-        db.session.add(join_request)
-        db.session.commit()
-        return redirect(url_for('auth.login'))
+@bp.route('/join', methods=['GET'])
+def get_join_page():
+    return render_template('auth/join.html')
 
-    return render_template('auth/join.html', form=form)
+
+@bp.route('/join', methods=['POST'])
+def request_join():
+    name = request.form.get('name')
+    birth_date = request.form.get('birth_date')
+    id = request.form.get('id')
+    password = request.form.get('password')
+
+    join_request = Join_request(
+        userid=id,
+        password=password,
+        name=name,
+        birth_date=birth_date,
+        state='WAITING',
+        request_date=datetime.now()
+    )
+
+    db.session.add(join_request)
+    db.session.commit()
+
+    return redirect(url_for('main.index'))
+
 
 # 요청이 처리되기 전에 실행되는 어노테이션으로 로그인 된 정보가 존재한다면 로그인 된 사용자의 정보를 g.user에 담고 없으면 None을 저장한다.
 @bp.before_app_request

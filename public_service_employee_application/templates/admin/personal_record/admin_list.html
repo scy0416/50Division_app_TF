@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <table class="table">
+        <thead>
+        <tr class="text-center">
+            <th>번호</th>
+            <th>이름</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if admin_list.items %}
+        {% for admin in admin_list.items %}
+        <tr class="text-center">
+            <td>
+                {{ admin_list.total - ((admin_list.page-1) * admin_list.per_page) - loop.index0 }}
+            </td>
+            <td class="text-left">{{ admin.name }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin_personal_record.delete_admin', id=admin.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="user_id" value="{{ admin.id }}">
+                    <button class="btn btn-secondary btn-sm">삭제</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">관리자가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

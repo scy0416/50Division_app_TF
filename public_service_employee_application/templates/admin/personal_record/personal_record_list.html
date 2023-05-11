@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="{{ url_for('static', filename='sha512.min.js') }}"></script>
+<script>{{ alert|safe or '' }}</script>
+<div class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="addEmployeeLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeLabel">인사정보 추가</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ url_for('admin_personal_record.create_employee') }}" id="addEmployeeForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="container">
+                        <label for="name_employee">이름</label>
+                        <input type="text" id="name_employee" name="name">
+                    </div>
+                    <div class="container">
+                        <label for="unit_name">부대명</label>
+                        <input type="text" id="unit_name" name="unit_name">
+                    </div>
+                    <div class="container">
+                        <label for="position_employee">직책</label>
+                        <input type="text" id="position_employee" name="position">
+                    </div>
+                    <div class="container">
+                        <label for="birth_date">생년월일</label>
+                        <input type="date" id="birth_date" name="birth_date">
+                    </div>
+                    <div class="container">
+                        <label for="hire_date">고용일</label>
+                        <input type="date" id="hire_date" name="hire_date">
+                    </div>
+                    <div class="container">
+                        <label for="retirement_date">퇴직일</label>
+                        <input type="date" id="retirement_date" name="retirement_date">
+                    </div>
+                    <div class="container">
+                        <label for="id_employee">아이디</label>
+                        <input type="text" id="id_employee" name="id">
+                    </div>
+                    <div class="container">
+                        <label for="pw1_employee">비밀번호<small>(선택사항)</small></label>
+                        <input type="password" id="pw1_employee" name="password">
+                    </div>
+                    <div class="container">
+                        <label for="pw2_employee">비밀번호 확인</label>
+                        <input type="password" id="pw2_employee">
+                    </div>
+                    <div class="container">
+                        <label for="bigo">비고</label>
+                        <input type="text" id="bigo" name="bigo">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addEmployee()">추가</button>
+                <script>
+                    function addEmployee(){
+                        var name = $("#name_employee").val();
+                        if(name.trim() == ''){
+                            alert("이름이 공란입니다.");
+                            return;
+                        }
+                        var unit_name = $("#unit_name").val();
+                        if(unit_name.trim() == ''){
+                            alert('부대명이 공란입니다.');
+                            return;
+                        }
+                        var position = $("#position_employee").val();
+                        if(position.trim() == ''){
+                            alert('직책이 공란입니다.');
+                            return;
+                        }
+                        var birth_date = $("#birth_date").val();
+                        if(birth_date === ''){
+                            alert('생년월일이 공란입니다.');
+                            return;
+                        }
+                        var hire_date = $("#hire_date").val();
+                        if(hire_date === ''){
+                            alert('고용일이 공란입니다.');
+                            return;
+                        }
+                        var retirement_date = $("#retirement_date").val();
+                        if(retirement_date === ''){
+                            alert('퇴직일이 공란입니다.');
+                            return;
+                        }
+                        var id = $("#id_employee").val();
+                        var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
+                            if(!regex.test(id)){
+                                alert('id는 영문, 숫자 포함 5~20자 이내로 작성해야 합니다.');
+                                return;
+                            }
+                        var pw1 = $("#pw1_employee").val();
+                        var pw2 = $("#pw2_employee").val();
+                        // 둘 다 공란이 아닌 경우
+                        regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+                        if(pw1.trim() != '' && pw2.trim() != ''){
+                            if(!regex.test(pw1)){
+                                alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
+                                return;
+                            }
+                            if(pw1 !== pw2){
+                                alert('비밀번호 확인이 잘못되었습니다');
+                                return;
+                            }
+                            $("#pw1_employee").val(hex_sha512(pw1));
+                            $("#pw2_employee").val(hex_sha512(pw2));
+                        }
+                        $("#addEmployeeForm").submit();
+                    }
+                </script>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addAdmin" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="addAdminLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAdminLabel">관리자 추가</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ url_for('admin_personal_record.create_admin') }}" id="addAdminForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="container">
+                        <label for="position_admin">직책</label>
+                        <input type="text" id="position_admin" name="position" required>
+                    </div>
+                    <div class="container">
+                        <label for="rank">계급</label>
+                        <input type="text" id="rank" name="rank" required>
+                    </div>
+                    <div class="container">
+                        <label for="name_admin">이름</label>
+                        <input type="text" id="name_admin" name="name" required>
+                    </div>
+                    <div class="container">
+                        <label for="id_admin">아이디</label>
+                        <input type="text" id="id_admin" name="id" required>
+                    </div>
+                    <div class="container">
+                        <label for="pw1_admin">비밀번호</label>
+                        <input type="password" id="pw1_admin" required>
+                    </div>
+                    <div class="container">
+                        <label for="pw2_admin">비밀번호</label>
+                        <input type="password" id="pw2_admin" name="password" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addAdmin()">추가</button>
+                <script>
+                    function addAdmin(){
+                        var position = $("#position_admin").val();
+                        if(position.trim() == '' && position.length < 5){
+                            alert("관리자의 직책이 공란이거나 5자를 넘지 않습니다.");
+                            return;
+                        }
+                        var rank = $("#rank").val();
+                        if(rank.trim() == ''){
+                            alert("관리자의 계급이 공란입니다.");
+                            return;
+                        }
+                        var name = $("#name_admin").val();
+                        if(name.trim() == ''){
+                            alert("관리자의 이름이 공란입니다.");
+                            return;
+                        }
+                        var id = $("#id_admin").val()
+                        var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
+                        if(!regex.test(id)){
+                            alert('id는 영문, 숫자 포함 5~20자 이내로 작성해야 합니다.');
+                            return;
+                        }
+                        var pw1 = $("#pw1_admin").val();
+                        regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+                        if(!regex.test(pw1)){
+                            alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
+                            return;
+                        }
+                        pw1 = hex_sha512(pw1);
+                        $("#pw1_admin").val(pw1);
+
+                        var pw2 = hex_sha512($("#pw2_admin").val());
+                        if(pw1 != pw2){
+                            alert('비밀번호 확인이 잘못되었습니다');
+                            return;
+                        }
+                        $("#pw2_admin").val(pw2);
+                        $("#addAdminForm").submit();
+                    }
+                </script>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container my-3">
+    <div class="d-flex justify-content-end">
+        <button type="button"
+                class="btn btn-secondary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#addEmployee">
+            공무직원 추가
+        </button>
+        <button type="button"
+                class="btn btn-secondary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#addAdmin">
+            관리자 추가
+        </button>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_personal_record.admin_list') }}">관리자 목록</a>
+    </div>
+</div>
+<div class="container my-3">
+    <h4>인사정보 관리</h4>
+    <div class="row justify-content-end my-3">
+        <div class="col-6 input-group input-group-sm">
+            <input type="text" class="form-control q" value="{{ q or '' }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn_search">검색</button>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr class="text-center">
+            <th>번호</th>
+            <th>이름</th>
+            <th>부대명</th>
+            <th>직책</th>
+            <th>생년월일</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if user_list.items %}
+        {% for user in user_list.items %}
+        <tr class="text-center">
+            <td>
+                {{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}
+            </td>
+            <td class="text-left">
+                <a class="link-dark" href="{{ url_for('admin_personal_record.employee_detail', id=user.id) }}">
+                    {{ user.name }}
+                </a>
+            </td>
+            <td>{{ user.unit_name }}</td>
+            <td>{{ user.position }}</td>
+            <td>{{ user.birth_date }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="5">사용자가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <!-- 페이징 처리 시작 -->
+    <ul class="pagination pagination-sm justify-content-center">
+        <!-- 이전 페이지 -->
+        {% if user_list.has_prev %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ user_list.prev_num }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        {% for page_num in user_list.iter_pages() %}
+        {% if page_num %}
+        {% if page_num != user_list.page %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <li class="disabled">
+            <a class="page-link" href="#">...</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        <!-- 다음 페이지 -->
+        {% if user_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ user_list.next_num }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <form id="searchForm" method="get" action="#">
+        <input type="hidden" id="q" name="q" value="{{ q or '' }}">
+        <input type="hidden" id="page" name="page" value="{{ page or '' }}">
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $(".page-link").on('click', function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+        $("#btn_search").on('click', function(){
+            $("#q").val($(".q").val());
+            $("#page").val(1);
+            $("#searchForm").submit();
+        });
+    });
+</script>
+{% endblock %}

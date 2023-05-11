@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container my-3">
-    <form method="post" class="post-form">
+    <form method="post" class="post-form" id="login">
         {{ form.csrf_token }}
         {% include "form_errors.html" %}
         <div class="form-group">
@@ -12,8 +12,17 @@
             <label for="password">비밀번호</label>
             <input type="password" class="form-control" name="password" id="password" value="{{ form.password.data or '' }}">
         </div>
-        <button type="submit" class="btn btn-secondary">로그인</button>
-        <a href="{{ url_for('auth.join') }}" class="btn btn-secondary">가입 신청</a>
+        <button type="button" id="submitBtn" class="btn btn-secondary" onclick="login()">로그인</button>
+        <a href="{{ url_for('auth.get_join_page') }}" class="btn btn-secondary">가입 신청</a>
     </form>
 </div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='sha512.min.js') }}"></script>
+<script>
+    function login(){
+        $("#password").val(hex_sha512($("#password").val()));
+        $("#login").submit();
+    }
+</script>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if join_request.state == 'WAITING' %}
 <div class="container my-3">
     <div class="justify-content-center my-3"><h2>계정 연결</h2></div>
     <h4><ul><li>신청자 정보</li></ul></h4>
@@ -23,7 +24,9 @@
         <input type="text" name="name" id="name" value="{{ name or '' }}">
         <label for="birth_date">생년월일</label>
         <input type="date" name="birth_date" id="birth_date" value="{{ birth_date or '' }}">
-        <button class="btn btn-primary">검색</button>
+        <label for="id">id</label>
+        <input type="text" name="id" id="id">
+        <button class="btn btn-secondary btn-sm">검색</button>
     </form>
     <table class="table">
         <thead>
@@ -34,10 +37,9 @@
             <th>부대명</th>
             <th>직책</th>
             <th>
-                <form method="post">
-                    <input type="hidden" name="form_id" value="reject">
+                <form method="post" action="{{ url_for('admin_join_request.reject_request', request_id=join_request.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-danger">가입 거부</button>
+                    <button class="btn btn-danger btn-sm">가입 거부</button>
                 </form>
             </th>
         </tr>
@@ -52,11 +54,10 @@
             <td>{{ result.unit_name }}</td>
             <td>{{ result.position }}</td>
             <td>
-                <form method="post">
-                    <input type="hidden" name="form_id" value="regist">
+                <form method="post" action="{{ url_for('admin_join_request.allow_request', request_id=join_request.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="user_id" value="{{ result.id }}">
-                    <button class="btn btn-primary">연결</button>
+                    <button class="btn btn-secondary btn-sm">연결</button>
                 </form>
             </td>
         </tr>
@@ -69,4 +70,34 @@
         </tbody>
     </table>
 </div>
+{% else %}
+<div class="container my-3">
+    <div class="justify-content-center my-3"><h2>처리된 가입 신청</h2></div>
+    <h4><ul><li>신청자 정보</li></ul></h4>
+    <table class="table">
+        <thead>
+        <tr class="text-center">
+            <th>이름</th>
+            <th>생년월일</th>
+            <th>신청 일시</th>
+            <th>상태</th>
+            <th>처리일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <td>{{ join_request.name }}</td>
+        <td>{{ join_request.birth_date }}</td>
+        <td>{{ join_request.request_date|datetime }}</td>
+        <td>
+            {% if join_request.state == 'ALLOWED' %}
+            승인됨
+            {% elif join_request.state == 'REJECTED' %}
+            거부됨
+            {% endif %}
+        </td>
+        <td>{{ join_request.proc_date|datetime }}</td>
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% endblock %}

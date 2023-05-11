@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <div class="d-flex justify-content-end">
+        <button onclick="showEdit()" class="btn btn-secondary btn-sm" style="margin:1px">편집</button>
+        <button onclick="deleteUser()" class="delete btn btn-sm btn-outline-secondary btn-sm" style="margin:1px">삭제</button>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <td rowspan="3" style="width:100px;height:100px;text-align:center;margin=10px"
+                class="align-middle">
+                {% if user.img_addr %}
+                <img src="data:image/png;base64,{{ user.img_addr }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='basic image.png') }}" alt="" style="display:inline-block;max-width: 100%;height:auto;">
+                {% endif %}
+            </td>
+            <th class="text-center">성명</th>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">생년월일</th>
+            <td>{{ user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">연락처</th>
+            <td>{{ user.phone_num }}</td>
+        </tr>
+        </thead>
+    </table>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="text-center">주소</th>
+            <td>{{ user.address or '' }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">부대</th>
+            <td>{{ user.unit_name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">직책</th>
+            <td>{{ user.position }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">채용일</th>
+            <td>{{ user.hire_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">퇴직일</th>
+            <td>{{ user.retirement_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">고용형태</th>
+            <td>
+                {% if user.employment_type == 'PUBLIC_SERVICE' %}
+                공무직
+                {% elif user.employment_type == 'FIXED_TERM' %}
+                정규직
+                {% elif user.employment_type == 'SHORT_TERM' %}
+                기간제
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">비고</th>
+            <td>{{ user.bigo or '' }}</td>
+        </tr>
+        </thead>
+    </table>
+    <dialog id="edit">
+        <h3>정보 편집</h3>
+        <form method="post" class="post-form" id="form" action="{{ url_for('admin_personal_record.edit_employee', id=user.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" class="form-control" name="name" id="name" value="{{ user.name }}">
+            </div>
+            <div class="form-group">
+                <label for="birth_date">생년월일</label>
+                <input type="date" class="form-control" name="birth_date" id="birth_date" value="{{ user.birth_date }}">
+            </div>
+            <div class="form-group">
+                <label for="phone_num">연락처</label>
+                <input type="text" class="form-control" name="phone_num" id="phone_num" value="{{ user.phone_num or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="address">주소</label>
+                <input type="text" class="form-control" name="address" id="address" value="{{ user.address or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="unit_name">부대명</label>
+                <input type="text" class="form-control" name="unit_name" id="unit_name" value="{{ user.unit_name or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="position">직책</label>
+                <input type="text" class="form-control" name="position" id="position" value="{{ user.position or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="hire_date">채용일</label>
+                <input type="date" class="form-control" name="hire_date" id="hire_date" value="{{ user.hire_date or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="retirement_date">퇴직일</label>
+                <input type="date" class="form-control" name="retirement_date" id="retirement_date" value="{{ user.retirement_date or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="employment_type">고용형태</label>
+                <select name="employment_type" id="employment_type">
+                    <option value="PUBLIC_SERVICE"
+                            {% if user.employment_type=='PUBLIC_SERVICE' %}
+                            selected
+                            {% endif %}>공무직</option>
+                    <option value="FIXED_TERM"
+                            {% if user.employment_type=='FIXED_TERM' %}
+                            selected
+                            {% endif %}>정규직</option>
+                    <option value="SHORT_TERM"
+                            {% if user.employment_type=='SHORT_TERM' %}
+                            selected
+                            {% endif %}>기간제</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bigo">비고</label>
+                <input type="text" class="form-control" name="bigo" id="bigo" value="{{ user.bigo or '' }}">
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="cliseEdit()">취소</button>
+            <button class="btn btn-secondary btn-sm">변경</button>
+        </form>
+    </dialog>
+</div>
+<form method="post" action="{{ url_for('admin_personal_record.delete_employee', id=user.id) }}" id="deleteUser">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+{% endblock %}
+{% block script %}
+<script>
+    function showEdit(){
+        var dialog = document.getElementById('edit');
+        dialog.showModal();
+    }
+    function closeEdit(){
+        event.preventDefault();
+        var dialog = document.getElementById('edit');
+        dialog.close();
+    }
+    function deleteUser(){
+        if(confirm('정말 삭제하시겠습니까?')){
+            $("#deleteUser").submit();
+        }
+    }
+</script>
+{% endblock %}

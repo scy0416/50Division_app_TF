@@ -50,12 +50,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin_notice.index') }}">공지사항관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.pr_information') }}">인사정보관리</a>
+                        <a class="nav-link" href="{{ url_for('admin_personal_record.index') }}">인사정보관리</a>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="offcanvasNavbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">신청관리</a>
                         <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('admin.join_list') }}">가입신청 관리</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin_join_request.index') }}">가입신청 관리</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.hr_information_list') }}">인사정보 변경신청
                                 관리</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.vacation_list') }}">휴가신청 관리</a></li>
