@@ -32,9 +32,15 @@ def get_user_list():
 
     # 처리 대기중인 신청 쿼리->정렬->검색
     if unprocessed:
-        # 대기중인 신청 필터링
-        unprocessed_request = Medical_checkup_request.query.filter(
+        ###########################
+        # 유저와 아우터 조인
+        unprocessed_request = db.session.query(
+            Medical_checkup_request,
+            User
+        ).filter( # 대기중인 신청 필터링
             Medical_checkup_request.state == 'WAITING'
+        ).filter( # 이름 검색
+            User.name.contains(q)
         )
         # 정렬
         if order == 'asc':
@@ -45,40 +51,29 @@ def get_user_list():
             unprocessed_request = unprocessed_request.order_by(
                 desc(Medical_checkup_request.request_date)
             )
-        # 이름 검색
-        unprocessed_request = unprocessed_request.outerjoin(
-            User,
-            Medical_checkup_request.user_id == User.id
-        ).filter(
-            User.name.ilike('%' + q + '%')
-        )
+        ###########################
     # 처리된 신청 쿼리->정렬->검색
     if processed:
-        # 처리된 신청 필터링
-        processed_request = Medical_checkup_request.query.filter(
-            or_(
-                Medical_checkup_request.state == 'ALLOWED',
-                Medical_checkup_request.state == 'REJECTED'
-            )
+        ###########################
+        # 유저와 아우터 조인
+        processed_request = db.session.query(
+            Medical_checkup_request,
+            User
+        ).filter(  # 대기중인 신청 필터링
+            Medical_checkup_request.state == 'WAITING'
+        ).filter(  # 이름 검색
+            User.name.contains(q)
         )
         # 정렬
         if order == 'asc':
-            processed_request = processed_request.order_by(
-                desc(Medical_checkup_request.state),
+            unprocessed_request = processed_request.order_by(
                 asc(Medical_checkup_request.request_date)
             )
         elif order == 'desc':
-            processed_request = processed_request.order_by(
-                desc(Medical_checkup_request.state),
+            unprocessed_request = processed_request.order_by(
                 desc(Medical_checkup_request.request_date)
             )
-        # 이름 검색
-        processed_request = processed_request.outerjoin(
-            User,
-            Medical_checkup_request.user_id == User.id
-        ).filter(
-            User.name.ilike('%' + q + '%')
-        )
+        ###########################
     # 두 쿼리 합치기
     if processed is True and unprocessed is True:
         unprocessed_request = unprocessed_request
