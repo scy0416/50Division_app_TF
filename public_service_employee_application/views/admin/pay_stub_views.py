@@ -1,4 +1,4 @@
-from flask import Blueprint, request, g, render_template, jsonify, url_for, send_from_directory
+from flask import Blueprint, request, g, render_template, jsonify, url_for, send_from_directory, send_file
 from sqlalchemy import and_, func
 import os
 import win32com
@@ -208,3 +208,10 @@ def print_pdf(pdfname):
 @login_required_admin
 def send_pdf(filename):
     return send_from_directory('static/pay_stub/results', filename)
+
+# pdf파일을 다운로드하는 엔드포인트
+@bp.route('/pdf/<filename>/download', methods=['GET'])
+@login_required_admin
+def download_pdf(filename):
+    path = os.path.abspath(os.path.join('static', 'pay_stub', 'results', filename))
+    return send_file(path, as_attachment=True)

@@ -10,6 +10,7 @@
 </style>
 <body>
     <div class="container">
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_pay_stub.download_pdf', filename=pdfname) }}" download>다운로드하기</a>
         <iframe src="{{ url_for('admin_pay_stub.send_pdf', filename=pdfname) }}" type="application/pdf"></iframe>
     </div>
 </body>
