@@ -84,7 +84,7 @@
                 {% else %}
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">가입신청</a>
+                        <a class="nav-link" href="{{ url_for('auth.get_join_page') }}">가입신청</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
