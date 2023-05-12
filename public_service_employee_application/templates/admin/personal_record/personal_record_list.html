@@ -97,7 +97,7 @@
                         var pw1 = $("#pw1_employee").val();
                         var pw2 = $("#pw2_employee").val();
                         // 둘 다 공란이 아닌 경우
-                        regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+                        regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\];':".,<>?])[A-Za-z\d!@#$%^&*()_+{}[\];':".,<>?]{8,20}$/;
                         if(pw1.trim() != '' && pw2.trim() != ''){
                             if(!regex.test(pw1)){
                                 alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
