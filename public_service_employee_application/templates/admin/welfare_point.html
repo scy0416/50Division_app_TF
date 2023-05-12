@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container my-3">
-    <h4>복지 포인트 관리</h4>
-    <div class="mb-2">
+    <h4>복지포인트 관리</h4>
+    <div class="my-2">
         <form method="get" id="quarter_select">
             <input type="hidden" name="q" value="{{ q }}">
             <select name="quarter_id" onchange="change_quarter(this)">
@@ -139,8 +139,10 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="quarter_name">분기명</label>
             <input type="text" id="quarter_name" name="quarter_name">
-            <button type="button" class="btn btn-primary" onclick="close_make_quarter()">취소</button>
-            <button class=" btn btn-primary">생성</button>
+            <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="close_make_quarter()">취소</button>
+            <button class=" btn btn-secondary btn-sm">생성</button>
+            </div>
         </form>
     </dialog>
     {% if quarter %}
@@ -149,8 +151,10 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="new_name">바뀔 이름</label>
             <input type="text" id="new_name" name="new_name" value="{{ quarter.quarter }}">
-            <button type="button" class="btn btn-primary" onclick="close_edit_quarter()">취소</button>
-            <button class="btn btn-primary">변경</button>
+            <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="close_edit_quarter()">취소</button>
+            <button class="btn btn-secondary btn-sm">변경</button>
+            </div>
         </form>
     </dialog>
     {% endif %}

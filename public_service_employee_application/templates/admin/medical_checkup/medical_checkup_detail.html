@@ -27,7 +27,7 @@
             <td>{{ user.name }}</td>
             <td>{{ user.birth_date }}</td>
             <td>{{ user.unit_name }}</td>
-            <td>{{ medical_checkup.request_date }}</td>
+            <td>{{ medical_checkup.request_date|datetime }}</td>
             <td>
                 {% if medical_checkup.state == 'WAITING' %}
                 대기중

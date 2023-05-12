@@ -1,79 +1,75 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-  <ul>
-    <li>
-      <h4>신청자 정보</h4>
-      <table class="table">
+    <h4>신청자 정보</h4>
+    <table class="table">
         <thead>
         <tr>
-          <th>이름</th>
-          <th>생년월일</th>
-          <th>부대명</th>
-          <th>직책</th>
+            <th>이름</th>
+            <th>생년월일</th>
+            <th>부대명</th>
+            <th>직책</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td>{{ request.user.name }}</td>
-          <td>{{ request.user.birth_date }}</td>
-          <td>{{ request.user.unit_name }}</td>
-          <td>{{ request.user.position }}</td>
+            <td>{{ request.user.name }}</td>
+            <td>{{ request.user.birth_date }}</td>
+            <td>{{ request.user.unit_name }}</td>
+            <td>{{ request.user.position }}</td>
         </tr>
         </tbody>
-      </table>
-    </li>
-    <li>
-      {% if request.type=='HIRE' %}
-      <h4>고용일 변경 신청</h4>
-      <table class="table">
+    </table>
+
+    {% if request.type=='HIRE' %}
+    <h4>고용일 변경 신청</h4>
+    <table class="table">
         <thead>
         <tr>
-          <th>기존 고용일</th>
-          <th>변경 희망 고용일</th>
+            <th>기존 고용일</th>
+            <th>변경 희망 고용일</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td>{{ request.user.hire_date }}</td>
-          <td>{{ request.change_to }}</td>
+            <td>{{ request.user.hire_date }}</td>
+            <td>{{ request.change_to }}</td>
         </tr>
         </tbody>
-      </table>
-      {% elif request.type=='RETIREMENT' %}
-      <h2>퇴직일 변경 신청</h2>
-      <table class="table">
+    </table>
+    {% elif request.type=='RETIREMENT' %}
+    <h2>퇴직일 변경 신청</h2>
+    <table class="table">
         <thead>
         <tr>
-          <th>기존 퇴직일</th>
-          <th>변경 희망 퇴직일</th>
+            <th>기존 퇴직일</th>
+            <th>변경 희망 퇴직일</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td>{{ request.user.retirement_date }}</td>
-          <td>{{ request.change_to }}</td>
+            <td>{{ request.user.retirement_date }}</td>
+            <td>{{ request.change_to }}</td>
         </tr>
         </tbody>
-      </table>
-      {% endif %}
-    </li>
-    <li>
-      <h4>사유</h4>
-      <div class="container">
+    </table>
+    {% endif %}
+
+    <h4>사유</h4>
+    <div class="container">
         {{ request.reason }}
-      </div>
-    </li>
-  </ul>
-  <form method="post">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="form_id" value="OK">
-    <button class="btn btn-primary">승인</button>
-  </form>
-  <form method="post">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="form_id" value="DENY">
-    <button class="btn btn-primary">거절</button>
-  </form>
+    </div>
+    <div class="d-flex justify-content-end">
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_id" value="OK">
+            <button class="btn btn-secondary btn-sm">승인</button>
+        </form>
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_id" value="DENY">
+            <button class="btn btn-secondary btn-sm">거절</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
