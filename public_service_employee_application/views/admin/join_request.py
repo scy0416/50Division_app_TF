@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from sqlalchemy import asc, desc, or_
-from datetime import datetime
+from sqlalchemy import asc, desc, or_, null
+from datetime import datetime, date
 
 from public_service_employee_application.views.auth_views import login_required_admin
 from public_service_employee_application.models import Join_request, User
@@ -118,15 +118,17 @@ def join_detail(request_id):
     birth_date = request.args.get('birth_date', type=str, default=join_request.birth_date)
     id = request.args.get('id', type=str, default='')
 
-    result_list = User.query.filter(User.name.contains(name))
-    result_list = result_list.filter(User.birth_date == birth_date)
-    result_list = result_list.filter(User.userid is None)
-    result_list = result_list.filter(User.password is None)
+    result_list = User.query.filter(User.name == name)
+    result_list = result_list.filter(
+        #User.birth_date == date(int(birth_date[0:4]), int(birth_date[5:7]), int(birth_date[8:10]))
+        User.birth_date == birth_date
+    )
+    result_list = result_list.filter(User.password.is_(null()))
     result_list = result_list.filter(User.userid.ilike('%' + id + '%'))
 
     return render_template('admin/join_request/join_request_detail.html',
                            join_request=join_request,
-                           name=name, birth_date=birth_date)
+                           name=name, birth_date=birth_date, result_list=result_list)
 
 
 # 가입 거부 처리
@@ -141,7 +143,7 @@ def reject_request(request_id):
 
 
 # 가입 승인 처리
-@bp.route('/allow/<int:request_id>', methods=['GET'])
+@bp.route('/allow/<int:request_id>', methods=['POST'])
 @login_required_admin
 def allow_request(request_id):
     join_request = Join_request.query.get_or_404(request_id)
