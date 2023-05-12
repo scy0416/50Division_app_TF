@@ -156,55 +156,6 @@ def request_main():
     return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request, medical_checkup_request=medical_checkup_request)
 
 
-# 인사정보 리스트 출력 페이지
-@bp.route('/request/hr_information/', methods=('GET', ))
-@login_required_admin
-def hr_information_list():
-    # 검색 및 페이징 처리
-    q = request.args.get('q', type=str, default='')
-    page = request.args.get('page', type=int, default=1)
-
-    # 인사정보 관련 신청 중에서 유저의 이름에 q가 포함되어 있는걸 필터링
-    request_list = HR_change_request.query.join(User).filter(User.name.contains(q))
-    request_list = request_list.paginate(page=page, per_page=5)
-
-    return render_template('admin/hr_information_change_request_list.html', q=q, page=page, request_list=request_list)
-
-# 인사정보 변경 상세 페이지
-@bp.route('/request/hr_information/<int:request_id>', methods=('GET', 'POST'))
-@login_required_admin
-def hr_information_detail(request_id):
-    hr_request = HR_change_request.query.get_or_404(request_id)
-
-    # post로 요청이 들어온 경우
-    if request.method == 'POST':
-        # 승인/거부여부 확인
-        state = request.form.get('form_id')
-        # 승인된 경우라면
-        if state == 'OK':
-            # 신청 타입이 고용일 변경이라면
-            if hr_request.type == 'HIRE':
-                # 고용일 변경
-                hr_request.user.hire_date = hr_request.change_to
-            # 신청 타입이 퇴직일 변경이라면
-            elif hr_request.type == 'RETIREMENT':
-                # 퇴직일 변경
-                hr_request.user.retirement_date = hr_request.change_to
-            # 상태를 승인 상태로 변경한다.
-            hr_request.state = 'ALLOWED'
-        # 거부된 경우라면
-        elif state == 'DENY':
-            # 상태를 거부됨으로 변경한다.
-            hr_request.state = 'REJECTED'
-        # 처리 시간을 현재 시간을 대입한다.
-        hr_request.proc_date = datetime.now()
-        # 변경사항을 저장한다.
-        db.session.commit()
-        # 신청 리스트로 리다이렉션 시킨다.
-        return redirect(url_for('admin.hr_information_list'))
-
-    return render_template('admin/hr_information_change_request_detail.html', request=hr_request)
-
 # 휴가 신청 리스트 출력 페이지
 @bp.route('/request/vacation/', methods=('GET', ))
 @login_required_admin

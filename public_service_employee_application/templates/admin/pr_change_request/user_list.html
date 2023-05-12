@@ -1,0 +1,159 @@
+<style>
+    table{white-space:nowrap}
+    table{table-layout: fixed;}
+</style>
+<div class="row justify-content-end my-3">
+    <div class="col-6 input-group input-group-sm">
+        <input type="hidden" id="page" value="{{ page or '' }}">
+        <input type="text" class="form-control q" id="q" name="q" value="{{ q or '' }}">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+        </div>
+    </div>
+</div>
+<table class="table text-center">
+    {% if request_list.items %}
+    {% for request in request_list.items %}
+    <tr style="border-top:1px black solid">
+        <th rowspan="5" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">
+            {{ request_list.total - ((request_list.page-1) * request_list.per_page) - loop.index0 }}
+        </th>
+        <th>신청자</th>
+        <td>
+            <a href="{{ url_for('admin_pr_change_request.detail', request_id=request[0].id) }}">
+                {{ request[1].name }}
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <th>생년월일</th>
+        <td>{{ request[1].birth_date }}</td>
+    </tr>
+    <tr>
+        <th>신청분류</th>
+        <td>
+            {% if request[0].type == 'HIRE' %}
+            고용일 변경 신청
+            {% elif request[0].type == 'RETIREMENT' %}
+            퇴직일 변경 신청
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>신청일</th>
+        <td>{{ request[0].request_date|datetime }}</td>
+    </tr>
+    <tr>
+        <th style="border-bottom:1px black solid">상태</th>
+        <td style="border-bottom:1px black solid">
+            {% if request[0].state == 'WAITING' %}
+            대기중
+            {% elif request[0].state == 'ALLOWED' %}
+            승인됨
+            {% elif request[0].state == 'REJECTED' %}
+            거부됨
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="3">변경 신청이 없습니다.</td>
+    </tr>
+    {% endif %}
+</table>
+<!-- 페이징 처리 시작 -->
+<ul class="pagination justify-content-center pagination-sm">
+    <!-- 이전 페이지 -->
+    {% if request_list.has_prev %}
+    <li class="page-items">
+        <a class="page-link" data-page="{{ request_list.prev_num }}" href="#">이전</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+    </li>
+    {% endif %}
+    {% for page_num in request_list.iter_pages() %}
+    {% if page_num %}
+    {% if page_num != request_list.page %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+    </li>
+    {% else %}
+    <li class="page-item active" aria-current="page">
+        <a class="page-link" href="#">{{ page_num }}</a>
+    </li>
+    {% endif %}
+    {% else %}
+    <li class="disabled">
+        <a class="page-link" href="#">...</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+    <!-- 다음 페이지 -->
+    {% if request_list.has_next %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ request_list.next_num }}" href="#">다음</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+    </li>
+    {% endif %}
+</ul>
+<script>
+    function loadScript(){
+        $(".page-link").on('click', function(){
+            var q = $("#q").val();
+            var page = $(this).data("page");
+            var order = $("#order_by_date").val();
+            var processed = $("#processed").is(':checked');
+            var unprocessed = $("#unprocessed").is(':checked');
+            $.ajax({
+                url: '{{ url_for('admin_pr_change_request.get_user_list') }}',
+                type: 'GET',
+                contentType: 'html',
+                data: {
+                    q: q,
+                    page: page,
+                    order: order,
+                    processed: processed,
+                    unprocessed: unprocessed
+                },
+                success: function(data){
+                    $("#userContainer").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        });
+        $("#btn_search").on('click', function(){
+            var q = $("#q").val();
+            var page = 1;
+            var order = $("#order_by_date").val();
+            var processed = $("#processed").is(':checked');
+            var unprocessed = $("#unprocessed").is(':checked');
+            $.ajax({
+                url: '{{ url_for('admin_pr_change_request.get_user_list') }}',
+                type: 'GET',
+                contentType: 'html',
+                data: {
+                    q: q,
+                    page: page,
+                    order: order,
+                    processed: processed,
+                    unprocessed: unprocessed
+                },
+                success: function(data){
+                    $("#userContainer").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        });
+    }
+    loadScript();
+</script>

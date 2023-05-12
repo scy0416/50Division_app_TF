@@ -13,15 +13,14 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ request.user.name }}</td>
-            <td>{{ request.user.birth_date }}</td>
-            <td>{{ request.user.unit_name }}</td>
-            <td>{{ request.user.position }}</td>
+            <td>{{ request[1].name }}</td>
+            <td>{{ request[1].birth_date }}</td>
+            <td>{{ request[1].unit_name }}</td>
+            <td>{{ request[1].position }}</td>
         </tr>
         </tbody>
     </table>
-
-    {% if request.type=='HIRE' %}
+    {% if request[0].type == 'HIRE' %}
     <h4>고용일 변경 신청</h4>
     <table class="table">
         <thead>
@@ -32,13 +31,13 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ request.user.hire_date }}</td>
-            <td>{{ request.change_to }}</td>
+            <td>{{ request[1].hire_date }}</td>
+            <td>{{ request[0].change_to }}</td>
         </tr>
         </tbody>
     </table>
-    {% elif request.type=='RETIREMENT' %}
-    <h2>퇴직일 변경 신청</h2>
+    {% elif request[0].type == 'RETIREMENT' %}
+    <h4>퇴직일 변경 신청</h4>
     <table class="table">
         <thead>
         <tr>
@@ -48,28 +47,27 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ request.user.retirement_date }}</td>
-            <td>{{ request.change_to }}</td>
+            <td>{{ request[1].retirement_date }}</td>
+            <td>{{ request[0].change_to }}</td>
         </tr>
         </tbody>
     </table>
     {% endif %}
-
     <h4>사유</h4>
     <div class="container">
-        {{ request.reason }}
+        {{ request[0].reason }}
     </div>
+    {% if request[0].state == 'WAITING' %}
     <div class="d-flex justify-content-end">
-        <form method="post">
+        <form method="post" action="{{ url_for('admin_pr_change_request.allow', request_id=request[0].id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="form_id" value="OK">
             <button class="btn btn-secondary btn-sm">승인</button>
         </form>
-        <form method="post">
+        <form method="post" action="{{ url_for('admin_pr_change_request.deny', request_id=request[0].id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="form_id" value="DENY">
             <button class="btn btn-secondary btn-sm">거절</button>
         </form>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

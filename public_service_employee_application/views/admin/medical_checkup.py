@@ -37,6 +37,9 @@ def get_user_list():
         unprocessed_request = db.session.query(
             Medical_checkup_request,
             User
+        ).outerjoin(
+            User,
+            Medical_checkup_request.user_id == User.id
         ).filter( # 대기중인 신청 필터링
             Medical_checkup_request.state == 'WAITING'
         ).filter( # 이름 검색
@@ -59,18 +62,26 @@ def get_user_list():
         processed_request = db.session.query(
             Medical_checkup_request,
             User
+        ).outerjoin(
+            User,
+            Medical_checkup_request.user_id == User.id
         ).filter(  # 대기중인 신청 필터링
-            Medical_checkup_request.state == 'WAITING'
+            or_(
+                Medical_checkup_request.state == 'ALLOWED',
+                Medical_checkup_request.state == 'REJECTED'
+            )
         ).filter(  # 이름 검색
             User.name.contains(q)
         )
         # 정렬
         if order == 'asc':
-            unprocessed_request = processed_request.order_by(
+            processed_request = processed_request.order_by(
+                desc(Medical_checkup_request.state),
                 asc(Medical_checkup_request.request_date)
             )
         elif order == 'desc':
-            unprocessed_request = processed_request.order_by(
+            processed_request = processed_request.order_by(
+                desc(Medical_checkup_request.state),
                 desc(Medical_checkup_request.request_date)
             )
         ###########################

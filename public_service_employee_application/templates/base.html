@@ -26,7 +26,7 @@
 </head>
 <body>
 {% include "sidebar.html" %}
-<a href="{% block to_back %}{% endblock %}">
+<a href="{% block to_back %}{% endblock %}" id="to_back">
     <img src="{{ url_for('static', filename='before image.png') }}"width="40">
 </a>
 <!--기본 템플릿에 삽입할 내용 Start -->
