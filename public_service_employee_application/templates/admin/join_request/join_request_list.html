@@ -41,7 +41,7 @@
         var processed = $("#processed").is(':checked');
         var unprocessed = $("#unprocessed").is(':checked');
         $.ajax({
-            url: '{{ url_for("admin_medical_checkup.get_user_list") }}',
+            url: '{{ url_for('admin_join_request.get_user_list') }}',
             type: 'GET',
             contentType: 'html',
             data: {
