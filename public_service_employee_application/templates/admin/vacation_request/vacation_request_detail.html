@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <h4>신청자 정보</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>이름</th>
+            <th>생년월일</th>
+            <th>부대명</th>
+            <th>직책</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.birth_date }}</td>
+            <td>{{ user.unit_name }}</td>
+            <td>{{ user.position }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>시작일</th>
+            <th>종료일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ request.from_date }}</td>
+            <td>{{ request.to_date }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>사유</h4>
+    <div class="container">
+        {{ request.reason }}
+    </div>
+    <div class="container">
+        {% if request.state == 'WAITING' %}
+        <form method="post" action="{{ url_for('admin_vacation_request.allow', request_id=request.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-secondary btn-sm">승인</button>
+        </form>
+        <form method="post" action="{{ url_for('admin_vacation_request.deny', request_id=request.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-secondary btn-sm">거절</button>
+        </form>
+        {% elif request.state == 'ALLOWED' %}
+        <ul><il>승인됨</il></ul>
+        {% elif request.state == 'REJECTED' %}
+        <ul><il>거부됨</il></ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

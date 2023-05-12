@@ -37,6 +37,7 @@ def create_app():
     personal_record as admin_pr,
     join_request as admin_join_request,
     pr_change_request as admin_pr_change_request,
+    vacation_request as admin_vacation_request,
     )
     from views.employee import (
     pay_stub_views as employee_pay_stub,
@@ -55,6 +56,7 @@ def create_app():
     app.register_blueprint(admin_pr.bp)
     app.register_blueprint(admin_join_request.bp)
     app.register_blueprint(admin_pr_change_request.bp)
+    app.register_blueprint(admin_vacation_request.bp)
     #
     app.register_blueprint(employee_pay_stub.bp)
     app.register_blueprint(employee_punch_in_out.bp)

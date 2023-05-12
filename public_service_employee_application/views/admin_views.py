@@ -156,44 +156,6 @@ def request_main():
     return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request, medical_checkup_request=medical_checkup_request)
 
 
-# 휴가 신청 리스트 출력 페이지
-@bp.route('/request/vacation/', methods=('GET', ))
-@login_required_admin
-def vacation_list():
-    # 검색 및 페이징 처리
-    q = request.args.get('q', type=str, default='')
-    page = request.args.get('page', type=int, default=1)
-
-    # 휴가 관련 신청 중에서 유저의 이름에 q가 포함되어 있는걸 필터링
-    request_list = Vacation_request.query.join(User).filter(User.name.contains(q))
-    request_list = request_list.paginate(page=page, per_page=5)
-
-    return render_template('admin/vacation_request_list.html', q=q, page=page, request_list=request_list)
-
-# 휴가 신청 상세 페이지 출력
-@bp.route('/request/vacation/<int:request_id>', methods=('GET', 'POST'))
-@login_required_admin
-def vacation_detail(request_id):
-    # 신청 데이터 추출
-    vacation_request = Vacation_request.query.get_or_404(request_id)
-
-    # post로 요청이 온다면
-    if request.method == 'POST':
-        # 승인된 경우
-        if request.form.get('form_id') == 'OK':
-            # 상태를 승인됨으로 바꾼다.
-            vacation_request.state = 'ALLOWED'
-        # 거부된 경우
-        elif request.form.get('form_id') == 'DENY':
-            # 상태를 거부됨으로 바꾼다.
-            vacation_request.state = 'REJECTED'
-        # 휴가 신청의 처리된 날짜를 현재로 한다.
-        vacation_request.proc_date = datetime.now()
-        db.session.commit()
-        # 휴가 신청 목록으로 리아디렉션 시킨다.
-        return redirect(url_for('admin.vacation_list'))
-    return render_template('admin/vacation_request_detail.html', request=vacation_request)
-
 # 복지 포인트 관리 페이지
 @bp.route('/welfare', methods=('GET', ))
 @login_required_admin
