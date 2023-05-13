@@ -12,12 +12,12 @@ textarea{resize:none}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     </form>
     <div class="d-flex justify-content-end">
-            <button class="btn btn-secondary btn-sm" onclick="edit_post()">수정</button>
-            <button class="btn btn-secondary btn-sm" onclick="delete_post()">삭제</button>
+        <button class="btn btn-secondary btn-sm" onclick="edit_post()">수정</button>
+        <button class="btn btn-secondary btn-sm" onclick="delete_post()">삭제</button>
     </div>
     <table class="table table-sm">
         <tr>
-            <th><h4 class="my-3">{{ post[0].subject|safe }}</h4></th>
+            <th class="fs-4 my-3">{{ post[0].subject|safe }}</th>
         </tr>
         <tr class="text-end">
             <td>게시자 : {{ post[1].name }}</td>
@@ -150,6 +150,7 @@ textarea{resize:none}
   this.style.height = 0;
   this.style.height = (this.scrollHeight) + "px";
 });
+
 
 </script>
 {% endblock %}

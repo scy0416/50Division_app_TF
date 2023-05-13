@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    .table{table-layout:fixed;}
+    .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+</style>
 <script src="{{ url_for('static', filename='sha512.min.js') }}"></script>
 <script>{{ alert|safe or '' }}</script>
 <div class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="addEmployeeLabel">
@@ -12,45 +16,38 @@
             <div class="modal-body">
                 <form method="post" action="{{ url_for('admin_personal_record.create_employee') }}" id="addEmployeeForm">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="container">
-                        <label for="name_employee">이름</label>
-                        <input type="text" id="name_employee" name="name">
+                    <div class="container d-flex my-2">
+                        <input placeholder="이름" class="flex-fill" type="text" id="name_employee" name="name">
                     </div>
-                    <div class="container">
-                        <label for="unit_name">부대명</label>
-                        <input type="text" id="unit_name" name="unit_name">
+                    <div class="container d-flex my-2">
+                        <input placeholder="부대명" class="flex-fill" type="text" id="unit_name" name="unit_name">
                     </div>
-                    <div class="container">
-                        <label for="position_employee">직책</label>
-                        <input type="text" id="position_employee" name="position">
+                    <div class="container d-flex my-2">
+                        <input placeholder="직책" class="flex-fill" type="text" id="position_employee" name="position">
                     </div>
-                    <div class="container">
-                        <label for="birth_date">생년월일</label>
-                        <input type="date" id="birth_date" name="birth_date">
+                    <div class="container d-flex my-2">
+                        <label class="me-2" for="birth_date">생년월일</label>
+                        <input class="flex-fill" type="date" id="birth_date" name="birth_date">
                     </div>
-                    <div class="container">
-                        <label for="hire_date">고용일</label>
-                        <input type="date" id="hire_date" name="hire_date">
+                    <div class="container d-flex my-2">
+                        <label class="me-2" for="hire_date">고용일</label>
+                        <input class="flex-fill" type="date" id="hire_date" name="hire_date">
                     </div>
-                    <div class="container">
-                        <label for="retirement_date">퇴직일</label>
-                        <input type="date" id="retirement_date" name="retirement_date">
+                    <div class="container d-flex my-2">
+                        <label class="me-2" for="retirement_date">퇴직일</label>
+                        <input class="flex-fill" type="date" id="retirement_date" name="retirement_date">
                     </div>
-                    <div class="container">
-                        <label for="id_employee">아이디</label>
-                        <input type="text" id="id_employee" name="id">
+                    <div class="container d-flex my-2">
+                        <input placeholder="아이디" class="flex-fill" type="text" id="id_employee" name="id">
                     </div>
-                    <div class="container">
-                        <label for="pw1_employee">비밀번호<small>(선택사항)</small></label>
-                        <input type="password" id="pw1_employee" name="password">
+                    <div class="container d-flex my-2">
+                        <input placeholder="비밀번호(선택사항)"class="flex-fill" type="password" id="pw1_employee" name="password">
                     </div>
-                    <div class="container">
-                        <label for="pw2_employee">비밀번호 확인</label>
-                        <input type="password" id="pw2_employee">
+                    <div class="container d-flex my-2">
+                        <input placeholder="비밀번호 확인"class="flex-fill" type="password" id="pw2_employee">
                     </div>
-                    <div class="container">
-                        <label for="bigo">비고</label>
-                        <input type="text" id="bigo" name="bigo">
+                    <div class="container d-flex my-2">
+                        <input placeholder="비고" class="flex-fill" type="text" id="bigo" name="bigo">
                     </div>
                 </form>
             </div>
@@ -130,29 +127,23 @@
             <div class="modal-body">
                 <form method="post" action="{{ url_for('admin_personal_record.create_admin') }}" id="addAdminForm">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="container">
-                        <label for="position_admin">직책</label>
-                        <input type="text" id="position_admin" name="position" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="직책" class="flex-fill" type="text" id="position_admin" name="position" required>
                     </div>
-                    <div class="container">
-                        <label for="rank">계급</label>
-                        <input type="text" id="rank" name="rank" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="계급" class="flex-fill" type="text" id="rank" name="rank" required>
                     </div>
-                    <div class="container">
-                        <label for="name_admin">이름</label>
-                        <input type="text" id="name_admin" name="name" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="이름" class="flex-fill" type="text" id="name_admin" name="name" required>
                     </div>
-                    <div class="container">
-                        <label for="id_admin">아이디</label>
-                        <input type="text" id="id_admin" name="id" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="아이디" class="flex-fill" type="text" id="id_admin" name="id" required>
                     </div>
-                    <div class="container">
-                        <label for="pw1_admin">비밀번호</label>
-                        <input type="password" id="pw1_admin" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="비밀번호" class="flex-fill" type="password" id="pw1_admin" required>
                     </div>
-                    <div class="container">
-                        <label for="pw2_admin">비밀번호</label>
-                        <input type="password" id="pw2_admin" name="password" required>
+                    <div class="container d-flex my-2">
+                        <input placeholder="비밀번호 확인" class="flex-fill" type="password" id="pw2_admin" name="password" required>
                     </div>
                 </form>
             </div>
@@ -235,29 +226,27 @@
     </div>
     <table class="table">
         <thead>
-        <tr class="text-center">
-            <th>번호</th>
-            <th>이름</th>
-            <th>부대명</th>
-            <th>직책</th>
-            <th>생년월일</th>
+        <tr class="text-center text-nowrap">
+            <th style="width:15%">번호</th>
+            <th style="width:15%">이름</th>
+            <th style="width:45%" >부대명</th>
+            <th style="width:25%">직책</th>
         </tr>
         </thead>
         <tbody>
         {% if user_list.items %}
         {% for user in user_list.items %}
-        <tr class="text-center">
-            <td>
+        <tr class="text-center ">
+            <td text-nowrap>
                 {{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}
             </td>
-            <td class="text-left">
+            <td class="text-left text-nowrap">
                 <a class="link-dark" href="{{ url_for('admin_personal_record.employee_detail', id=user.id) }}">
                     {{ user.name }}
                 </a>
             </td>
-            <td>{{ user.unit_name }}</td>
-            <td>{{ user.position }}</td>
-            <td>{{ user.birth_date }}</td>
+            <td class="overflow">{{ user.unit_name }}</td>
+            <td class="overflow">{{ user.position }}</td>
         </tr>
         {% endfor %}
         {% else %}
