@@ -26,7 +26,7 @@
             <button class="btn btn-secondary btn-sm">분기 삭제</button>
         </form>
     </div>
-    <div class="d-flex mt-2">
+    <div class="d-flex my-2">
         <form method="get" id="searchForm">
             <input type="hidden" id="page" name="page" value="{{ page }}">
             <input type="hidden" name="quarter_id" value="{{ quarter_id }}">
@@ -35,12 +35,11 @@
         </form>
     </div>
     {% endif %}
-    <div class="container mt-3">
         <table class="table text-center">
             {% if user_list.items %}
             {% for user in user_list.items %}
-            <tr style="border-top:1px #dee2e6 solid">
-                <th rowspan="3" style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid">{{
+            <tr style="border-top:1px black solid">
+                <th rowspan="3"  style="vertical-align:middle;width:10%;border-right:1px #dee2e6 solid;border-bottom:1px black solid">{{
                     user_list.total - ((user_list.page-1) * user_list.per_page)- loop.index0 }}
                 </th>
                 <th>이름</th>
@@ -52,7 +51,7 @@
             </tr>
             <tr class="text-center">
                 {% if user.point %}
-                <td colspan="2">
+                <td colspan="2" style="border-bottom:1px black solid">
                     <form method="post"
                           action="{{ url_for('admin.edit_welfare', welfare_point_id=user.welfare_point_id) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -67,7 +66,7 @@
                     </form>
                 </td>
                 {% else %}
-                <td colspan="2">
+                <td colspan="2"style="border-bottom:1px black solid">
                     <form method="post" action="{{ url_for('admin.create_welfare') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="user_id" value="{{ user.id }}">

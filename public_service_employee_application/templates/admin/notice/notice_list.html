@@ -4,9 +4,7 @@
 {% endblock %}
 {% block content %}
 <style>
-    table{
-    table-layout: fixed;
-    }
+    table{table-layout: fixed;}
     .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 </style>
 <div class="container my-3">
@@ -46,7 +44,7 @@
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="4">공지사항이 없습니다.</td>
+            <td colspan="2">공지사항이 없습니다.</td>
         </tr>
         {% endif %}
         </tbody>

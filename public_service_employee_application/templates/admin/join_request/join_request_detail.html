@@ -27,15 +27,19 @@
     </table>
     <h4>검색 창</h4>
     <form method="get">
-            <label for="name">이름</label>
-            <input type="text" name="name" id="name" value="{{ name or '' }}">
-            <label for="birth_date">생년월일</label>
+        <div class="d-flex my-2">
+            <input placeholder="이름" class="flex-fill" type="text" name="name" id="name" value="{{ name or '' }}">
+        </div>
+        <div class="d-flex my-2">
+            <input placeholder="id" class="flex-fill"type="text" name="id" id="id">
+        </div>
+        <div class="d-flex my-2">
+            <label class="me-2" for="birth_date">생년월일</label>
             <input type="date" name="birth_date" id="birth_date" value="{{ birth_date or '' }}">
-            <label for="id">id</label>
-            <input type="text" name="id" id="id">
             <button class="btn btn-secondary btn-sm">검색</button>
+        </div>
     </form>
-    <table class="table text-center">
+    <table class="table text-center my-2">
         {% if result_list %}
         {% for result in result_list %}
         <thead>
