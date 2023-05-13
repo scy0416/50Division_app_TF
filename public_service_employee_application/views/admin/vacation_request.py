@@ -102,7 +102,7 @@ def get_user_list():
     elif processed is False and unprocessed is False:
         request_list = Vacation_request.query.filter_by(state='')
     #페이지네이트
-    request_list = request_list.paginate(page=page, per_page=10)
+    request_list = request_list.paginate(page=page, per_page=5)
 
     return render_template('admin/vacation_request/user_list.html', q=q, page=page, request_list=request_list)
 

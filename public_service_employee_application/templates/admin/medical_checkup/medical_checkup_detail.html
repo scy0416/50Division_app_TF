@@ -10,64 +10,68 @@
         height:auto;
         width:auto;
     }
+    textarea{resize:none}
+
 </style>
-<div class="container">
-    <table class="table">
-        <thead>
+<div class="container my-3">
+    <table class="table text-center text-nowrap">
         <tr>
             <th>이름</th>
-            <th>생년월일</th>
-            <th>부대명</th>
-            <th>요청일</th>
-            <th>상태</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
             <td>{{ user.name }}</td>
-            <td>{{ user.birth_date }}</td>
-            <td>{{ user.unit_name }}</td>
-            <td>{{ medical_checkup.request_date|datetime }}</td>
-            <td>
-                {% if medical_checkup.state == 'WAITING' %}
-                대기중
-                {% elif medical_checkup.state == 'REJECTED' %}
-                거부됨
-                {% elif medical_checkup.state == 'ALLOWED' %}
-                승인됨
-                {% endif %}
-            </td>
         </tr>
         <tr>
+            <th>생년월일</th>
+            <td>{{ user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th>부대명</th>
+            <td>{{ user.unit_name }}</td>
+        </tr>
+        <tr>
+            <th>요청일</th>
+            <td>{{ medical_checkup.request_date|datetime }}</td>
+        </tr>
+        <tr>
+            <th>상태</th>
             {% if medical_checkup.state == 'WAITING' %}
-            <th>처리</th>
-            <td>
-                <button class="btn btn-secondary btn-sm proc" onclick="allow()">승인</button>
-                <button class="btn btn-secondary btn-sm proc" onclick="reject()">거부</button>
-            </td>
-            <th>비고</th>
-            <td colspan="2"><textarea placeholder="비고 입력칸">{{ medical_checkup.bigo }}</textarea></td>
-            {% else %}
-            <th>비고</th>
-            <td colspan="3"><textarea placeholder="비고 입력칸">{{ medical_checkup.bigo }}</textarea></td>
-            <td><button class="btn btn-secondary btn-sm" onclick="edit()">저장</button></td>
+            <td>대기중</td>
+            {% elif medical_checkup.state == 'REJECTED' %}
+            <td colspan="3">거부됨</td>
+            {% elif medical_checkup.state == 'ALLOWED' %}
+            <td colspan="3">승인됨</td>
             {% endif %}
         </tr>
-        </tbody>
+        <tr>
+        <th>비고</th>
+        <td >
+            <textarea class="autotext flex-fill" rows="1" placeholder="비고 입력칸">{{ medical_checkup.bigo }}</textarea>
+            <button class="btn btn-secondary btn-sm" onclick="edit()">저장</button>
+        </td>
+        </tr>
     </table>
+    {% if medical_checkup.state == 'WAITING' %}
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-secondary btn-sm proc" onclick="allow()">승인</button>
+        <button class="btn btn-secondary btn-sm proc" onclick="reject()">거부</button>
+    </div>
+    {% endif %}
     <div class="container img-container">
-        <img src="{{ url_for('admin_medical_checkup.medical_checkup_image', request_id=medical_checkup.id) }}" alt="" class="img">
+        <img src="{{ url_for('admin_medical_checkup.medical_checkup_image', request_id=medical_checkup.id) }}" alt=""
+             class="img">
     </div>
 </div>
-<form method="post" id="allow" action="{{ url_for('admin_medical_checkup.allow_medical_checkup', request_id=medical_checkup.id) }}">
+<form method="post" id="allow"
+      action="{{ url_for('admin_medical_checkup.allow_medical_checkup', request_id=medical_checkup.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="bigo" value="{{ medical_checkup.bigo }}">
 </form>
-<form method="post" id="reject" action="{{ url_for('admin_medical_checkup.reject_medical_checkup', request_id=medical_checkup.id) }}">
+<form method="post" id="reject"
+      action="{{ url_for('admin_medical_checkup.reject_medical_checkup', request_id=medical_checkup.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="bigo" value="{{ medical_checkup.bigo }}">
 </form>
-<form method="post" id="edit" action="{{ url_for('admin_medical_checkup.edit_medical_checkup', request_id=medical_checkup.id) }}">
+<form method="post" id="edit"
+      action="{{ url_for('admin_medical_checkup.edit_medical_checkup', request_id=medical_checkup.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="bigo" value="{{ medical_checkup.bigo }}">
 </form>
@@ -89,5 +93,11 @@
         $("#edit [name='bigo']").val(bigo);
         $("#edit").submit();
     }
+      $("textarea.autotext").each(function () {
+  this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+}).on("input", function () {
+  this.style.height = 0;
+  this.style.height = (this.scrollHeight) + "px";
+});
 </script>
 {% endblock %}

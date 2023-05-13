@@ -16,6 +16,7 @@
     $(document).ready(function(){
         $("#content").summernote({
             height: 300,
+            disableResizeEditor: true,
             minHeight: null,
             maxHeight: null,
             focus: false,
@@ -40,6 +41,7 @@
         $("#content").summernote('code', `{{ post.content|safe }}`);
         $("#subject").summernote({
             toolbar: [],
+            disableResizeEditor: true,
             placeholder: '제목 작성'
         });
         $("#subject").summernote('code', `{{ post.subject|safe }}`);

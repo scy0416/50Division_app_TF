@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <h4>인사정보 변경 신청 관리</h4>
+    <h4>휴가신청 관리</h4>
     <select id="order_by_date" onchange="getUser()">
         <option value="desc">최신순</option>
         <option value="asc">오래된순</option>
     </select>
     <input type="checkbox" id="processed" checked onchange="getUser()">처리됨
     <input type="checkbox" id="unprocessed" checked onchange="getUser()">대기중
-    <div class="container" id="userContainer"></div>
+    <div id="userContainer"></div>
 </div>
 {% endblock %}
 {% block script %}

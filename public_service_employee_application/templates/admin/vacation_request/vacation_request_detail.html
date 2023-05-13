@@ -3,22 +3,22 @@
 <div class="container my-3">
     <h4>신청자 정보</h4>
     <table class="table">
-        <thead>
+
         <tr>
             <th>이름</th>
-            <th>생년월일</th>
-            <th>부대명</th>
-            <th>직책</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
             <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th>생년월일</th>
             <td>{{ user.birth_date }}</td>
-            <td>{{ user.unit_name }}</td>
+        </tr>
+        <th>부대명</th>
+        <td>{{ user.unit_name }}</td>
+        <tr>
+            <th>직책</th>
             <td>{{ user.position }}</td>
         </tr>
-        </tbody>
+        
     </table>
     <table class="table">
         <thead>
@@ -38,7 +38,8 @@
     <div class="container">
         {{ request.reason }}
     </div>
-    <div class="container">
+    <hr>
+    <div class="container d-flex justify-content-end">
         {% if request.state == 'WAITING' %}
         <form method="post" action="{{ url_for('admin_vacation_request.allow', request_id=request.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -49,9 +50,13 @@
             <button class="btn btn-secondary btn-sm">거절</button>
         </form>
         {% elif request.state == 'ALLOWED' %}
-        <ul><il>승인됨</il></ul>
+        <ul>
+            <li>승인됨</li>
+        </ul>
         {% elif request.state == 'REJECTED' %}
-        <ul><il>거부됨</il></ul>
+        <ul>
+            <li>거부됨</li>
+        </ul>
         {% endif %}
     </div>
 </div>

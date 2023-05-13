@@ -3,7 +3,7 @@
         <input type="hidden" id="page" value="{{ page or '' }}">
         <input type="text" class="form-control q" id="q" name="q" value="{{ q or '' }}">
         <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" id="btn_search">검색</button>
         </div>
     </div>
 </div>
@@ -16,7 +16,7 @@
         </td>
         <th>신청자</th>
         <td>
-            <a href="{{ url_for('admin_vacation_request.detail', request_id=request[0].id) }}">
+            <a class="link-dark" href="{{ url_for('admin_vacation_request.detail', request_id=request[0].id) }}">
                 {{ request[1].name }}
             </a>
         </td>

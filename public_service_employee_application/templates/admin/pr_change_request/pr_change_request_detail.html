@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container my-3">
     <h4>신청자 정보</h4>
-    <table class="table">
+    <table class="table text-center">
         <thead>
         <tr>
             <th>이름</th>
@@ -13,8 +13,8 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ request[1].name }}</td>
-            <td>{{ request[1].birth_date }}</td>
+            <td class="text-nowrap">{{ request[1].name }}</td>
+            <td class="text-nowrap">{{ request[1].birth_date }}</td>
             <td>{{ request[1].unit_name }}</td>
             <td>{{ request[1].position }}</td>
         </tr>
@@ -57,6 +57,7 @@
     <div class="container">
         {{ request[0].reason }}
     </div>
+    <hr>
     {% if request[0].state == 'WAITING' %}
     <div class="d-flex justify-content-end">
         <form method="post" action="{{ url_for('admin_pr_change_request.allow', request_id=request[0].id) }}">
