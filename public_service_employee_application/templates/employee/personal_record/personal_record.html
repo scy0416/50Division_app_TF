@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+/*
+textarea{min-height:23px}
+textarea.autotext{resize:none;display:none}
+*/
+table thead{border-top:1px #dee2e6 solid;}
+table th,
+table td{
+    border-left: 1px #dee2e6 solid;
+    border-right: 1px #dee2e6 solid;
+}
+table th:firth-child,
+table td:first-child{
+    border-left: 0;
+}
+table th:last-child,
+table td:last-child{
+    border-right: 0;
+}
+</style>
+<div class="container my-3">
+    <h4>인사정보</h4>
+    <table class="table">
+        <thead style="text-align:center">
+        <tr>
+            <td rowspan="4"
+                style="width:100px;height:100px;text-align:center;margin=10px"
+                class="align-middle">
+                {% if user.img_addr %}
+                <!-- 알맞게 처리 -->
+                {% else %}
+                <img src="{{ url_for('static', filename='basic image.png') }}"
+                     alt="" style="display:inline-block;max-width:100%;height:auto;">
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">성명</th>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">생년월일</th>
+            <td>{{ user.birth_date }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">직책</th>
+            <td>{{ user.position }}</td>
+        </tr>
+        </thead>
+        <tbody style="text-align:center">
+        <tr>
+            <th class="text-center">연락처</th>
+            <td style="border-right:none">
+                {{ user.phone_num or '' }}
+            </td>
+            <td>
+                <button class="btn btn-light btn-sm">편집</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">주소</th>
+            <td>
+                {{ user.address or '' }}
+            </td>
+            <td>
+                <button class="btn btn-light btn-sm">편집</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">채용일</th>
+            <td>
+                <div style="width:100%;margin:none">{{ user.hire_date }}</div>
+            </td>
+            <td style="text-align:end">
+                <button class="btn btn-light btn-sm"
+                        style="float:right;white-space:nowrap;">변경 신청</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">퇴직일</th>
+            <td>
+                <div>{{ user.retirement_date }}</div>
+            </td>
+            <td style="text-align:end">
+                <button class="btn btn-light btn-sm"
+                        style="float:right;white-space:nowrap;">변경 신청</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center">부대</th>
+            <td colspan="2">{{ user.unit_name }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">고용형태</th>
+            <!-- TODO -->
+            <td colspan="2">{{ user.employment_type }}</td>
+        </tr>
+        <tr>
+            <th class="text-center">비고</th>
+            <td colspan="2">{{ user.bigo or '' }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
