@@ -27,69 +27,6 @@ def index():
     return render_template('admin/admin_main.html', hr_change_request=hr_change_request, join_request=join_request, vacation_request=vacation_request)
 
 
-# 의무 교육 관리창
-@bp.route('/edu/', methods=('GET', 'PATCH'))
-@login_required_admin
-def edu():
-    # 상세검색을 위한 폼
-    searchForm = searchUser()
-
-    # patch메소드로 호출되었을 경우
-    if request.method == 'PATCH':
-        # 전달된 데이터를 추출하는 과정
-        data = request.get_json()
-        # 유저의 식별용 id추출
-        user_id = data.get('id')
-        # 요청의 타입을 추출
-        request_type = data.get('type')
-        # 바뀔 값을 추출
-        value = data.get('value')
-        
-        # 값을 바꿀 유저를 추출
-        user = User.query.get_or_404(user_id)
-        # 성희롱 예방 교육 인 경우
-        if request_type == 'sexual_harassment_prevent':
-            user.sexual_harassment_prevent = value
-        # 장애 인식 개선 교육인 경우
-        elif request_type == 'disability_awareness_improvement':
-            user.disability_awareness_improvement = value
-        # 직장 내 괴롭힘 예방 교육인 경우
-        elif request_type == 'workplace_harassment_prevent':
-            user.workplace_harassment_prevent = value
-        
-        # 바꾼 결과를 저장
-        db.session.commit()
-        
-        # 결과를 반환
-        return jsonify({'status':'success'}), 200
-
-    # 검색 및 페이징 처리
-    # 입력 파라미터
-    page = request.args.get('page', type=int, default=1)  # 페이지
-    name = request.args.get('name', type=str, default=None)  # 이름
-    searchForm.name.data = name
-    unit_name = request.args.get('unitName', type=str, default=None)  # 부대명
-    searchForm.unit_name.data = unit_name
-    position = request.args.get('position', type=str, default=None)  # 직책
-    searchForm.position.data = position
-    birth_date = request.args.get('birthDate', type=str, default=None)  # 생년월일
-    searchForm.birth_date.data = birth_date
-
-    # 검색 처리 과정
-    user_list = User.query.filter_by(role='USER')
-    if name != None and name != '':  # 값이 존재하는 경우에 실행하는 조건
-        user_list = user_list.filter(User.name.ilike('%'+name+'%'))
-    if unit_name != None and unit_name != '':
-        user_list = user_list.filter(User.unit_name.ilike('%'+unit_name+'%'))
-    if position != None and position != '':
-        user_list = user_list.filter(User.position.ilike('%'+position+'%'))
-    if birth_date != None and birth_date != '':
-        user_list = user_list.filter_by(birth_date=birth_date)
-    # 페이징 처리
-    user_list = user_list.paginate(page=page, per_page=5)
-
-    return render_template('admin/edu_list.html', user_list=user_list, form=searchForm)
-
 # 댓글에 대한 엔드포인트(편집, 삭제)
 @bp.route('/comment/', defaults={'comment_id':None}, methods=('POST', ))
 @bp.route('/comment/<int:comment_id>', methods=('POST', ))
@@ -122,8 +59,8 @@ def comment(comment_id):
             return redirect(url_for('admin.grievance_detail', post_id=ccomment.post_id))
         return redirect(url_for('admin.notice_detail', post_id=ccomment.post_id))
 
-@bp.route('/grievance/', methods=('GET', ))
-@login_required_admin
+#@bp.route('/grievance/', methods=('GET', ))
+#@login_required_admin
 def grievance_list():
     # 검색 및 페이진 처리
     q = request.args.get('q', type=str, default='')
@@ -138,22 +75,13 @@ def grievance_list():
     return render_template('admin/grievance_list.html', grievance_list=grievance, q=q, page=page)
 
 # 고충 글 상세 창
-@bp.route('/grievance/<int:post_id>', methods=('GET', ))
-@login_required_admin
+#@bp.route('/grievance/<int:post_id>', methods=('GET', ))
+#@login_required_admin
 def grievance_detail(post_id):
     # 확인하려는 글
     post = Post.query.get_or_404(post_id)
     # 템플릿 출력
     return render_template('admin/grievance_detail.html', post=post)
-
-@bp.route('/request/', methods=('GET', ))
-@login_required_admin
-def request_main():
-    join_request = Join_request.query.filter_by(state='WAITING').all()
-    hr_change_request = HR_change_request.query.filter_by(state='WAITING').all()
-    vacation_request = Vacation_request.query.filter_by(state='WAITING').all()
-    medical_checkup_request = Medical_checkup_request.query.filter_by(state='WAITING').all()
-    return render_template('admin/request_main.html', join_request=join_request, hr_change_request=hr_change_request, vacation_request=vacation_request, medical_checkup_request=medical_checkup_request)
 
 
 # 복지 포인트 관리 페이지

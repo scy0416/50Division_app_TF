@@ -19,7 +19,7 @@
             <div class="col">인사정보 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.request_main') }}"><img
+            <div class="col"><a href="{{ url_for('admin_request.index') }}"><img
                     src="{{ url_for('static', filename='subscription image.png') }}" alt=""
                     style="display:inline-block;max-width: 25%;height:auto;"></a></div>
             <div class="col">신청 관리</div>
@@ -36,13 +36,13 @@
             <div class="col">급여명세서 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.edu') }}"><img
+            <div class="col"><a href="{{ url_for('admin_edu.index') }}"><img
                     src="{{ url_for('static', filename='education image.png') }}" alt=""
                     style="display:inline-block;max-width: 25%;height:auto;"></a></div>
             <div class="col">의무교육 관리</div>
         </div>
         <div class="col-md-4">
-            <div class="col"><a href="{{ url_for('admin.grievance_list') }}"><img
+            <div class="col"><a href="{{ url_for('admin_grievance.index') }}"><img
                     src="{{ url_for('static', filename='contract image.png') }}" alt=""
                     style="display:inline-block;max-width: 25%;height:auto;"></a></div>
             <div class="col">고충 관리</div>

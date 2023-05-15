@@ -43,8 +43,8 @@
         </tr>
         <tr>
         <th>비고</th>
-        <td >
-            <textarea class="autotext flex-fill" rows="1" placeholder="비고 입력칸">{{ medical_checkup.bigo }}</textarea>
+        <td>
+            <textarea class="autotext flex-fill" rows="1" placeholder="비고 입력칸">{{ medical_checkup.bigo or '' }}</textarea>
             <button class="btn btn-secondary btn-sm" onclick="edit()">저장</button>
         </td>
         </tr>

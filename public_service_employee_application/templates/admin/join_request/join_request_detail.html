@@ -5,7 +5,7 @@
     <h4>계정연결</h4>
     <div class="d-flex">
         <h4 class="me-auto">신청자 정보</h4>
-        <form method="post">
+        <form method="post" action="{{ url_for('admin_join_request.reject_request', request_id=join_request.id) }}">
             <input type="hidden" name="form_id" value="reject">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="btn btn-danger btn-sm">가입 거부</button>

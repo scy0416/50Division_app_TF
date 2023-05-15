@@ -33,7 +33,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_pay_stub.index') }}">급여명세서 조회</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('employee.grievance_list') }}">고충 글 작성</a>
+                        <a class="nav-link" href="{{ url_for('employee_grievance.index') }}">고충 글 작성</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_punch_in_out.index') }}">출근부</a>
                     <li class="nav-item">
@@ -64,7 +64,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for('admin.request_main') }}">신청관리 홈</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin_request.index') }}">신청관리 홈</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -72,9 +72,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin_pay_stub.index') }}">급여명세서 관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.edu') }}">의무교육 관리</a>
+                        <a class="nav-link" href="{{ url_for('admin_edu.index') }}">의무교육 관리</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.grievance_list') }}">고충 글 관리</a>
+                        <a class="nav-link" href="{{ url_for('admin_grievance.index') }}">고충 글 관리</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin_punch_in_out.index') }}">출근부 관리</a>
                     <li class="nav-item">

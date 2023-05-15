@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-    <form method="post" action="{{ url_for('admin_notice.create_post') }}" id="post">
+    <form method="post" action="{{ url_for('employee_grievance.create_post') }}" id="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-secondary btn-sm" onclick="check()">등록</button>
         </div>
-        <textarea id="summernote_subject" name="subject"></textarea>
-        <textarea id="summernote_content" name="content"></textarea>
+        <textarea id="subject" name="subject"></textarea>
+        <textarea id="content" name="content"></textarea>
     </form>
 </div>
 {% endblock %}
@@ -16,7 +16,7 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#summernote_content').summernote({
+        $('#content').summernote({
             height: 300,
             disableResizeEditor: true,
             minHeight: null,
@@ -40,19 +40,19 @@
                 '24', '28', '30', '36', '50', '72'],
                 placeholder: '내용 작성'
         });
-        $("#summernote_subject").summernote({
+        $("#subject").summernote({
             toolbar: [],
             disableResizeEditor: true,
             placeholder: '제목 작성'
         });
     });
     function check(){
-        if($("#summernote_subject").val().trim() == ''){
+        if($("#subject").val().trim() == ''){
             alert("제목이 비어있습니다.");
             return;
         }
-        if($("#summernote_content").val().trim() == ''){
-            alert("제목이 비어있습니다.");
+        if($("#content").val().trim() == ''){
+            alert("내용이 비어있습니다.");
             return;
         }
         $("#post").submit();

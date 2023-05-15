@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <h4>신청 관리</h4>
+    <div class="row row-cols-2 text-center">
+        <div class="col-md-4">
+            <div class="col">
+                <a href="{{ url_for('admin_join_request.index') }}">
+                    <img src="{{ url_for('static', filename='management image.png') }}"
+                         alt=""
+                         style="display:inline-block;max-width:24%;height:auto;">
+                </a>
+            </div>
+            <div class="col">
+                가입신청
+                <span class="badge bg-danger">
+                    {{ join_request|length }}
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="col">
+                <a href="{{ url_for('admin_pr_change_request.index') }}">
+                    <img src="{{ url_for('static', filename='personalinformation image.png') }}"
+                         style="display:inline-block;max-width: 25%;height:auto;">
+                </a>
+            </div>
+            <div class="col">
+                인사정보 변경신청
+                <span class="badge bg-danger">
+                    {{ hr_change_request|length }}
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="col">
+                <a href="{{ url_for('admin_vacation_request.index') }}">
+                    <img src="{{ url_for('static', filename='vacation image.png') }}"
+                         alt=""
+                         style="display:inline-block;max-width: 25%;height:auto;">
+                </a>
+            </div>
+            <div class="col">
+                휴가신청
+                <span class="badge bg-danger">
+                    {{ vacation_request|length }}
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="col">
+                <a href="{{ url_for('admin_medical_checkup.index') }}">
+                    <img src="{{ url_for('static', filename='medical image.png') }}"
+                         alt=""
+                         style="display:inline-block;max-width: 25%;height:auto;">
+                </a>
+            </div>
+            <div class="col">
+                건강검진 확인요청
+                <span class="badge bg-danger">
+                    {{ medical_checkup_request|length }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

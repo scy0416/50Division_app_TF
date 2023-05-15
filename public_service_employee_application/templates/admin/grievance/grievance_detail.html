@@ -1,67 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-textarea.readonly{width:100%;resize:none;border:none}
-textarea{resize:none}
+    textarea.readonly{width:100%;resize:none;border:none}
+    textarea{resize:none}
+    thead td{text-align:right;color:gray}
 </style>
 <div class="container my-3">
-    <form method="get" id="edit_post" action="{{ url_for('admin_notice.get_edit_post', post_id=post[0].id) }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    </form>
-    <form method="post" id="delete_post" action="{{ url_for('admin_notice.delete_post', post_id=post[0].id) }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    </form>
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary btn-sm" onclick="edit_post()">수정</button>
-        <button class="btn btn-secondary btn-sm" onclick="delete_post()">삭제</button>
+    <div class="d-flex flex-column" style="border-bottom:1px #dee2e6 solid">
+        <table class="table table-sm">
+            <tr>
+                <th class="fs-4 my-3" colspan="2">{{ post.subject|safe }}</th>
+            </tr>
+            <tr class="text-end">
+                <td colspan="2">게시자 : {{ user.name }}</td>
+            </tr>
+            <tr class="text-end">
+                <td colspan="2">작성일 : {{ post.create_date|datetime }}</td>
+            </tr>
+            <tr>
+                <th>직책</th>
+                <td>{{ user.position }}</td>
+            </tr>
+            <tr>
+                <th>부대명</th>
+                <td>{{ user.unit_name }}</td>
+            </tr>
+        </table>
+        <div class="container" id="content"></div>
     </div>
-    <table class="table table-sm">
-        <tr>
-            <th class="fs-4 my-3">{{ post[0].subject|safe }}</th>
-        </tr>
-        <tr class="text-end">
-            <td>게시자 : {{ post[1].name }}</td>
-        </tr>
-        <tr>
-            <td class="text-end">등록일 : {{ post[0].create_date|datetime }}</td>
-        </tr>
-    </table>
-    <div class="container" id="content">
-    </div>
-
     <!-- 댓글 -->
     {% if comments|length > 0 %}
     <hr>
     <div class="mt-2">
         {% for comment in comments %}
         <div class="comment py-2" style="border-bottom:1px #dee2e6 solid;">
-            {% if g.user.id == comment[0].user_id %}
-            <div style="color:black">{{ comment[1].name }}</div>
-            <div class="container sn" data-comment_id="{{ comment[0].id }}">{{ comment[0].content|safe }}</div>
-            <span style="font-size:12px;">
-                {{ comment[0].create_date|datetime }}
-                {% if comment[0].modify_date %}
+            {% if g.user.id == (comment|getUser).id %}
+            <div style="color:black">{{ (comment|getUser).name }}</div>
+            <div class="container sn" data-comment_id="{{ comment.id }}">
+                {{ comment.content|safe }}
+            </div>
+            <span style="font-size:12px">
+                {{ comment.create_date|datetime }}
+                {% if comment.modify_date %}
                 (수정됨)
                 {% endif %}
             </span>
             <div class="text-end">
                 <button class="btn btn-secondary btn-sm" onclick="edit(this)">수정</button>
-                <button class="btn btn-secondary btn-sm" style="display:none" onclick="save(this)">저장</button>
-
+                <button class="btn btn-secondary btn-sm" style="display:none"
+                        onclick="save(this)">저장</button>
                 <button class="btn btn-secondary btn-sm" onclick="delete_comment(this)">삭제</button>
-                <form method="post" action="{{ url_for('admin_notice.delete_comment', comment_id=comment[0].id) }}">
+                <form method="post" action="{{ url_for('admin_grievance.delete_comment', comment_id=comment.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="post_id" value="{{ post[0].id }}">
                 </form>
             </div>
             {% else %}
-            <div style="color:black">작성자-{{ comment[1].name }}</div>
-            <div class="container">
-                {{ comment[0].content|safe }}
-            </div>
+            <div style="color:black">작성자-{{ (comment|getUser).name }}</div>
+            <div class="container">{{ comment.content|safe }}</div>
             <span style="font-size:12px">
-                {{ comment[0].create_date|datetime }}
-                {% if comment[0].create_date %}
+                {{ comment.create_date|datetime }}
+                {% if comment.modify_date %}
                 (수정됨)
                 {% endif %}
             </span>
@@ -73,7 +71,8 @@ textarea{resize:none}
     <hr>
     <!-- 댓글 작성 -->
     <div>
-        <form method="post" action="{{ url_for('admin_notice.create_comment', post_id=post[0].id) }}">
+        <form method="post"
+              action="{{ url_for('admin_grievance.create_comment', post_id=post.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <textarea rows="1" class="summernote" style="resize:none" name="content"></textarea>
             <button class="btn btn-secondary btn-sm align-self-end">등록</button>
@@ -90,12 +89,10 @@ textarea{resize:none}
             toolbar:[],
             placeholder:'댓글작성'
         });
-        $("#content").html(`{{ post[0].content|safe }}`);
-
+        $("#content").html(`{{ post.content|safe }}`);
     });
     function edit(El){
         var editBtn = $(El);
-        //var sn = editBtn.siblings(".sn");
         var sn = editBtn.parent().siblings('.sn');
         var saveBtn = editBtn.next();
         editBtn.css('display', 'none');
@@ -104,7 +101,6 @@ textarea{resize:none}
     }
     function save(El){
         var saveBtn = $(El);
-        //var sn = saveBtn.siblings(".sn");
         var sn = saveBtn.parent().siblings('.sn');
         var editBtn = saveBtn.prev();
         var content = sn.summernote('code');
@@ -134,19 +130,5 @@ textarea{resize:none}
             deleteBtn.next().submit();
         }
     }
-    function edit_post(){
-        $("#edit_post").submit();
-    }
-    function delete_post(){
-        if(confirm("정말 삭제하시겠습니까?")){
-            $("#delete_post").submit();
-        }
-    }
-  $("textarea.autotext").each(function () {
-  this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-}).on("input", function () {
-  this.style.height = 0;
-  this.style.height = (this.scrollHeight) + "px";
-});
 </script>
 {% endblock %}

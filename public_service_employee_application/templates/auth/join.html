@@ -1,60 +1,82 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container my-3">
+    <div class="container">
+        <table class="table">
+        <tr>
+            <th><label for="name_input">이름(오타 발생 시 가입 처리 불가)</label></th>
+            <td><input class="input" type="text" id="name_input"></td>
+        </tr>
+        <tr>
+            <th><label for="birth_date_input">생년월일(정확히 기입해주시기 바랍니다.)</label></th>
+            <td><input class="input" type="date" id="birth_date_input"></td>
+        </tr>
+        <tr>
+            <th><label for="id_input">부여된id(없어도 무관)</label></th>
+            <td><input class="input" type="text" id="id_input"></td>
+        </tr>
+        <tr>
+            <th><label for="pw1_input">비밀번호</label></th>
+            <td><input class="input" type="password" id="pw1_input"></td>
+        </tr>
+        <tr>
+            <th><label for="pw2_input">비밀번호 확인</label></th>
+            <td><input class="input" type="password" id="pw2_input"></td>
+        </tr>
+        </table>
+        <button class="btn btn-secondary btn-sm" onclick="checkValidation()">가입 신청</button>
+    </div>
     <form method="post" action="#" id="join">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="form-group">
-            <label for="name">이름(오타 발생 시 가입 처리 불가)</label>
-            <input type="text" id="name" name="name">
-        </div>
-        <div class="form-group">
-            <label for="birth_date">생년월일(정확히 기입해주시기 바랍니다.)</label>
-            <input type="date" id="birth_date" name="birth_date">
-        </div>
-        <div class="form-group">
-            <label for="id">부여된id(없어도 무관)</label>
-            <input type="text" id="id" name="id">
-        </div>
-        <div class="form-group">
-            <label for="pw1">비밀번호</label>
-            <input type="password" id="pw1" name="password">
-        </div>
-        <div class="form-group">
-            <label for="pw2">비밀번호 확인</label>
-            <input type="password" id="pw2">
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="check()">가입 신청</button>
+        <input type="hidden" id="name" name="name">
+        <input type="hidden" id="birth_date" name="birth_date">
+        <input type="hidden" id="id" name="id">
+        <input type="hidden" id="pw1" name="password">
+        <input type="hidden" id="pw2">
     </form>
 </div>
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('static', filename='sha512.min.js') }}"></script>
 <script>
-    function check(){
-        var name = $("#name").val();
+    $(document).ready(function(){
+        $(".input").on('keypress', function(event){
+            if(event.key === "Enter"){
+                checkValidation();
+            }
+        });
+    });
+    function checkValidation(){
+        var name = $("#name_input").val();
         if(name.trim() == ''){
-            alert('이름을 작성해주세요');
+            alert('이름은 필수 항목 입니다.');
             return;
         }
-        var birth_date = $("#birth_date").val();
+        var birth_date = $("#birth_date_input").val();
         if(birth_date === ''){
-            alert("생년월일을 입력해주세요");
+            alert('생년월일은 필수 항목 입니다.');
             return;
         }
-        var pw1 = $("#pw1").val();
-        regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+        var id = $("#id_input").val();
+        var pw1 = $("#pw1_input").val();
+        var regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\];':".,<>?])[A-Za-z\d!@#$%^&*()_+{}\[\];':".,<>?]{8,20}$/;
         if(!regex.test(pw1)){
-            alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
+            alert("비밀번호는 영문, 숫자, 특수문자를 포함 8_20자 이내로 작성해야 합니다.");
             return;
         }
         pw1 = hex_sha512(pw1);
-        $("#pw1").val(pw1);
-
-        var pw2 = hex_sha512($("#pw2").val());
+        var pw2 = $("#pw2_input").val();
+        pw2 = hex_sha512(pw2);
+        console.log(pw1);
+        console.log(pw2);
         if(pw1 != pw2){
-            alert('비밀번호 확인이 잘못되었습니다');
+            alert("비밀번호가 일치하지 않습니다");
             return;
         }
+        $("#name").val(name);
+        $("#birth_date").val(birth_date);
+        $("#id").val(id);
+        $("#pw1").val(pw1);
         $("#pw2").val(pw2);
         $("#join").submit();
     }

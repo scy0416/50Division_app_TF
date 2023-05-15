@@ -6,6 +6,7 @@
 <style>
     table{table-layout: fixed;}
     .overflow{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    p{display:inline-block}
 </style>
 <div class="container my-3">
     <h4>공지사항 관리</h4>
@@ -35,9 +36,13 @@
                 loop.index0 }}
             </td>
             <td class="text-left overflow">
-                <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice[0].id) }}">{{ notice[0].subject|safe }}</a>
-                {% if notice[0].comment_set|length > 0 %}
-                <span class="text-danger small ml-2">{{ notice[0].comment_set|length }}</span>
+                <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice[0].id) }}">
+                    {{ notice[0].subject|safe }}
+                </a>
+                {% if notice[0]|comments|length > 0 %}
+                <span class="text-danger small ml-2">
+                    {{ notice[0]|comments|length }}
+                </span>
                 {% endif %}
             </td>
         </tr>
