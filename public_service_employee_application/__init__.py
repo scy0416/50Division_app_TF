@@ -47,6 +47,9 @@ def create_app():
     punch_in_out as employee_punch_in_out,
     medical_checkup as employee_medical_checkup,
     grievance as employee_grievance,
+    personal_record as employee_personal_record,
+    edu as employee_edu,
+    vacation as employee_vacation,
     )
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
@@ -69,6 +72,9 @@ def create_app():
     app.register_blueprint(employee_punch_in_out.bp)
     app.register_blueprint(employee_medical_checkup.bp)
     app.register_blueprint(employee_grievance.bp)
+    app.register_blueprint(employee_personal_record.bp)
+    app.register_blueprint(employee_edu.bp)
+    app.register_blueprint(employee_vacation.bp)
 
     # 필터
     from filter import formal_datetime, getComments, getUser
@@ -79,6 +85,5 @@ def create_app():
     return app
 
 # Flask앱 생성(실행)
-#create_app().run(debug=True)
 create_app().run(host='0.0.0.0', port=3000, debug=True)
 #app = create_app()

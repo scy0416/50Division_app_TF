@@ -92,84 +92,6 @@ def delete_comment_notice(comment_id):
     return redirect(url_for('employee.notice_detail', post_id=post_id))
 
 
-# 인사정보 조회
-@bp.route('/pr/<int:user_id>', methods=('GET',))
-@login_required_employee
-def pr_information(user_id):
-    user = User.query.get_or_404(user_id)
-
-    return render_template('employee/user_detail.html', user=user)
-
-
-# 인사정보 변경
-@bp.route('pr/<int:user_id>/edit', methods=('POST',))
-@login_required_employee
-def edit_pr_information(user_id):
-    user = User.query.get_or_404(user_id)
-
-    phone_num = request.form.get("phone_num")
-    address = request.form.get("address")
-
-    user.phone_num = phone_num
-    user.address = address
-
-    db.session.commit()
-    return redirect(url_for('employee.pr_information', user_id=user_id))
-
-
-# 인사정보 변경 신청
-@bp.route('pr/<int:user_id>/hr_edit', methods=('POST',))
-@login_required_employee
-def require_edit_pr(user_id):
-    type = None
-    if request.form.get('type') == 'hire_date':
-        type = 'HIRE'
-    elif request.form.get('type') == 'retirement_date':
-        type = 'RETIREMENT'
-    hr_change_request = HR_change_request(
-        user_id=user_id,
-        reason=request.form.get('reason'),
-        change_to=request.form.get('change_to'),
-        type=type,
-        state="WAITING",
-        request_date=datetime.now()
-    )
-    db.session.add(hr_change_request)
-    db.session.commit()
-
-    return redirect(url_for('employee.pr_information', user_id=user_id))
-
-
-# 휴가 신청
-@bp.route('/vacation/', methods=('GET',))
-@login_required_employee
-def vacation():
-    page = request.args.get('page', type=int, default=1)
-    vacation_request_list = Vacation_request.query.filter_by(user_id=g.user.id).order_by(
-        Vacation_request.request_date.desc())
-    vacation_request_list = vacation_request_list.paginate(page=page, per_page=5)
-    return render_template('employee/vacation.html', page=page, vacation_request_list=vacation_request_list)
-
-
-# 휴가 신청 등록
-@bp.route('/vacation/', methods=('POST',))
-@login_required_employee
-def create_vacation_request():
-    from_date = request.form.get('from_date')
-    to_date = request.form.get('to_date')
-    reason = request.form.get('reason')
-    vacation_request = Vacation_request(
-        user_id=g.user.id,
-        from_date=from_date,
-        to_date=to_date,
-        reason=reason,
-        state='WAITING',
-        request_date=datetime.now()
-    )
-    db.session.add(vacation_request)
-    db.session.commit()
-    return redirect(url_for('employee.vacation'))
-
 # 복지 포인트 조회
 @bp.route('/welfare/', methods=('GET', ))
 @login_required_employee
@@ -188,10 +110,3 @@ def welfare():
     welfare_point = Wellfare_point.query.filter_by(user_id=g.user.id, quarter_id=quarter_id).first()
 
     return render_template('employee/welfare_point.html', quarter_list=quarter_list, quarter=quarter, welfare=welfare_point)
-
-# 의무 교육 현황
-@bp.route('/edu/', methods=('GET', ))
-@login_required_employee
-def edu():
-    user = User.query.get_or_404(g.user.id)
-    return render_template('employee/edu.html', user=user)

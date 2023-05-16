@@ -26,8 +26,7 @@ textarea{resize:none}
             <td class="text-end">등록일 : {{ post[0].create_date|datetime }}</td>
         </tr>
     </table>
-    <div class="container" id="content">
-    </div>
+    <div class="container" id="content"></div>
 
     <!-- 댓글 -->
     {% if comments|length > 0 %}

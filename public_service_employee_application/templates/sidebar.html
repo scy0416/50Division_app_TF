@@ -23,13 +23,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee.notice') }}">공지사항</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('employee.vacation') }}">휴가신청</a>
+                        <a class="nav-link" href="{{ url_for('employee_vacation.index') }}">휴가신청</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('employee.pr_information', user_id=g.user.id)}}">인사정보</a>
+                        <a class="nav-link" href="{{ url_for('employee_personal_record.index')}}">인사정보</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('employee.welfare') }}">복지포인트 조회</a>
+                        <a class="nav-link" href="#">복지포인트 조회</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('employee.edu') }}">의무교육 현황</a>
+                        <a class="nav-link" href="{{ url_for('employee_edu.index') }}">의무교육 현황</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_pay_stub.index') }}">급여명세서 조회</a>
                     <li class="nav-item">

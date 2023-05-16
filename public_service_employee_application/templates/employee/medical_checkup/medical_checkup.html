@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee.index') }}
+{% endblock %}
 {% block content %}
 <style>
     table th{border-bottom:none}

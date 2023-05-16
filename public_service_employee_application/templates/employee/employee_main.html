@@ -22,22 +22,22 @@
                     style="display:inline-block;max-width: 30%;height:auto;"></a><h6>공지사항</h6>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('employee.vacation') }}"><img
+            <a href="{{ url_for('employee_vacation.index') }}"><img
                     src="{{ url_for('static', filename='vacation image.png') }}" alt=""
                     style="display:inline-block;max-width: 30%;height:auto;"></a><h6>휴가신청</h6>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('employee.pr_information', user_id=g.user.id)}}"><img
+            <a href="{{ url_for('employee_personal_record.index')}}"><img
                     src="{{ url_for('static', filename='personalinformation image.png') }}" alt=""
                     style="display:inline-block;max-width: 30%;height:auto;"></a><h6>인사정보</h6>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('employee.welfare') }}"><img
+            <a href="#"><img
                     src="{{ url_for('static', filename='point image.png') }}" alt=""
                     style="display:inline-block;max-width: 30%;height:auto;"></a><h6>복지포인트</h6>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('employee.edu') }}"><img
+            <a href="{{ url_for('employee_edu.index') }}"><img
                     src="{{ url_for('static', filename='education image.png') }}" alt=""
                     style="display:inline-block;max-width: 30%;height:auto;"></a><h6>의무교육</h6>
         </div>

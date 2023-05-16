@@ -1,18 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>PDF Viewer</title>
-    <style>
-        html, body, iframe {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-</head>
+{% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee_pay_stub.index') }}
+{% endblock %}
+{% block content %}
+<style>
+    html, body, iframe, div {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
 <body>
-    <iframe src="{{ pdfpath }}" type="application/pdf"></iframe>
+    <div class="container">
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_pay_stub.download_pdf', filename=pdfname) }}" download>다운로드하기</a>
+        <!-- <iframe src="{{ url_for('admin_pay_stub.send_pdf', filename=pdfname) }}"></iframe> -->
+        <div id="pdf-container"></div>
+    </div>
 </body>
-</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.worker.min.js"></script>
+<script>
+    const pdfPath = '{{ url_for('admin_pay_stub.send_pdf', filename=pdfname) }}';
+
+    pdfjsLib.getDocument(pdfPath).promise.then((pdfDoc) => {
+        pdfDoc.getPage(1).then((page) => {
+            const scale = 0.8;
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            const container = document.getElementById('pdf-container');
+            container.appendChild(canvas);
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport,
+            };
+            page.render(renderContext);
+        });
+    });
+</script>
+{% endblock %}

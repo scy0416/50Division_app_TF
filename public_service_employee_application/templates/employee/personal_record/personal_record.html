@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee.index') }}
+{% endblock %}
 {% block content %}
 <style>
 /*
@@ -28,12 +31,12 @@ table td:last-child{
             <td rowspan="4"
                 style="width:100px;height:100px;text-align:center;margin=10px"
                 class="align-middle">
-                {% if user.img_addr %}
-                <!-- 알맞게 처리 -->
-                {% else %}
-                <img src="{{ url_for('static', filename='basic image.png') }}"
-                     alt="" style="display:inline-block;max-width:100%;height:auto;">
-                {% endif %}
+                <img src="{{ user.img_addr or url_for('static', filename='basic image.png') }}"
+                     alt="" class="profile"
+                     style="display:inline-block;max-width:100%;height:auto;"></img>
+                <form method="get"
+                      action="{{ url_for('employee_personal_record.image') }}"
+                      id="change_img"></form>
             </td>
         </tr>
         <tr>
@@ -52,20 +55,28 @@ table td:last-child{
         <tbody style="text-align:center">
         <tr>
             <th class="text-center">연락처</th>
-            <td style="border-right:none">
+            <td style="border-right:none" id="phone_num">
                 {{ user.phone_num or '' }}
             </td>
             <td>
-                <button class="btn btn-light btn-sm">편집</button>
+                <button type="button"
+                        class="btn btn-light btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        data-bs-type="phone_num">편집</button>
             </td>
         </tr>
         <tr>
             <th class="text-center">주소</th>
-            <td>
+            <td id="address">
                 {{ user.address or '' }}
             </td>
             <td>
-                <button class="btn btn-light btn-sm">편집</button>
+                <button type="button"
+                        class="btn btn-light btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        data-bs-type="address">편집</button>
             </td>
         </tr>
         <tr>
@@ -73,9 +84,12 @@ table td:last-child{
             <td>
                 <div style="width:100%;margin:none">{{ user.hire_date }}</div>
             </td>
-            <td style="text-align:end">
-                <button class="btn btn-light btn-sm"
-                        style="float:right;white-space:nowrap;">변경 신청</button>
+            <td>
+                <a class="btn btn-light btn-sm"
+                   style="white-space:nowrap;"
+                   href="{{ url_for('employee_personal_record.pr_change_page', type='hire') }}">
+                    변경 신청
+                </a>
             </td>
         </tr>
         <tr>
@@ -83,9 +97,12 @@ table td:last-child{
             <td>
                 <div>{{ user.retirement_date }}</div>
             </td>
-            <td style="text-align:end">
-                <button class="btn btn-light btn-sm"
-                        style="float:right;white-space:nowrap;">변경 신청</button>
+            <td>
+                <a class="btn btn-light btn-sm"
+                   style="white-space:nowrap;"
+                   href="{{ url_for('employee_personal_record.pr_change_page', type='retire') }}">
+                    변경 신청
+                </a>
             </td>
         </tr>
         <tr>
@@ -94,8 +111,15 @@ table td:last-child{
         </tr>
         <tr>
             <th class="text-center">고용형태</th>
-            <!-- TODO -->
-            <td colspan="2">{{ user.employment_type }}</td>
+            <td colspan="2">
+                {% if user.employment_type == 'PUBLIC_SERVICE' %}
+                공무직
+                {% elif user.employment_type == 'FIXED_TERM' %}
+                정규직
+                {% elif user.employment_type == 'SHORT_TERM' %}
+                기간제
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <th class="text-center">비고</th>
@@ -104,4 +128,72 @@ table td:last-child{
         </tbody>
     </table>
 </div>
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="#" id="edit_form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <span>기존 값:</span>
+                        <span id="origin"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="change_to" class="col-form-label">바꿀 값</label>
+                        <input type="text" class="form-control" id="change_to" name="change_to">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" onclick="checkValidation()">편집</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    var modal = document.getElementById("editModal");
+    modal.addEventListener('show.bs.modal', function(event){
+        var button = event.relatedTarget;
+        var type = button.getAttribute('data-bs-type');
+        var modalTitle = modal.querySelector('.modal-title');
+        var input = modal.querySelector('#change_to');
+        $(input).val('');
+        var form = modal.querySelector('.modal-body form');
+        if(type === 'phone_num'){
+            modalTitle.textContent = '연락처 편집';
+            $("#origin").html($("#phone_num").html());
+            $(form).attr('action', "{{ url_for('employee_personal_record.edit_phone_num') }}");
+        }else if(type === 'address'){
+            modalTitle.textContent = '주소 편집';
+            $("#origin").html($("#address").html());
+            $(form).attr('action', "{{ url_for('employee_personal_record.edit_address') }}");
+        }
+    });
+    $(document).ready(function(){
+        $("#change_to").on('keypress', function(event){
+            if(event.key === 'Enter'){
+                checkValidation();
+            }
+        });
+        $(".profile").click(function(){
+            if(confirm("이미지를 변경하시겠습니까?")){
+                $("#change_img").submit();
+            }
+        });
+    });
+    function checkValidation(){
+        if($("#change_to").val().trim() == ''){
+            alert("입력 칸이 비어있습니다.");
+            return;
+        }
+        $("#edit_form").submit();
+    }
+</script>
 {% endblock %}

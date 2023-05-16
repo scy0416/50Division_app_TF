@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee_grievance.detail', post_id=post.id) }}
+{% endblock %}
 {% block content %}
 <div class="container my-3">
     <form method="post"

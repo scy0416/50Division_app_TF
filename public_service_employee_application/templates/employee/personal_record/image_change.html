@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee_personal_record.index') }}
+{% endblock %}
+{% block content %}
+<div class="container my-3">
+    <h4>프로필 이미지 등록</h4>
+    <input type="file" id="image_input" accept="image/png, image/jpeg">
+    <form method="post" action="#">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="image" id="image">
+        <button class="btn btn-secondary btn-sm"
+                style="display:none" id="upload">등록</button>
+    </form>
+    <img id="preview" style="width:100px;height:100px;text-align:center;margin=10px">
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("#image_input").change(function(){
+            var file = this.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function(){
+                $("#preview").attr('src', reader.result);
+                $("#upload").css('display', 'block');
+                $("#image").val(reader.result);
+            }
+
+            if(file){
+                reader.readAsDataURL(file);
+            }else{
+                console.log("No file selected");
+            }
+        });
+    });
+</script>
+{% endblock %}

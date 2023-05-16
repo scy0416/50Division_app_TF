@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee_grievance.index') }}
+{% endblock %}
 {% block content %}
 <style>
     textarea.readonly{width:100%;resize:none;border:none}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('employee_personal_record.index') }}
+{% endblock %}
+{% block content %}
+<div class="container my-3">
+    <h4>
+        {% if type == 'hire' %}
+        채용일 변경 신청
+        {% elif type == 'retire' %}
+        퇴직일 변경 신청
+        {% endif %}
+    </h4>
+    <hr>
+    <h5>
+        현재
+        {% if type == 'hire' %}
+        채용일
+        {% elif type == 'retire' %}
+        퇴직일
+        {% endif %}
+    </h5>
+    <ul><li>
+        {% if type == 'hire' %}
+        {{ user.hire_date }}
+        {% elif type == 'retire' %}
+        {{ user.retirement_date }}
+        {% endif %}
+    </li></ul>
+    <form method="post" action="{{ url_for('employee_personal_record.pr_change_request') }}" id="request_form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="type" value="{{ type }}">
+        <div>
+            <label for="change_to"><h5>변경 희망일</h5></label>
+        </div>
+        <div>
+            <input type="date" id="change_to" name="change_to">
+        </div>
+        <div>
+            <label for="reason"><h5>사유</h5></label>
+        </div>
+        <div>
+            <textarea id="reason" name="reason"></textarea>
+        </div>
+        <div>
+            <a class="btn btn-secondary btn-sm"
+               href="{{ url_for('employee_personal_record.index') }}">취소</a>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="checkValidation()">변경 신청</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#change_to").on('keypress', function(event){
+            if(event.key === 'Enter'){
+                checkValidation();
+            }
+        });
+        $("#reason").summernote({
+            toolbar:[],
+            disableResizeEditor: true,
+            placeholder: '사유 작성'
+        });
+    });
+    function checkValidation(){
+        if($("#change_to").val() === ''){
+            alert("변경 희망일이 비어있습니다.");
+            return;
+        }
+        if($("#reason").val().trim() == ''){
+            alert("사유를 작성해주세요");
+            return;
+        }
+        $("#request_form").submit();
+    }
+</script>
+{% endblock %}
