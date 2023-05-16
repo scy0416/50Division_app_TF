@@ -16,7 +16,7 @@
         <tr>
             <td>성희롱 예방 교육</td>
             <td class="text-center">
-                {% if user.sexual_harassment_prevent %}
+                {% if user.sexual_harassment_prevent == 'Y' %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}
                 <input type="checkbox" onclick="return false;">
@@ -26,7 +26,7 @@
         <tr>
             <td>장애인식 개선 교육</td>
             <td class="text-center">
-                {% if user.disability_awareness_improvement %}
+                {% if user.disability_awareness_improvement == 'Y' %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}
                 <input type="checkbox" onclick="return false;">
@@ -36,7 +36,7 @@
         <tr>
             <td>직장 내 괴롭힘 예방 교육</td>
             <td class="text-center">
-                {% if user.workplace_harassment_prevent %}
+                {% if user.workplace_harassment_prevent == 'Y' %}
                 <input type="checkbox" checked onclick="return false;">
                 {% else %}
                 <input type="checkbox" onclick="return false;">
