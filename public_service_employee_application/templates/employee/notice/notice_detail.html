@@ -59,7 +59,14 @@ textarea{resize:none}
         </div>
         {% endif %}
         <hr>
-        <!-- 댓글 작성TODO -->
+        <!-- 댓글 작성 -->
+        <div>
+            <form method="post" action="#">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <textarea rows="1" class="sumernote" style="resize:none" name="content"></textarea>
+                <button class="btn btn-secondary btn-sm align-self-end">등록</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
