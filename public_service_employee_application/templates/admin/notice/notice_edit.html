@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_notice.detail', post_id=post.id) }}
+{% endblock %}
 {% block content %}
 <div class="container my-3">
     <form method="post" action="{{ url_for('admin_notice.edit_post', post_id=post.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button class="btn btn-secondary btn-sm">저장</button>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_notice.detail', post_id=post.id) }}">취소</a>
         <textarea id="subject" name="subject"></textarea>
         <textarea id="content" name="content"></textarea>
     </form>

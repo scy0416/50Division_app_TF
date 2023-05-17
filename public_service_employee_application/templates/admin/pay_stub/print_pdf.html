@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_pay_stub.index') }}
+{% endblock %}
 {% block content %}
 <style>
     html, body, iframe, div {

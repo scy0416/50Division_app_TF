@@ -14,6 +14,7 @@ bp = Blueprint('admin_edu', __name__, url_prefix='/admin/edu')
 def index():
     page = request.args.get('page', type=int, default=1)
     q = request.args.get('q', type=str, default='')
+    print('['+str(q)+']')
 
     user_list = User.query.filter(User.role == 'USER')
     user_list = user_list.filter(User.name.contains(q))

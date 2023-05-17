@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin.index') }}
+{% endblock %}
 {% block content %}
 <div class="container my-3">
     <h4>의무교육 관리</h4>
@@ -104,11 +107,15 @@
         <li class="page-item">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
         </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
         {% endif %}
     </ul>
 </div>
 <form id="searchForm" method="get" action="#">
-    <input type="hidden" id="q" value="{{ q or '' }}">
+    <input type="hidden" id="q" name="q" value="{{ q or '' }}">
     <input type="hidden" id="page" name="page" value="{{ page or '' }}">
 </form>
 {% endblock %}

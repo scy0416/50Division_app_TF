@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_pr_change_request.index') }}
+{% endblock %}
 {% block content %}
 <div class="container my-3">
     <h4>신청자 정보</h4>

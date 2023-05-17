@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_request.index') }}
+{% endblock %}
 {% block content %}
 <div class="container my-3">
     <h4>건강검진 확인요청 관리</h4>

@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_join_request.index') }}
+{% endblock %}
 {% block content %}
 {% if join_request.state == 'WAITING' %}
 <div class="container my-3">

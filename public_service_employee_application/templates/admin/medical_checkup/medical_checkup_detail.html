@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin_medical_checkup.index') }}
+{% endblock %}
 {% block content %}
 <style>
     .img-container{

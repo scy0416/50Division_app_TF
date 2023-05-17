@@ -28,8 +28,9 @@ def create_app():
     csrf = CSRFProtect(app)
 
     # 블루프린트
-    from views import main_views, auth_views, employee_views, admin_views
+    from views import main_views, auth_views
     from views.admin import (
+    index as admin_index,
     pay_stub_views as admin_pay_stub,
     punch_in_out as admin_punch_in_out,
     medical_checkup as admin_medical_checkup,
@@ -43,6 +44,7 @@ def create_app():
     grievance as admin_grievance
     )
     from views.employee import (
+    index as employee_index,
     pay_stub_views as employee_pay_stub,
     punch_in_out as employee_punch_in_out,
     medical_checkup as employee_medical_checkup,
@@ -50,12 +52,12 @@ def create_app():
     personal_record as employee_personal_record,
     edu as employee_edu,
     vacation as employee_vacation,
+    notice as employee_notice,
     )
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
-    app.register_blueprint(employee_views.bp)
     #
-    app.register_blueprint(admin_views.bp)
+    app.register_blueprint(admin_index.bp)
     app.register_blueprint(admin_pay_stub.bp)
     app.register_blueprint(admin_punch_in_out.bp)
     app.register_blueprint(admin_medical_checkup.bp)
@@ -68,6 +70,7 @@ def create_app():
     app.register_blueprint(admin_request.bp)
     app.register_blueprint(admin_grievance.bp)
     #
+    app.register_blueprint(employee_index.bp)
     app.register_blueprint(employee_pay_stub.bp)
     app.register_blueprint(employee_punch_in_out.bp)
     app.register_blueprint(employee_medical_checkup.bp)
@@ -75,6 +78,7 @@ def create_app():
     app.register_blueprint(employee_personal_record.bp)
     app.register_blueprint(employee_edu.bp)
     app.register_blueprint(employee_vacation.bp)
+    app.register_blueprint(employee_notice.bp)
 
     # 필터
     from filter import formal_datetime, getComments, getUser
