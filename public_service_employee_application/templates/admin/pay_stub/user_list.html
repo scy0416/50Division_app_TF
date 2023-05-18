@@ -147,6 +147,9 @@
                     var pdfName = response.pdfName;
                     $("#display_pdf").attr('action', $("#display_pdf").attr('action')+pdfName);
                     $("#display_pdf").submit();
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
                 }
             });
         });
