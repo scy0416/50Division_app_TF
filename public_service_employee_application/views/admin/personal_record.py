@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, flash
 
 from public_service_employee_application.views.auth_views import login_required_admin
 from public_service_employee_application import db
@@ -10,12 +10,8 @@ bp = Blueprint('admin_personal_record', __name__, url_prefix='/admin/pr')
 
 # 이 블루프린트의 최초 진입점
 @bp.route('/', methods=['GET'])
-@bp.route('/<int:error_code>', methods=['GET'])
 @login_required_admin
-def index(error_code=None):
-    alert = None
-    if error_code == 1 or error_code == 2:
-        alert = 'alert("id가 같은 사용자가 존재합니다")'
+def index():
     page = request.args.get('page', type=int, default=1)
     q = request.args.get('q', type=str, default='')
 
@@ -25,7 +21,7 @@ def index(error_code=None):
     user_list = user_list.paginate(page=page, per_page=10)
 
     return render_template('admin/personal_record/personal_record_list.html',
-                           user_list=user_list, q=q, page=page, alert=alert)
+                           user_list=user_list, q=q, page=page)
 
 
 # 관리자를 추가
@@ -40,7 +36,8 @@ def create_admin():
 
     check = User.query.filter(User.userid == id).first()
     if check:
-        return redirect(url_for('admin_personal_record.index', error_code=1))
+        flash("관리자가 이미 존재합니다.")
+        return redirect(url_for('admin_personal_record.index'))
 
     admin = User(
         userid=id,
@@ -70,7 +67,8 @@ def create_employee():
 
     check = User.query.filter(User.userid == id).first()
     if check:
-        return redirect(url_for('admin_personal_record.index', error_code=2))
+        flash("동일한 아이디의 사용자가 있습니다.")
+        return redirect(url_for('admin_personal_record.index'))
 
     employee = User(
         userid=id,

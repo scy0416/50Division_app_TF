@@ -6,7 +6,7 @@
 <div class="container my-3">
     <h4>복지포인트 관리</h4>
     <div class="my-3">
-        <select name="quarter_id" id="quarter_id" onchange="">
+        <select name="quarter_id" id="quarter_id" onchange="getUserList()">
             {% if quarter_list %}
             {% for qt in quarter_list %}
             <option value="{{ qt.id }}"
@@ -37,6 +37,27 @@
             type: 'GET',
             contentType: 'html',
             data: {
+                quarter_id: quarter_id
+            },
+            success: function(data){
+                $("#userContainer").html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    function getUserList(){
+        var q = $("#q").val();
+        var page = $(this).data("page");
+        var quarter_id = $("#quarter_id").val();
+        $.ajax({
+            url: '{{ url_for("admin_welfare_point.get_user_list") }}',
+            type: 'GET',
+            contentType: 'html',
+            data: {
+                q: q,
+                page: page,
                 quarter_id: quarter_id
             },
             success: function(data){
