@@ -31,11 +31,9 @@
 </head>
 <body>
 {% include "sidebar.html" %}
-<div class="container m-3">
-    <a href="{% block to_back %}{% endblock %}" id="to_back">
-        <img src="{{ url_for('static', filename='images/before image.png') }}" width="60">
-    </a>
-</div>
+<a href="{% block to_back %}{% endblock %}" id="to_back">
+    <img src="{{ url_for('static', filename='images/before image.png') }}" width="60">
+</a>
 {% for message in get_flashed_messages() %}
 <div class="container">
     <div class="alert alert-danger" role="alert">

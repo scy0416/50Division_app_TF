@@ -3,18 +3,10 @@
 {{ url_for('admin_pay_stub.index') }}
 {% endblock %}
 {% block content %}
-<style>
-    html, body, iframe, div {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-</style>
 <body>
     <div class="container">
         <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_pay_stub.download_pdf', filename=pdfname) }}" download>다운로드하기</a>
-        <div id="pdf-container"></div>
+        <div id="pdf-container" style="width:100%;height:100%"></div>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.min.js"></script>
