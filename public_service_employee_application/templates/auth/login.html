@@ -13,7 +13,7 @@
             <input type="password" class="form-control" name="password" id="password" value="{{ form.password.data or '' }}">
         </div>
         <button type="button" id="submitBtn" class="btn btn-secondary" onclick="login()">로그인</button>
-        <a href="{{ url_for('auth.get_join_page') }}" class="btn btn-secondary">가입 신청</a>
+        <a href="{{ url_for('auth.join_page') }}" class="btn btn-secondary">가입 신청</a>
     </form>
 </div>
 {% endblock %}
