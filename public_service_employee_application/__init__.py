@@ -41,7 +41,8 @@ def create_app():
     vacation_request as admin_vacation_request,
     edu as admin_edu,
     request as admin_request,
-    grievance as admin_grievance
+    grievance as admin_grievance,
+    welfare_point as admin_welfare_point
     )
     from views.employee import (
     index as employee_index,
@@ -53,6 +54,7 @@ def create_app():
     edu as employee_edu,
     vacation as employee_vacation,
     notice as employee_notice,
+    welfare_point as employee_welfare_point
     )
     app.register_blueprint(main_views.bp)
     app.register_blueprint(auth_views.bp)
@@ -69,6 +71,7 @@ def create_app():
     app.register_blueprint(admin_edu.bp)
     app.register_blueprint(admin_request.bp)
     app.register_blueprint(admin_grievance.bp)
+    app.register_blueprint(admin_welfare_point.bp)
     #
     app.register_blueprint(employee_index.bp)
     app.register_blueprint(employee_pay_stub.bp)
@@ -79,12 +82,14 @@ def create_app():
     app.register_blueprint(employee_edu.bp)
     app.register_blueprint(employee_vacation.bp)
     app.register_blueprint(employee_notice.bp)
+    app.register_blueprint(employee_welfare_point.bp)
 
     # 필터
-    from filter import formal_datetime, getComments, getUser
+    from filter import formal_datetime, getComments, getUser, formal_birth
     app.jinja_env.filters['datetime'] = formal_datetime
     app.jinja_env.filters['comments'] = getComments
     app.jinja_env.filters['getUser'] = getUser
+    app.jinja_env.filters['birth'] = formal_birth
 
     return app
 

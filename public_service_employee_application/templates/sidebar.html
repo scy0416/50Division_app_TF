@@ -6,11 +6,11 @@
         </button>
         <a class="link-dark"style="text-decoration-line:none" href="{{ url_for('main.index') }}"><h5>공무직 근로자 관리체계</h5></a>
         <a class="navbar-brand" href="{{ url_for('main.index') }}"><img
-                src="{{ url_for('static', filename='50division image.svg') }}" width="40"></a>
+                src="{{ url_for('static', filename='images/50division image.svg') }}" width="40"></a>
         <div class="offcanvas offcanvas-start w-75" tabindex="-1" id="offcanvasNavbar"
              aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header text-center">
-                <img src="{{ url_for('static', filename='50division image.svg') }}" width="50">
+                <img src="{{ url_for('static', filename='images/50division image.svg') }}" width="50">
                 <h5 style="word-break:keep-all" class="offcanvas-title" id="offcanvasNavbarLabel">공무직 근로자 관리체계</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
@@ -27,7 +27,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_personal_record.index')}}">인사정보</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">복지포인트 조회</a>
+                        <a class="nav-link" href="{{ url_for('employee_welfare_point.index') }}">복지포인트 조회</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('employee_edu.index') }}">의무교육 현황</a>
                     <li class="nav-item">
@@ -68,7 +68,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">복지포인트 관리</a>
+                        <a class="nav-link" href="{{ url_for('admin_welfare_point.index') }}">복지포인트 관리</a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin_pay_stub.index') }}">급여명세서 관리</a>
                     <li class="nav-item">

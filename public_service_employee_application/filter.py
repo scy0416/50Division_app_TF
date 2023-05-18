@@ -14,3 +14,6 @@ def getComments(value):
 def getUser(value):
     user = User.query.get(value.user_id)
     return user
+
+def formal_birth(value, fmt='%Y%m%d'):
+    return value.strftime(fmt)

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block to_back %}
+{{ url_for('admin.index') }}
+{% endblock %}
+{% block content %}
+<div class="container my-3">
+    <h4>복지포인트 관리</h4>
+    <div class="my-3">
+        <select name="quarter_id" id="quarter_id" onchange="">
+            {% if quarter_list %}
+            {% for qt in quarter_list %}
+            <option value="{{ qt.id }}"
+                    {% if quarter.id == qt.id %}
+                    selected
+                    {% endif %}>
+                {{ qt.quarter }}
+            </option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="d-flex">
+        <a class="btn btn-secondary btn-sm"
+           href="{{ url_for('admin_welfare_point.manage_quarter') }}">
+            분기 관리
+        </a>
+    </div>
+    <div id="userContainer"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function getUserFirst(){
+        var quarter_id = $("#quarter_id").val();
+        $.ajax({
+            url: '{{ url_for("admin_welfare_point.get_user_list") }}',
+            type: 'GET',
+            contentType: 'html',
+            data: {
+                quarter_id: quarter_id
+            },
+            success: function(data){
+                $("#userContainer").html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error("Error: " + textStatus + ", " + errorThrown);
+            }
+        });
+    }
+    $(document).ready(function(){
+        getUserFirst();
+    });
+</script>
+{% endblock %}

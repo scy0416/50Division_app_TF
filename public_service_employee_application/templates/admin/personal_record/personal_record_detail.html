@@ -16,7 +16,7 @@
                 {% if user.img_addr %}
                 <img src="data:image/png;base64,{{ user.img_addr }}">
                 {% else %}
-                <img src="{{ url_for('static', filename='basic image.png') }}" alt="" style="display:inline-block;max-width: 100%;height:auto;">
+                <img src="{{ url_for('static', filename='images/basic image.png') }}" alt="" style="display:inline-block;max-width: 100%;height:auto;">
                 {% endif %}
             </td>
             <th class="text-center">성명</th>

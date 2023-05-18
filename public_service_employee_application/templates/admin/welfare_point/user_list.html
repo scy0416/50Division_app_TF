@@ -1,0 +1,132 @@
+<div class="row justify-content-end my-3">
+    <div class="col-6 input-group input-group-sm">
+        <input type="hidden" id="page" value="{{ page or '' }}">
+        <input type="text" class="form-control q" id="q" name="q" value="{{ q or '' }}">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary btn-sm"
+                    type="button" id="btn_search">
+                검색
+            </button>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead>
+    <tr class="text-center">
+        <th>번호</th>
+        <th>이름</th>
+        <th>생년월일</th>
+        <th>복지포인트</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if user_list.items %}
+    {% for user in user_list.items %}
+    {% set welfare_point = welfare_point_data.query('name=="' + user.name + '"|birth=="' + user.birth_date|birth + '"') %}
+    <tr class="text-center">
+        <td>
+            {{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}
+        </td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.birth_date }}</td>
+        {% if welfare_point.empty %}
+        <td>---</td>
+        {% else %}
+        <td>{{ welfare_point.loc[welfare_point.index[0], 'point'] }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr class="text-center">
+        <td colspan="4">사용자가 없습니다.</td>
+    </tr>
+    {% endif %}
+    </tbody>
+</table>
+<!-- 페이징 처리 시작 -->
+<ul class="pagination justify-content-center pagination-sm">
+    <!-- 이전 페이지 -->
+    {% if user_list.has_prev %}
+    <li class="page-items">
+        <a class="page-link" data-page="{{ user_list.prev_num }}" href="#">이전</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+    </li>
+    {% endif %}
+    {% for page_num in user_list.iter_pages() %}
+    {% if page_num %}
+    {% if page_num != user_list.page %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+    </li>
+    {% else %}
+    <li class="page-item active" aria-current="page">
+        <a class="page-link" href="#">{{ page_num }}</a>
+    </li>
+    {% endif %}
+    {% else %}
+    <li class="disabled">
+        <a class="page-link" href="#">...</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+    <!-- 다음 페이지 -->
+    {% if user_list.has_next %}
+    <li class="page-item">
+        <a class="page-link" data-page="{{ user_list.next_num }}" href="#">다음</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+    </li>
+    {% endif %}
+</ul>
+<script>
+    function loadScript(){
+        $(".page-link").on('click', function(){
+            var q = $("#q").val();
+            var page = $(this).data("page");
+            var quarter_id = $("#quarter_id").val();
+            $.ajax({
+                url: '{{ url_for("admin_welfare_point.get_user_list") }}',
+                type: 'GET',
+                contentType: 'html',
+                data: {
+                    q: q,
+                    page: page,
+                    quarter_id: quarter_id
+                },
+                success: function(data){
+                    $("#userContainer").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        });
+        $("#btn_search").on('click', function(){
+            var q = $("#q").val();
+            var page = 1;
+            var quarter_id = $("#quarter_id").val();
+            $.ajax({
+                url: '{{ url_for("admin_welfare_point.get_user_list") }}',
+                type: 'GET',
+                contentType: 'html',
+                data: {
+                    q: q,
+                    page: page,
+                    quarter_id: quarter_id
+                },
+                success: function(data){
+                    $("#userContainer").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("Error: " + textStatus + ", " + errorThrown);
+                }
+            });
+        });
+    }
+    loadScript();
+</script>

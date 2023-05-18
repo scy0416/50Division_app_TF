@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="kor">
-<link rel="icon" href="{{ url_for('static', filename='50division image.svg') }}">
+<link rel="icon" href="{{ url_for('static', filename='images/50division image.svg') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <style>
     .fs-14,.table{
@@ -27,9 +27,18 @@
 </head>
 <body>
 {% include "sidebar.html" %}
-<a href="{% block to_back %}{% endblock %}" id="to_back">
-    <img src="{{ url_for('static', filename='before image.png') }}"width="40">
-</a>
+<div class="container m-3">
+    <a href="{% block to_back %}{% endblock %}" id="to_back">
+        <img src="{{ url_for('static', filename='images/before image.png') }}" width="60">
+    </a>
+</div>
+{% for message in get_flashed_messages() %}
+<div class="container">
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+</div>
+{% endfor %}
 <!--기본 템플릿에 삽입할 내용 Start -->
 {% block content %}
 {% endblock %}
