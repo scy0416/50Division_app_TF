@@ -1,3 +1,4 @@
+{% if pio.state == 'WAITING' %}
 <div>
     <div>
         <input type="hidden" id="date" value="{{ date }}">
@@ -27,6 +28,16 @@
         </button>
     </div>
 </div>
+{% else %}
+<div>
+    <div>
+        <span>출근 시간</span>
+        <span>{{ pio.punch_in.strftime('%H:%M') }} |</span>
+        <span>퇴근 시간</span>
+        <span>{{ pio.punch_out.strftime('%H:%M') }}</span>
+    </div>
+</div>
+{% endif %}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js"></script>
 <script>
     {% if pio == None %}
