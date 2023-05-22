@@ -3,6 +3,7 @@
 {{ url_for('admin.index') }}
 {% endblock %}
 {% block content %}
+
 <div class="container my-3">
     <h4>의무교육 관리</h4>
     <div class="row justify-content-end my-3">
@@ -31,7 +32,7 @@
         <tr>
             <th>직책</th>
             <td>{{ user.unit_name }}</td>
-            <th>생년월일</th>
+            <th nowrap>생년월일</th>
             <td nowrap>{{ user.birth_date }}</td>
         </tr>
         <tr>
@@ -39,7 +40,7 @@
                 style="border-right-width:thin;border-bottom:1px black solid"
                 class="align-middle">교육명</th>
             <td colspan="2" class="text-start">성희롱 예방 교육</td>
-            <td>
+            <td class="text-end">
                 <select data-id="{{ user.id }}" onchange="SHP(this)">
                     <option value="N" {% if user.sexual_harassment_prevent=='N' %}selected{% endif %}>N</option>
                     <option value="Y" {% if user.sexual_harassment_prevent=='Y' %}selected{% endif %}>Y</option>
@@ -48,7 +49,7 @@
         </tr>
         <tr>
             <td colspan="2" class="text-start">장애인식 개선 교육</td>
-            <td>
+            <td class="text-end">
                 <select data-id="{{ user.id }}" onchange="DAI(this)">
                     <option value="N" {% if user.disability_awareness_improvement=='N' %}selected{% endif %}>N</option>
                     <option value="Y" {% if user.disability_awareness_improvement=='Y' %}selected{% endif %}>Y</option>
@@ -56,10 +57,10 @@
             </td>
         </tr>
         <tr>
-            <td style="border-bottom:1px black solid" colspan="2" class="text-start">
+            <td style="border-bottom:1px black solid" colspan="2" class="text-start text-nowrap">
                 직장 내 괴롭힘 예방 교육
             </td>
-            <td style="border-bottom:1px black solid">
+            <td class="text-end" style="border-bottom:1px black solid">
                 <select data-id="{{ user.id }}" onchange="WHP(this)">
                     <option value="N" {% if user.workplace_harassment_prevent=='N' %}selected{% endif %}>N</option>
                     <option value="Y" {% if user.workplace_harassment_prevent=='Y' %}selected{% endif %}>Y</option>
