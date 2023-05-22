@@ -1,4 +1,4 @@
-<select id="year">
+<select class="mx-2" id="year">
     {% for year in years %}
     <option value="{{ year.id }}" {% if loop.last %}selected{% endif %}>{{ year.year }}년</option>
     {% endfor %}

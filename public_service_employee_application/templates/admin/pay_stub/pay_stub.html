@@ -13,7 +13,7 @@
     <h4>급여명세서 관리</h4>
     <div class="parent mt-2">
         <div id="addYearDialogContainer"></div>
-        <button class="btn btn-secondary btn-sm" onclick="getAddYearDialog()">년도 생성</button>
+        <button class="btn btn-secondary btn-sm mx-2" onclick="getAddYearDialog()">년도 생성</button>
         <script>
             function getAddYearDialog(){
                 $.ajax({
@@ -32,6 +32,9 @@
         <button class="btn btn-secondary btn-sm" onclick="deleteYear()">삭제</button>
         <script>
             function deleteYear(){
+                if(!confirm('정말 삭제하시겠습니까?')){
+                    return;
+                }
                 $.ajax({
                     url: '/admin/pay_stub/year/' + $("#year").val() + '/delete',
                     type: 'POST',
@@ -51,7 +54,7 @@
             }
         </script>
         <div id="file_upload_container"></div>
-        <button class="btn btn-secondary btn-sm" onclick="get_file_upload()">파일 업로드</button>
+        <button class="btn btn-secondary btn-sm mx-2" onclick="get_file_upload()">파일 업로드</button>
         <script>
             function get_file_upload(){
                 $.ajax({

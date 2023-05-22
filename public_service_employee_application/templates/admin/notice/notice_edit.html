@@ -4,10 +4,12 @@
 {% endblock %}
 {% block content %}
 <div class="container my-3">
-    <form method="post" action="{{ url_for('admin_notice.edit_post', post_id=post.id) }}">
+    <form id="form" method="post" action="{{ url_for('admin_notice.edit_post', post_id=post.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-secondary btn-sm">저장</button>
-        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_notice.detail', post_id=post.id) }}">취소</a>
+        <div class="my-3">
+            <button type="button" onclick="check()" class="btn btn-secondary btn-sm">저장</button>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_notice.detail', post_id=post.id) }}">취소</a>
+        </div>
         <textarea id="subject" name="subject"></textarea>
         <textarea id="content" name="content"></textarea>
     </form>
@@ -50,5 +52,16 @@
         });
         $("#subject").summernote('code', `{{ post.subject|safe }}`);
     });
+    function check(){
+        if($("#subject").summernote('code').trim() == ''){
+            alert("제목이 비어있습니다.");
+            return;
+        }
+        if($("#content").summernote('code').trim() == ''){
+            alert("내용이 비어있습니다.");
+            return;
+        }
+        $("#form").submit();
+    }
 </script>
 {% endblock %}

@@ -122,6 +122,9 @@ def edit_employee(id):
     employee = User.query.get_or_404(id)
 
     name = request.form.get('name', type=str)
+    if name == '':
+        flash("이름을 비울 수 없습니다.")
+        return redirect(url_for('admin_personal_record.employee_detail', id=id))
     birth_date = request.form.get('birth_date', type=str)
     phone_num = request.form.get('phone_num', type=str)
     address = request.form.get('address', type=str)

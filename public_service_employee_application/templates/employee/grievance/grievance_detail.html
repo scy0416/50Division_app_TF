@@ -16,7 +16,7 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     </form>
     <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary btn-sm" onclick="edit_post()">수정</button>
+        <button class="btn btn-secondary btn-sm mx-2" onclick="edit_post()">수정</button>
         <button class="btn btn-secondary btn-sm" onclick="delete_post()">삭제</button>
     </div>
     <div class="d-flex flex-column" style="border-bottom:1px #dee2e6 solid">
@@ -84,11 +84,21 @@
     <hr>
     <!-- 댓글 작성 -->
     <div>
-        <form method="post"
+        <form method="post" id="postNewComment"
               action="{{ url_for('employee_grievance.create_comment', post_id=post.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <textarea rows="1" class="summernote" style="resize:none" name="content"></textarea>
-            <button class="btn btn-secondary btn-sm align-self-end">등록</button>
+            <textarea rows="1" class="summernote" id="newComment" style="resize:none" name="content"></textarea>
+            <button class="btn btn-secondary btn-sm align-self-end my-2"
+                    type="button" onclick="checkNewComment()">등록</button>
+            <script>
+                function checkNewComment(){
+                    if($("#newComment").summernote('code').trim() == '<p><br></p>'){
+                        alert("입력된 댓글이 없습니다");
+                        return;
+                    }
+                    $("#postNewComment").submit();
+                }
+            </script>
         </form>
     </div>
 </div>
@@ -100,7 +110,8 @@
     $(document).ready(function(){
         $(".summernote").summernote({
             toolbar:[],
-            placeholder:'댓글작성'
+            placeholder:'댓글작성',
+            disableResizeEditor: true
         });
         $("#content").html(`{{ post.content|safe }}`);
     });
@@ -110,7 +121,7 @@
         var saveBtn = editBtn.next();
         editBtn.css('display', 'none');
         saveBtn.css('display', 'inline-block');
-        sn.summernote({toolbar:[]});
+        sn.summernote({toolbar:[], disableResizeEditor: true});
     }
     function save(El){
         var saveBtn = $(El);
@@ -119,6 +130,11 @@
         var content = sn.summernote('code');
         saveBtn.css('display', 'none');
         editBtn.css('display', 'inline-block');
+
+        if(content.trim() == '<p><br></p>'){
+            alert("비어있는 상태로 저장할 수 없습니다.");
+            return;
+        }
         sn.summernote('destroy');
 
         $.ajax({

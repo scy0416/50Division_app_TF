@@ -37,6 +37,17 @@ def get_pay_stub():
     isMonthDataExist = True
 
     file_path = os.path.join('static', 'pay_stub', str(year) + '.xlsx')
+
+    if os.path.exists(file_path):
+        print("파일이 존재합니다")
+    else:
+        response = {
+            'isEmployeeExist': isEmployeeExist,
+            'isMonthDataExist': isMonthDataExist,
+            'fileNotExist': True
+        }
+        return jsonify(response)
+
     excel_app, workbook = open_excel_file(os.path.abspath(file_path))
 
     num = -1

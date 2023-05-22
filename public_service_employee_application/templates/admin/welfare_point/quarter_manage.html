@@ -5,20 +5,20 @@
 {% block content %}
 <div class="container my-3">
     <h4>분기 관리</h4>
-    <div class="my-2">
+    <div class="container my-2">
         <form id="addForm" method="post"
               action="{{ url_for('admin_welfare_point.add_quarter') }}"
               enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div class="container">
+            <div class="container my-3">
                 <label for="quarter_name">분기 이름</label>
                 <input type="text" id="quarter_name" name="quarter_name">
             </div>
-            <div class="container">
+            <div class="container my-3">
                 <label for="quarter_file">분기 파일</label>
                 <input type="file" accept=".xlsx" id="quarter_file" name="quarter_file">
             </div>
-            <div class="container">
+            <div class="container my-3">
                 <button type="button"
                         class="btn btn-secondary btn-sm"
                         onclick="checkValidation()">추가</button>

@@ -8,10 +8,42 @@
     <span>건강검진 결과를 찍은 사진을 첨부해주세요.</span>
     <form action=""
           method="post"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          id="fileForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="file" name="file" accept="image/*">
-        <button class="btn btn-secondary btn-sm">등록</button>
+        <input type="file" name="file" accept="image/*" id="file-input">
+        <button class="btn btn-secondary btn-sm" type="button" onclick="check()">등록</button>
+        <script>
+            function check(){
+                var fileInput = $("#file-input")[0];
+                if(fileInput.files.length === 0){
+                    alert("파일을 선택해주세요");
+                    return;
+                }
+                $("#fileForm").submit();
+            }
+        </script>
     </form>
+    <img class="container" id="preview"></img>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("#file-input").change(function(){
+            var file=this.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function(){
+                $("#preview").attr('src', reader.result);
+            }
+
+            if(file){
+                reader.readAsDataURL(file);
+            }else{
+                console.log("No file selected");
+            }
+        });
+    });
+</script>
 {% endblock %}

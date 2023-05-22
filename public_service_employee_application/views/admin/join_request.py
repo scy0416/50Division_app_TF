@@ -60,7 +60,7 @@ def get_user_list():
         )
         # 정렬
         if order == 'asc':
-            processed = processed_request.order_by(
+            processed_request = processed_request.order_by(
                 desc(Join_request.state),
                 asc(Join_request.request_date)
             )

@@ -7,7 +7,7 @@
     <form method="post" action="{{ url_for('employee_grievance.create_post') }}" id="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="check()">등록</button>
+            <button type="button" class="btn btn-secondary btn-sm my-3" onclick="check()">등록</button>
         </div>
         <textarea id="subject" name="subject"></textarea>
         <textarea id="content" name="content"></textarea>
@@ -50,11 +50,11 @@
         });
     });
     function check(){
-        if($("#subject").val().trim() == ''){
+        if($("#subject").summernote('code').trim() == '<p><br></p>'){
             alert("제목이 비어있습니다.");
             return;
         }
-        if($("#content").val().trim() == ''){
+        if($("#content").summernote('code').trim() == '<p><br></p>'){
             alert("내용이 비어있습니다.");
             return;
         }

@@ -4,10 +4,23 @@
 {% endblock %}
 {% block content %}
 <div class="container my-3">
-    <form method="post"
+    <form method="post" id="save"
           action="{{ url_for('employee_grievance.edit_post', post_id=post.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button class="btn btn-secondary btn-sm">저장</button>
+        <button class="btn btn-secondary btn-sm my-3" type="button" onclick="check()">저장</button>
+        <script>
+            function check(){
+                if($("#subject").summernote('code').trim() == '<p><br></p>'){
+                    alert('제목이 비어있습니다');
+                    return;
+                }
+                if($("#content").summernote('code').trim() == '<p><br></p>'){
+                    alert('내용이 비어있습니다');
+                    return;
+                }
+                $("#save").submit();
+            }
+        </script>
         <textarea id="subject" name="subject"></textarea>
         <textarea id="content" name="content"></textarea>
     </form>

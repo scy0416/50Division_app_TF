@@ -21,7 +21,7 @@
             });
         }
     </script>
-    <select id="month">
+    <select id="month" class="my-2">
         <option value="1">1월</option>
         <option value="2">2월</option>
         <option value="3">3월</option>
@@ -35,7 +35,9 @@
         <option value="11">11월</option>
         <option value="12">12월</option>
     </select>
-    <button class="btn btn-secondary btn-sm" onclick="pay_stub_check()">급여명세서 확인</button>
+    <div>
+        <button class="btn btn-secondary btn-sm" onclick="pay_stub_check()">급여명세서 확인</button>
+    </div>
     <script>
         function pay_stub_check(){
             var user_id = {{ g.user.id }};
@@ -56,6 +58,10 @@
                     }
                     if(response.isMonthDataExist == false){
                         alert("해당 달의 데이터가 존재하지 않습니다.");
+                        return;
+                    }
+                    if(response.fileNotExist == true){
+                        alert("해당 년도의 파일이 등록되지 않았습니다.");
                         return;
                     }
                     var pdfName = response.pdfName;

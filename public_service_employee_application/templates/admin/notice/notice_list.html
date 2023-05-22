@@ -35,15 +35,21 @@
                 ((notice_list.page-1) * notice_list.per_page) -
                 loop.index0 }}
             </td>
-            <td class="text-left overflow">
-                <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice[0].id) }}">
-                    {{ notice[0].subject|safe }}
-                </a>
-                {% if notice[0]|comments|length > 0 %}
-                <span class="text-danger small ml-2">
-                    {{ notice[0]|comments|length }}
-                </span>
-                {% endif %}
+            <td class="text-left">
+                <div class="d-flex justify-content-center">
+                    <div class="overflow">
+                        <a class="link-dark" href="{{ url_for('admin_notice.detail', post_id=notice[0].id) }}">
+                            {{ notice[0].subject|safe }}
+                        </a>
+                    </div>
+                    <div>
+                        {% if notice[0]|comments|length > 0 %}
+                        <span class="text-danger small ml-2">
+                            {{ notice[0]|comments|length }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
             </td>
         </tr>
         {% endfor %}

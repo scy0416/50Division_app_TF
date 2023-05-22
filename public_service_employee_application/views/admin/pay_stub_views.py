@@ -60,15 +60,15 @@ def addYear():
 @bp.route('/year/<id>/delete', methods=['POST'])
 @login_required_admin
 def deleteYear(id):
-    result = []
+    result = None
     if db.session.query(func.count(Year.id)).scalar() <= 1:
-        result.append({
+        result = {
             'isOnly': True
-        })
+        }
     else:
-        result.append({
+        result = {
             'isOnly': False
-        })
+        }
         year = Year.query.get_or_404(id)
         db.session.delete(year)
         db.session.commit()
@@ -133,6 +133,17 @@ def get_pay_stub(user_id):
     isMonthDataExist = True
 
     file_path = os.path.join('static', 'pay_stub', str(year) + '.xlsx')
+
+    if os.path.exists(file_path):
+        print('파일이 존재합니다')
+    else:
+        response = {
+            'isEmployeeExist': isEmployeeExist,
+            'isMonthDataExist': isMonthDataExist,
+            'fileNotExist': True
+        }
+        return jsonify(response)
+
     excel_app, workbook = open_excel_file(os.path.abspath(file_path))
 
     num = -1

@@ -64,10 +64,20 @@ textarea{resize:none}
     <hr>
     <!-- 댓글 작성 -->
     <div>
-        <form method="post" action="{{ url_for('employee_notice.create_comment', post_id=post.id) }}">
+        <form method="post" id="postNewComment" action="{{ url_for('employee_notice.create_comment', post_id=post.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <textarea rows="1" class="summernote" style="resize:none" name="content"></textarea>
-            <button class="btn btn-secondary btn-sm align-self-end">등록</button>
+            <textarea rows="1" class="summernote" id="newComment" style="resize:none" name="content"></textarea>
+            <button class="btn btn-secondary btn-sm align-self-end my-2"
+                    type="button" onclick="checkNewComment()">등록</button>
+            <script>
+                function checkNewComment(){
+                    if($("#newComment").summernote('code').trim() == '<p><br></p>'){
+                        alert("댓글이 비어있습니다");
+                        return;
+                    }
+                    $("#postNewComment").submit();
+                }
+            </script>
         </form>
     </div>
 </div>
@@ -79,7 +89,8 @@ textarea{resize:none}
     $(document).ready(function(){
         $(".summernote").summernote({
             toolbar:[],
-            placeholder:'댓글작성'
+            placeholder:'댓글작성',
+            disableResizeEditor: true
         });
         $("#content").html(`{{ post.content|safe }}`);
 
@@ -91,7 +102,7 @@ textarea{resize:none}
         var saveBtn = editBtn.next();
         editBtn.css('display', 'none');
         saveBtn.css('display', 'inline-block');
-        sn.summernote({toolbar:[]});
+        sn.summernote({toolbar:[], disableResizeEditor: true});
     }
     function save(El){
         var saveBtn = $(El);
@@ -101,6 +112,11 @@ textarea{resize:none}
         var content = sn.summernote('code');
         saveBtn.css('display', 'none');
         editBtn.css('display', 'inline-block');
+
+        if(content.trim() == '<p><br></p>'){
+            alert("비어있는 상태로 저장할 수 없습니다.");
+            return;
+        }
         sn.summernote('destroy');
 
         $.ajax({

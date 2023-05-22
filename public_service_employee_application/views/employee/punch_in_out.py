@@ -69,9 +69,8 @@ def punch_in_out_create():
 @login_required_employee
 def punch_in_out_edit(id):
     punch_in_out_data = Punch_in_out.query.get_or_404(id)
-    data = request.get_json()
-    punch_in = data.get('punch_in')
-    punch_out = data.get('punch_out')
+    punch_in = request.form.get('punch_in')
+    punch_out = request.form.get('punch_out')
 
     punch_in_out_data.punch_in = \
         punch_in if punch_in != '' else punch_in_out_data.punch_in

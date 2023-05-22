@@ -10,8 +10,8 @@
             <label for="password_input">비밀번호</label>
             <input type="password" class="form-control" id="password_input" value="{{ password or '' }}">
         </div>
-        <button type="button" id="submitBtn" class="btn btn-secondary btn-sm" onclick="login()">로그인</button>
-        <a href="{{ url_for('auth.join_page') }}" class="btn btn-secondary btn-sm">가입 신청</a>
+        <button type="button" id="submitBtn" class="btn btn-secondary btn-sm my-3" onclick="login()">로그인</button>
+        <a href="{{ url_for('auth.join_page') }}" class="btn btn-secondary btn-sm my-3">가입 신청</a>
     </div>
 </div>
 <form method="post" id="login">

@@ -10,7 +10,7 @@
 </style>
 <div class="container my-3">
     <h4>휴가 신청</h4>
-    <form style="border-bottom:1px black solid;border-top:1px black solid"
+    <form style="border-bottom:1px black solid;border-top:1px black solid" id="requestForm"
           method="post"
           action="{{ url_for('employee_vacation.request_vacation') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -29,7 +29,24 @@
                       id="reason"
                       name="reason"
                       rows="1"></textarea>
-            <button class="btn btn-secondary btn-sm align-self-end">신청</button>
+            <button class="btn btn-secondary btn-sm align-self-end" type="button" onclick="check()">신청</button>
+            <script>
+                function check(){
+                    if($("#from_date").val() === ''){
+                        alert("휴가 시작일이 비어있습니다");
+                        return;
+                    }
+                    if($("#to_date").val() === ''){
+                        alert("휴가 종료일이 비어있습니다");
+                        return;
+                    }
+                    if($("#reason").val().trim() == ''){
+                        alert("휴가 사유가 비어있습니다");
+                        return;
+                    }
+                    $("#requestForm").submit();
+                }
+            </script>
         </div>
     </form>
 </div>

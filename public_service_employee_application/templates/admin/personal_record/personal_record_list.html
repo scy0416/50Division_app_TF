@@ -16,99 +16,115 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="container d-flex my-2">
+                    <input placeholder="이름" class="flex-fill" type="text" id="name_employee_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="부대명" class="flex-fill" type="text" id="unit_name_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="직책" class="flex-fill" type="text" id="position_employee_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <label class="me-2" for="birth_date_input">생년월일</label>
+                    <input class="flex-fill" type="date" id="birth_date_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <label class="me-2" for="hire_date_input">고용일</label>
+                    <input class="flex-fill" type="date" id="hire_date_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <label class="me-2" for="retirement_date_input">퇴직일</label>
+                    <input class="flex-fill" type="date" id="retirement_date_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="아이디" class="flex-fill" type="text" id="id_employee_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="비밀번호(선택사항)"class="flex-fill" type="password" id="pw1_employee_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="비밀번호 확인"class="flex-fill" type="password" id="pw2_employee_input">
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="비고" class="flex-fill" type="text" id="bigo_input">
+                </div>
                 <form method="post" action="{{ url_for('admin_personal_record.create_employee') }}" id="addEmployeeForm">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="container d-flex my-2">
-                        <input placeholder="이름" class="flex-fill" type="text" id="name_employee" name="name">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="부대명" class="flex-fill" type="text" id="unit_name" name="unit_name">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="직책" class="flex-fill" type="text" id="position_employee" name="position">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <label class="me-2" for="birth_date">생년월일</label>
-                        <input class="flex-fill" type="date" id="birth_date" name="birth_date">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <label class="me-2" for="hire_date">고용일</label>
-                        <input class="flex-fill" type="date" id="hire_date" name="hire_date">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <label class="me-2" for="retirement_date">퇴직일</label>
-                        <input class="flex-fill" type="date" id="retirement_date" name="retirement_date">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="아이디" class="flex-fill" type="text" id="id_employee" name="id">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="비밀번호(선택사항)"class="flex-fill" type="password" id="pw1_employee" name="password">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="비밀번호 확인"class="flex-fill" type="password" id="pw2_employee">
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="비고" class="flex-fill" type="text" id="bigo" name="bigo">
-                    </div>
+                    <input type="hidden" id="name_employee" name="name">
+                    <input type="hidden" id="unit_name" name="unit_name">
+                    <input type="hidden" id="position_employee" name="position">
+                    <input type="hidden" id="birth_date" name="birth_date">
+                    <input type="hidden" id="hire_date" name="hire_date">
+                    <input type="hidden" id="retirement_date" name="retirement_date">
+                    <input type="hidden" id="id_employee" name="id">
+                    <input type="hidden" id="pw_employee" name="password">
+                    <input type="hidden" id="bigo" name="bigo">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="addEmployee()">추가</button>
                 <script>
                     function addEmployee(){
-                        var name = $("#name_employee").val();
+                        var name = $("#name_employee_input").val();
                         if(name.trim() == ''){
                             alert("이름이 공란입니다.");
                             return;
                         }
-                        var unit_name = $("#unit_name").val();
+                        var unit_name = $("#unit_name_input").val();
                         if(unit_name.trim() == ''){
                             alert('부대명이 공란입니다.');
                             return;
                         }
-                        var position = $("#position_employee").val();
+                        var position = $("#position_employee_input").val();
                         if(position.trim() == ''){
                             alert('직책이 공란입니다.');
                             return;
                         }
-                        var birth_date = $("#birth_date").val();
+                        var birth_date = $("#birth_date_input").val();
                         if(birth_date === ''){
                             alert('생년월일이 공란입니다.');
                             return;
                         }
-                        var hire_date = $("#hire_date").val();
+                        var hire_date = $("#hire_date_input").val();
                         if(hire_date === ''){
                             alert('고용일이 공란입니다.');
                             return;
                         }
-                        var retirement_date = $("#retirement_date").val();
+                        var retirement_date = $("#retirement_date_input").val();
                         if(retirement_date === ''){
                             alert('퇴직일이 공란입니다.');
                             return;
                         }
-                        var id = $("#id_employee").val();
+                        var id = $("#id_employee_input").val();
                         var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
                             if(!regex.test(id)){
                                 alert('id는 영문, 숫자 포함 5~20자 이내로 작성해야 합니다.');
                                 return;
                             }
-                        var pw1 = $("#pw1_employee").val();
-                        var pw2 = $("#pw2_employee").val();
+                        var pw1 = $("#pw1_employee_input").val();
+                        var pw2 = $("#pw2_employee_input").val();
                         // 둘 다 공란이 아닌 경우
-                        regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\];':".,<>?])[A-Za-z\d!@#$%^&*()_+{}[\];':".,<>?]{8,20}$/;
+                        regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\];':".,<>?])[A-Za-z\d!@#$%^&*()_+{}\[\];':".,<>?]{8,20}$/;
                         if(pw1.trim() != '' && pw2.trim() != ''){
                             if(!regex.test(pw1)){
-                                alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
+                                alert("비밀번호는 영문, 숫자, 특수문자를 포함 8_20자 이내로 작성해야 합니다.");
                                 return;
                             }
                             if(pw1 !== pw2){
                                 alert('비밀번호 확인이 잘못되었습니다');
                                 return;
                             }
-                            $("#pw1_employee").val(hex_sha512(pw1));
-                            $("#pw2_employee").val(hex_sha512(pw2));
                         }
+                        $("#name_employee").val($("#name_employee_input").val());
+                        $("#unit_name").val($("#unit_name_input").val());
+                        $("#position_employee").val($("#position_employee_input").val());
+                        $("#birth_date").val($("#birth_date_input").val());
+                        $("#hire_date").val($("#hire_date_input").val());
+                        $("#retirement_date").val($("#retirement_date_input").val());
+                        $("#id_employee").val($("#id_employee_input").val());
+                        $("#pw_employee").val(hex_sha512(pw1));
+                        $("#bigo").val($("#bigo_input").val());
                         $("#addEmployeeForm").submit();
                     }
                 </script>
@@ -127,68 +143,77 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="container d-flex my-2">
+                    <input placeholder="직책" class="flex-fill" type="text" id="position_admin_input" required>
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="계급" class="flex-fill" type="text" id="rank_input" required>
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="이름" class="flex-fill" type="text" id="name_admin_input" required>
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="아이디" class="flex-fill" type="text" id="id_admin_input" required>
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="비밀번호" class="flex-fill" type="password" id="pw1_admin_input" required>
+                </div>
+                <div class="container d-flex my-2">
+                    <input placeholder="비밀번호 확인" class="flex-fill" type="password" id="pw2_admin_input" required>
+                </div>
                 <form method="post" action="{{ url_for('admin_personal_record.create_admin') }}" id="addAdminForm">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="container d-flex my-2">
-                        <input placeholder="직책" class="flex-fill" type="text" id="position_admin" name="position" required>
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="계급" class="flex-fill" type="text" id="rank" name="rank" required>
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="이름" class="flex-fill" type="text" id="name_admin" name="name" required>
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="아이디" class="flex-fill" type="text" id="id_admin" name="id" required>
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="비밀번호" class="flex-fill" type="password" id="pw1_admin" required>
-                    </div>
-                    <div class="container d-flex my-2">
-                        <input placeholder="비밀번호 확인" class="flex-fill" type="password" id="pw2_admin" name="password" required>
-                    </div>
+                    <input type="hidden" id="position_admin" name="position" required>
+                    <input type="hidden" id="rank" name="rank" required>
+                    <input type="hidden" id="name_admin" name="name" required>
+                    <input type="hidden" id="id_admin" name="id" required>
+                    <input type="hidden" id="pw_admin" name="password" required>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="addAdmin()">추가</button>
                 <script>
                     function addAdmin(){
-                        var position = $("#position_admin").val();
+                        var position = $("#position_admin_input").val();
                         if(position.trim() == '' && position.length < 5){
                             alert("관리자의 직책이 공란이거나 5자를 넘지 않습니다.");
                             return;
                         }
-                        var rank = $("#rank").val();
+                        var rank = $("#rank_input").val();
                         if(rank.trim() == ''){
                             alert("관리자의 계급이 공란입니다.");
                             return;
                         }
-                        var name = $("#name_admin").val();
+                        var name = $("#name_admin_input").val();
                         if(name.trim() == ''){
                             alert("관리자의 이름이 공란입니다.");
                             return;
                         }
-                        var id = $("#id_admin").val()
+                        var id = $("#id_admin_input").val()
                         var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
                         if(!regex.test(id)){
                             alert('id는 영문, 숫자 포함 5~20자 이내로 작성해야 합니다.');
                             return;
                         }
-                        var pw1 = $("#pw1_admin").val();
-                        regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+                        var pw1 = $("#pw1_admin_input").val();
+                        regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\];':".,<>?])[A-Za-z\d!@#$%^&*()_+{}\[\];':".,<>?]{8,20}$/;
                         if(!regex.test(pw1)){
-                            alert("password는 영문, 숫자를 포함 8~20자 이내로 작성해야 합니다.");
+                            alert("비밀번호는 영문, 숫자, 특수문자를 포함 8_20자 이내로 작성해야 합니다.");
                             return;
                         }
                         pw1 = hex_sha512(pw1);
-                        $("#pw1_admin").val(pw1);
 
-                        var pw2 = hex_sha512($("#pw2_admin").val());
+                        var pw2 = hex_sha512($("#pw2_admin_input").val());
                         if(pw1 != pw2){
                             alert('비밀번호 확인이 잘못되었습니다');
                             return;
                         }
-                        $("#pw2_admin").val(pw2);
+                        $("#position_admin").val(position);
+                        $("#rank").val(rank);
+                        $("#name_admin").val(name);
+                        $("#id_admin").val(id);
+                        $("#pw_admin").val(pw1);
                         $("#addAdminForm").submit();
                     }
                 </script>
@@ -202,18 +227,18 @@
 <div class="container my-3">
     <div class="d-flex justify-content-end">
         <button type="button"
-                class="btn btn-secondary btn-sm"
+                class="btn btn-secondary btn-sm mx-1"
                 data-bs-toggle="modal"
                 data-bs-target="#addEmployee">
             공무직원 추가
         </button>
         <button type="button"
-                class="btn btn-secondary btn-sm"
+                class="btn btn-secondary btn-sm mx-1"
                 data-bs-toggle="modal"
                 data-bs-target="#addAdmin">
             관리자 추가
         </button>
-        <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_personal_record.admin_list') }}">관리자 목록</a>
+        <a class="btn btn-secondary btn-sm mx-1" href="{{ url_for('admin_personal_record.admin_list') }}">관리자 목록</a>
     </div>
 </div>
 <div class="container my-3">

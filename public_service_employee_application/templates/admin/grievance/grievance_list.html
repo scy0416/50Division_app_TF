@@ -42,15 +42,24 @@
             <td>
                 {{ grievance_list.total - ((grievance_list.page-1) * grievance_list.per_page) - loop.index0 }}
             </td>
-            <td class="text-left overflow">
-                <a class="link-dark" href="{{ url_for('admin_grievance.detail', post_id=grievance[0].id) }}">
-                    {{ grievance[0].subject }}
-                </a>
-                {% if grievance[0]|comments|length > 0 %}
-                <span class="text-danger small ml-2">
-                    {{ grievance[0]|comments|length }}
-                </span>
-                {% endif %}
+            <td class="text-left">
+                <div class="d-flex justify-content-center">
+                    <div class="overflow">
+                        <a class="link-dark" href="{{ url_for('admin_grievance.detail', post_id=grievance[0].id) }}">
+                            {{ grievance[0].subject|safe }}
+                        </a>
+                    </div>
+                    <div>
+                        {% if grievance[0]|comments|length > 0 %}
+                        <span class="text-danger small ml-2">
+                            {{ grievance[0]|comments|length }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-center">
+
+                    </div>
+                </div>
             </td>
             <td>{{ grievance[1].name }}</td>
             <td>{{ grievance[0].create_date|datetime }}</td>

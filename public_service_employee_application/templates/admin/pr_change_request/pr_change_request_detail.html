@@ -65,7 +65,7 @@
     <div class="d-flex justify-content-end">
         <form method="post" action="{{ url_for('admin_pr_change_request.allow', request_id=request[0].id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-secondary btn-sm">승인</button>
+            <button class="btn btn-secondary btn-sm mx-2">승인</button>
         </form>
         <form method="post" action="{{ url_for('admin_pr_change_request.deny', request_id=request[0].id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
