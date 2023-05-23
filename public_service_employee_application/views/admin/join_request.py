@@ -150,7 +150,7 @@ def allow_request(request_id):
 
     user_id = request.form.get('user_id', type=str)
     user = User.query.get_or_404(user_id)
-    user.userid = join_request.userid
+    #user.userid = join_request.userid
     user.password = join_request.password
 
     join_request.state = 'ALLOWED'
