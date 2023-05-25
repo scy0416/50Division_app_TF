@@ -55,7 +55,7 @@ def pr_change_request():
     type = request.form.get('type')
     if type == 'hire':
         type = 'HIRE'
-    elif type == 'RETIRE':
+    elif type == 'retire':
         type = 'RETIREMENT'
     hr_change_request = HR_change_request(
         user_id=g.user.id,

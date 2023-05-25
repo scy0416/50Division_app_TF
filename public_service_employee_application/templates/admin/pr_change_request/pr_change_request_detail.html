@@ -58,7 +58,7 @@
     {% endif %}
     <h4>사유</h4>
     <div class="container">
-        {{ request[0].reason }}
+        {{ request[0].reason|safe }}
     </div>
     <hr>
     {% if request[0].state == 'WAITING' %}
