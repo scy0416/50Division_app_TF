@@ -30,7 +30,7 @@ def index():
     welfare_point = welfare_point[[2, 4, 6]]
     welfare_point.columns = ['name', 'birth', 'point']
     birth = str(g.user.birth_date).replace('-', '')
-    welfare_point = welfare_point.query('name==@g.user.name|birth==@birth')
+    welfare_point = welfare_point.query('name==@g.user.name&birth==@birth')
 
     return render_template('/employee/welfare_point/welfare_point.html',
                            quarter=quarter, quarter_list=quarter_list,
