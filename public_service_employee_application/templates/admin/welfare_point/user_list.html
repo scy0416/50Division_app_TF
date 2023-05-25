@@ -22,7 +22,7 @@
     <tbody>
     {% if user_list.items %}
     {% for user in user_list.items %}
-    {% set welfare_point = welfare_point_data.query('name=="' + user.name + '"|birth=="' + user.birth_date|birth + '"') %}
+    {% set welfare_point = welfare_point_data.query('name=="' + user.name + '"&birth=="' + user.birth_date|birth + '"') %}
     <tr class="text-center">
         <td>
             {{ user_list.total - ((user_list.page-1) * user_list.per_page) - loop.index0 }}
