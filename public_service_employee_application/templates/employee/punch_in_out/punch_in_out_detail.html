@@ -1,4 +1,4 @@
-{% if pio.state == 'WAITING' %}
+{% if pio is none or pio.state == 'WAITING' %}
 <div>
     <div>
         <input type="hidden" id="date" value="{{ date }}">
