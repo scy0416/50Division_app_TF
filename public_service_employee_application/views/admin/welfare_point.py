@@ -119,7 +119,8 @@ def edit_quarter(quarter_id):
     check = Quarter.query.filter(
         Quarter.quarter == origin
     ).all()
-    if len(check) != 1:
+    print(len(check))
+    if len(check) >= 1:
         flash('이름이 같은 분기가 존재합니다')
         return redirect(url_for('admin_welfare_point.manage_quarter'))
 
