@@ -27,6 +27,9 @@ def login():
     if not user:
         flash("존재하지 않는 사용자입니다.")
         return redirect(url_for('auth.index'))
+    elif user.password != password:
+        flash("비밀번호를 다시 입력해주세요")
+        return redirect(url_for('auth.index'))
     elif user.password == password and user.role == 'ADMIN':
         session.clear()
         session['user_id'] = user.id
